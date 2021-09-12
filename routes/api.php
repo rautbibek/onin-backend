@@ -16,11 +16,11 @@ use App\Http\Controllers\Api\V1\Home\HomeController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/login',[LoginController::class,'login']);
-Route::get('/home',[HomeController::class,'index']);
-Route::get('/test', function () {
-    return "welcome";
-});
+// Route::get('/login',[LoginController::class,'login']);
+// Route::get('/home',[HomeController::class,'index']);
+// Route::get('/test', function () {
+//     return "welcome";
+// });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     //return $request->user();

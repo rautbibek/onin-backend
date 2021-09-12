@@ -1,0 +1,68 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    height: 100vh;
+    background-color: #0cbaba;
+    background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
+}
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    /* min-height: 400px; */
+
+    /* box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+        rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    width: 500px; */
+    /* border-radius: 5px; */
+}
+
+.login-container div:last-child {
+}
+.form-element {
+    height: 30px;
+    width: 400px;
+    border-radius: 5px;
+    padding: 10px;
+}
+.form-element:focus {
+    outline: none;
+}
+.seperator {
+    margin: 20px;
+}
+.btn {
+    height: 45px;
+    width: 420px;
+    margin: 0px;
+    padding: 0px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    background-color: #42378f;
+    background-image: linear-gradient(315deg, #42378f 0%, #f53844 74%);
+
+    cursor: pointer;
+}
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo {
+    height: 130px;
+    width: 130px;
+    border-radius: 50%;
+}
+.error {
+    color: red;
+}

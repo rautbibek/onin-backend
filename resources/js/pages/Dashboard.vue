@@ -3,7 +3,7 @@
         <b-link></b-link>
         <v-col>
             <v-row>
-                <v-col cols="6">
+                <v-col cols="12" md="6" sm="12">
                     <v-card>
                         <div>
                             <apexchart
@@ -15,7 +15,7 @@
                         </div>
                     </v-card>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="12" md="6" sm="12">
                     <v-card>
                         <div>
                             <apexchart

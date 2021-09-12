@@ -8,13 +8,48 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
-        <script src="{{asset('js/app.js')}}" defer></script>
-        <link rel="stylesheet" href="{{asset('css/app.css')}}">
+        <link rel="stylesheet" href="{{asset('styling/login.css')}}">
     </head>
     <body class="antialiased">
-        <div id="app">
-            <App></App>
+        <div class="container">
+
+            <div class="login-container">
+
+
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <img src="https://w7.pngwing.com/pngs/219/256/png-transparent-phoenix-logo-flame-football-s-daquan-leaf-flower-symbol.png" class="logo" alt="logo">
+                <form action="{{route('admin.login')}}" method="POST">
+                @csrf
+                <div class="seperator">
+                    <input class="form-element" type="text" name="email" placeholder="username" required>
+                    <div>
+                    @if($errors->has('email'))
+                        <small class="error"><strong>{{$errors->first('email')}}</strong></small>
+                    @endif
+                    </div>
+                </div>
+                 <div class="seperator">
+                    <input type="password" class="form-element " name="password" placeholder=" password" required>
+                    <div>
+                    @if($errors->has('password'))
+                        <small class="error"><strong>{{$errors->first('password')}}</strong></small>
+                    @endif
+                    </div>
+                </div>
+                <div class="seperator button-container">
+                    <button class="btn"  type="submit">Login</button>
+                </div>
+                </form>
+            </div>
         </div>
     </body>
 </html>

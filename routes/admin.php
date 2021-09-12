@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +15,15 @@ use App\Http\Controllers\Admin\DashboardController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Auth::routes();
 
-Route::get('/', [DashboardController::class,'index'])->name('index');
-Route::get('/login',[DashboardController::class,'login'])->name('login');
-Route::get('/dashboard',[DashboardController::class,'index'])->middleware('adminauth');
-Route::get('{path}', [DashboardController::class,'index'])->where('path','([A-z\d\-\/_.]+)?');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Route::middleware(['auth:admin'])->group(function(){
+//     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+//     Route::post('/logout', [DashboardController::class,'logout'])->name('logout');
+// });
+
+// Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard')->middleware('auth:admin');
+// Route::get('/dashboard',[DashboardController::class,'index'])->middleware('adminauth');
+//Route::get('{path}', [DashboardController::class,'index'])->where('path','([A-z\d\-\/_.]+)?');

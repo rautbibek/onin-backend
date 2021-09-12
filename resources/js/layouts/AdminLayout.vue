@@ -126,11 +126,11 @@
                                 </v-list-item-avatar>
 
                                 <v-list-item-content>
-                                    <v-list-item-title
-                                        >Bibek Raut</v-list-item-title
-                                    >
+                                    <v-list-item-title>{{
+                                        $user.name
+                                    }}</v-list-item-title>
                                     <v-list-item-subtitle
-                                        >Superadmin</v-list-item-subtitle
+                                        >Admin</v-list-item-subtitle
                                     >
                                 </v-list-item-content>
                             </v-list-item>
@@ -158,7 +158,7 @@
                                 >
                             </v-list-item>
 
-                            <v-list-item link>
+                            <v-list-item @click="logout">
                                 <v-list-item-icon
                                     ><v-icon
                                         >mdi-logout</v-icon
@@ -288,7 +288,7 @@ export default {
             {
                 icon: "dashboard",
                 text: "Dashboard",
-                url: "/"
+                url: "/dashboard"
             },
             {
                 icon: "mdi-ballot",
@@ -340,6 +340,17 @@ export default {
     methods: {
         changeMode() {
             this.$vuetify.theme.dark = this.mode;
+        },
+        logout() {
+            axios
+                .post("/logout")
+                .then(res => {
+                    console.log(res.data);
+                    window.location.href = "/";
+                })
+                .catch(err => {
+                    console.log(err.response.data.errors);
+                });
         }
     }
 };

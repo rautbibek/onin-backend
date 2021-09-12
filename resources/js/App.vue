@@ -26,6 +26,11 @@ export default {
                 }
             ]
         };
+    },
+    created() {
+        if (window.user.isLoggedIn) {
+            window.href = "/dashboard";
+        }
     }
 };
 </script>

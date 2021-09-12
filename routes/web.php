@@ -1,5 +1,8 @@
 <?php
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +16,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/',[WelcomeController::class,'index'])->name('welcome');
+Route::post('/admin/login','App\Http\Controllers\Admin\LoginController@login')->name('admin.login');
+
+
+// Route::get('{path}', [WelcomeController::class,'index'])->where('path','([A-z\d\-\/_.]+)?');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware(['auth:admin','PreventBackHistory'])->group(function(){
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+    Route::post('/logout', [AdminController::class,'logout'])->name('logout');
+});
+Route::middleware(['auth:admin','PreventBackHistory'])->group(function(){
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+    Route::post('/logout', [AdminController::class,'logout'])->name('logout');
 });
 
-Route::get('{path}', [WelcomeController::class,'index'])->where('path','([A-z\d\-\/_.]+)?');
+Route::get('{path}', [DashboardController::class,'index'])->where('path','([A-z\d\-\/_.]+)?');

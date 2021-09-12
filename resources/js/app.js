@@ -5,7 +5,9 @@ window.Vue = require("vue").default;
 import vuetify from "./plugins/vuetify";
 import store from "./store";
 import { router } from "./router";
-
+import Vue from "vue";
+Vue.prototype.$user = window.user.admin;
+Vue.prototype.$isLoggedIn = window.user.isLoggedIn;
 Vue.component("b-link", require("./components/Blink.vue").default);
 Vue.component("App", require("./App.vue").default);
 

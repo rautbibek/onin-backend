@@ -19,11 +19,6 @@ const routes = [
         component: AdminLayout,
         children: [
             {
-                path: "/",
-                name: "Dashboard",
-                component: Dashboard
-            },
-            {
                 path: "dashboard",
                 name: "Dashboard",
                 component: Dashboard

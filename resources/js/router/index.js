@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 import Category from "../pages/Category.vue";
+import Users from "../pages/Users.vue";
 import Product from "../pages/Product.vue";
 import NotFound from "../pages/404";
 import Dashboard from "../pages/Dashboard";
@@ -27,6 +28,11 @@ const routes = [
                 path: "/category",
                 name: "category",
                 component: Category
+            },
+            {
+                path: "/users",
+                name: "users",
+                component: Users
             },
             {
                 path: "/product",

@@ -31,6 +31,7 @@ export default {
         if (window.user.isLoggedIn) {
             window.href = "/dashboard";
         }
+        console.log(window.user.isLoggedIn);
     }
 };
 </script>

@@ -88,14 +88,14 @@
                 <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
                     <span class="hidden-sm-and-down">{{ title }}</span>
                 </v-toolbar-title>
-                <v-text-field
+                <!-- <v-text-field
                     flat
                     solo-inverted
                     hide-details
                     prepend-inner-icon="mdi-magnify"
                     label="Search"
                     class="hidden-sm-and-down"
-                ></v-text-field>
+                ></v-text-field> -->
                 <v-spacer></v-spacer>
                 <v-btn icon>
                     <v-icon>mdi-apps</v-icon>
@@ -175,7 +175,7 @@
                     <router-view></router-view>
                 </v-container>
             </v-main>
-            <v-btn
+            <!-- <v-btn
                 bottom
                 color="primary"
                 dark
@@ -185,7 +185,7 @@
                 @click="dialog = !dialog"
             >
                 <v-icon>mdi-email</v-icon>
-            </v-btn>
+            </v-btn> -->
             <!-- <v-dialog
         v-model="dialog"
         width="800px"
@@ -294,6 +294,11 @@ export default {
                 icon: "mdi-ballot",
                 text: "Category",
                 url: "/category"
+            },
+            {
+                icon: "people",
+                text: "Users",
+                url: "/users"
             },
             {
                 icon: "inventory",

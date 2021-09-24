@@ -3,6 +3,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',[WelcomeController::class,'index'])->name('welcome');
+Route::get('/login','App\Http\Controllers\Admin\LoginController@index')->name('login');
 Route::post('/admin/login','App\Http\Controllers\Admin\LoginController@login')->name('admin.login');
 
 
@@ -24,15 +26,19 @@ Route::post('/admin/login','App\Http\Controllers\Admin\LoginController@login')->
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::middleware(['auth:admin','PreventBackHistory'])->group(function(){
+Route::middleware(['auth:admin'])->group(function(){
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
     Route::post('/logout', [AdminController::class,'logout'])->name('logout');
 });
-Route::middleware(['auth:admin','PreventBackHistory'])->group(function(){
-    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
-    Route::post('/logout', [AdminController::class,'logout'])->name('logout');
+Route::middleware(['auth:admin'])->group(function(){
+    // Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+    // Route::post('/logout', [AdminController::class,'logout'])->name('logout');
+
+    Route::group(['prefix'=>'api'],function(){
+        Route::get('/user', [UserController::class,'index'])->name('user');
+    });
 });
 
 Route::get('{path}', [DashboardController::class,'index'])->where('path','([A-z\d\-\/_.]+)?');

@@ -23,6 +23,8 @@ class Datatable
     public static function filter($model,$search_columns,$start_with_or_where=false)
     {
         $per_page = request('per_page')?request('per_page'):25;
+        $sortable_column = request()->has('sortBy')?request()->get('sortBy')[0]:null;
+        $order_column_by = request()->has('orderByDesc')?request()->get('orderByDesc')[0] == 'true'?'DESC':'ASC':null;
 
 
         $query = request('search_keyword');
@@ -39,10 +41,13 @@ class Datatable
                 return $model;
             });
         }
+        if($sortable_column  && $order_column_by){
+           $model = $model->orderBy($sortable_column,$order_column_by);
+        }
         return $model->paginate($per_page);
 
 
-        // $rowsPerPage = request('size') ? request('size') : 20;
+
 
         // if (request()->has('sortBy') && request('sortBy')!="null") {
         //   $desc = 'ASC';

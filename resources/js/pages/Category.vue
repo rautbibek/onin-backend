@@ -1,119 +1,63 @@
 <template>
     <div>
-        <b-link :items="items"></b-link>
-        <!-- {{ allCategories }} -->
-        <v-col>
+        <v-card>
             <v-data-table
                 :headers="headers"
-                :items="desserts"
-                sort-by="calories"
-                class="elevation-1"
+                :items="users.data"
+                :options.sync="options"
+                class="elevation-5"
+                :server-items-length="meta.total"
+                loading-text="Loading... Please wait"
+                :items-per-page="25"
+                :loading="loading"
+                show-current-page="true"
+                :footer-props="{
+                    'items-per-page-options': [5, 10, 20, 25, 50, 100],
+                    'items-per-page-text': 'users per page',
+                    'show-current-page': true,
+                    'show-first-last-page': true
+                }"
+                @update:options="paginate"
             >
                 <template v-slot:top>
-                    <v-toolbar flat>
+                    <v-app-bar flat color="white">
                         <v-toolbar-title>{{ title }}</v-toolbar-title>
-                        <v-divider class="mx-4" inset vertical></v-divider>
+
                         <v-spacer></v-spacer>
-                        <v-dialog v-model="dialog" max-width="500px">
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    color="primary"
-                                    dark
-                                    class="mb-2"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                >
-                                    Add Category
-                                </v-btn>
-                            </template>
-                            <v-card>
-                                <v-card-title>
-                                    <span class="text-h5">{{ formTitle }}</span>
-                                </v-card-title>
-
-                                <v-card-text>
-                                    <v-container>
-                                        <v-row>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="editedItem.name"
-                                                    label="Dessert name"
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="
-                                                        editedItem.calories
-                                                    "
-                                                    label="Calories"
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="editedItem.fat"
-                                                    label="Fat (g)"
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="editedItem.carbs"
-                                                    label="Carbs (g)"
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" sm="6" md="4">
-                                                <v-text-field
-                                                    v-model="editedItem.protein"
-                                                    label="Protein (g)"
-                                                ></v-text-field>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                </v-card-text>
-
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="close"
-                                    >
-                                        Cancel
-                                    </v-btn>
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="save"
-                                    >
-                                        Save
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                        <v-dialog v-model="dialogDelete" max-width="500px">
-                            <v-card>
-                                <v-card-title class="text-h5"
-                                    >Are you sure you want to delete this
-                                    item?</v-card-title
-                                >
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="closeDelete"
-                                        >Cancel</v-btn
-                                    >
-                                    <v-btn
-                                        color="blue darken-1"
-                                        text
-                                        @click="deleteItemConfirm"
-                                        >OK</v-btn
-                                    >
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                    </v-toolbar>
+                        <v-card style="background:none" flat>
+                            <v-text-field
+                                style="width:400px; margin-right:10px"
+                                v-model="search_keyword"
+                                class="mt-6"
+                                label="search"
+                                dense
+                                outlined
+                                append-icon="search"
+                                clearable
+                                placeholder="Start typing..."
+                                @click:append="paginate"
+                                @blur="paginate"
+                            ></v-text-field>
+                        </v-card>
+                        <v-btn
+                            class="ma-2"
+                            @click="openDialog"
+                            fab
+                            x-small
+                            color="success"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-btn fab x-small color="primary">
+                            <v-icon>mdi-refresh</v-icon>
+                        </v-btn>
+                    </v-app-bar>
+                </template>
+                <template v-slot:item.id="{ index }">
+                    <span>{{ index + meta.from }}</span>
+                </template>
+                <template v-slot:item.created_at="{ item }">
+                    <span>{{ item.created_at }}</span>
                 </template>
                 <template v-slot:item.actions="{ item }">
                     <v-icon small class="mr-2" @click="editItem(item)">
@@ -123,201 +67,233 @@
                         mdi-delete
                     </v-icon>
                 </template>
-                <template v-slot:no-data>
-                    <v-btn color="primary" @click="initialize">
-                        Reset
-                    </v-btn>
-                </template>
+                <!-- <template v-slot:item.action="{ item }">
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                x-small
+                                fab
+                                color="view"
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <v-icon dark>
+                                    mdi-eye
+                                </v-icon>
+                            </v-btn>
+                        </template>
+                        <span>View </span>
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                x-small
+                                fab
+                                color="primary"
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <v-icon dark>
+                                    mdi-pencil
+                                </v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Edit </span>
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                x-small
+                                fab
+                                color="error"
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                                @click="alert(item.row)"
+                            >
+                                <v-icon dark>
+                                    mdi-delete
+                                </v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Delete </span>
+                    </v-tooltip>
+                </template> -->
             </v-data-table>
-        </v-col>
+        </v-card>
+        <v-dialog v-model="dialog" persistent max-width="600px">
+            <v-card>
+                <v-card-title>
+                    <span class="text-h5">Category</span>
+                    <v-spacer></v-spacer>
+                    <v-icon left @click="closeModel">close</v-icon>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <ValidationErrors :errors="errors"></ValidationErrors>
+                    <v-container> </v-container>
+                    <v-form ref="form" v-model="valid" lazy-validation>
+                        <v-autocomplete
+                            v-model="formData.parent_id"
+                            :items="allCategories"
+                            :item-text="'name'"
+                            :item-value="'id'"
+                            outlined
+                            label="Root category"
+                        ></v-autocomplete>
+
+                        <v-text-field
+                            v-model="formData.name"
+                            :rules="[required('category name')]"
+                            label="Category Name"
+                            required
+                            outlined
+                        ></v-text-field>
+
+                        <!-- <v-checkbox
+                            v-model="formData.is_featured"
+                            label="is featured"
+                            required
+                        ></v-checkbox> -->
+                    </v-form>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="closeModel" color="error">
+                        <v-icon left>mdi-cancel</v-icon>
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        color="success"
+                        @click="submit"
+                        :loading="buttonLoading"
+                    >
+                        <v-icon left>save</v-icon>
+                        Save
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
+import { commonMixin } from "../mixins/commonMixin";
+import { validation } from "../mixins/validationMixin";
 export default {
+    mixins: [commonMixin, validation],
     data: () => ({
+        search_keyword: "",
         title: "Categories",
         dialog: false,
-        dialogDelete: false,
-        items: [
-            {
-                text: "Dashboard",
-                disabled: false,
-                href: "/dashboard"
-            },
-            {
-                text: "Category",
-                disabled: true,
-                href: "/category"
-            }
-        ],
+        loading: false,
+        meta: [],
+        users: [],
+        formTitle: "Categories",
+        dialog: false,
+        allCategories: [],
+
         headers: [
+            { text: "id", align: "start", value: "id", sortable: false },
             {
-                text: "Dessert (100g serving)",
+                text: "Parent",
                 align: "start",
-                value: "name"
+                value: "parent_id",
+                sortable: true
             },
-            { text: "Calories", value: "calories" },
-            { text: "Fat (g)", value: "fat" },
-            { text: "Carbs (g)", value: "carbs" },
-            { text: "Protein (g)", value: "protein" },
-            { text: "Actions", value: "actions", sortable: false }
-        ],
-        desserts: [],
-        editedIndex: -1,
-        editedItem: {
-            name: "",
-            calories: 0,
-            fat: 0,
-            carbs: 0,
-            protein: 0
-        },
-        defaultItem: {
-            name: "",
-            calories: 0,
-            fat: 0,
-            carbs: 0,
-            protein: 0
-        }
+            { text: "Name", value: "name", sortable: true },
+            { text: "Slug", value: "slug" },
+            { text: "Icon", value: "icon" },
+            { text: "Cover", value: "cover" },
+            { text: "Action", value: "actions", align: "center" }
+        ]
     }),
 
-    computed: {
-        formTitle() {
-            return this.editedIndex === -1 ? "Add Category" : "Edit Category";
-        }
-    },
-    computed: mapGetters(["allCategories"]),
-
-    watch: {
-        dialog(val) {
-            val || this.close();
-        },
-        dialogDelete(val) {
-            val || this.closeDelete();
-        }
-    },
+    computed: mapGetters(["allUsers"]),
 
     created() {
-        this.initialize();
+        this.fetchUsers();
     },
 
     methods: {
-        initialize() {
-            this.desserts = [
-                {
-                    name: "Frozen Yogurt",
-                    calories: 159,
-                    fat: 6.0,
-                    carbs: 24,
-                    protein: 4.0
-                },
-                {
-                    name: "Ice cream sandwich",
-                    calories: 237,
-                    fat: 9.0,
-                    carbs: 37,
-                    protein: 4.3
-                },
-                {
-                    name: "Eclair",
-                    calories: 262,
-                    fat: 16.0,
-                    carbs: 23,
-                    protein: 6.0
-                },
-                {
-                    name: "Cupcake",
-                    calories: 305,
-                    fat: 3.7,
-                    carbs: 67,
-                    protein: 4.3
-                },
-                {
-                    name: "Gingerbread",
-                    calories: 356,
-                    fat: 16.0,
-                    carbs: 49,
-                    protein: 3.9
-                },
-                {
-                    name: "Jelly bean",
-                    calories: 375,
-                    fat: 0.0,
-                    carbs: 94,
-                    protein: 0.0
-                },
-                {
-                    name: "Lollipop",
-                    calories: 392,
-                    fat: 0.2,
-                    carbs: 98,
-                    protein: 0
-                },
-                {
-                    name: "Honeycomb",
-                    calories: 408,
-                    fat: 3.2,
-                    carbs: 87,
-                    protein: 6.5
-                },
-                {
-                    name: "Donut",
-                    calories: 452,
-                    fat: 25.0,
-                    carbs: 51,
-                    protein: 4.9
-                },
-                {
-                    name: "KitKat",
-                    calories: 518,
-                    fat: 26.0,
-                    carbs: 65,
-                    protein: 7
-                }
-            ];
+        paginate(e) {
+            this.loading = true;
+            axios
+                .get(`/api/category?page=${e.page}`, {
+                    params: {
+                        per_page: e.itemsPerPage,
+                        sortBy: e.sortBy,
+                        orderByDesc: e.sortDesc,
+                        search_keyword: this.search_keyword
+                    }
+                })
+                .then(res => {
+                    this.users = res.data;
+                    this.meta = res.data.meta;
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.loading = false;
+                });
         },
-
-        editItem(item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialog = true;
+        getAllCategories() {
+            axios
+                .get("api/v1/category")
+                .then(res => {
+                    this.allCategories = res.data.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
-
         deleteItem(item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialogDelete = true;
+            axios
+                .delete(`api/category/${item.id}`)
+                .then(res => {
+                    this.$toast.success(res.data.message, {
+                        timeout: 2000
+                    });
+                    this.paginate(this.$options);
+                })
+                .catch(error => {
+                    console.log("error");
+                });
         },
-
-        deleteItemConfirm() {
-            this.desserts.splice(this.editedIndex, 1);
-            this.closeDelete();
+        editItem(item) {
+            this.formData = item;
+            this.openDialog();
         },
+        submit() {
+            if (this.$refs.form.validate()) {
+                this.buttonLoading = true;
+                axios
+                    .post("api/category", this.formData)
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                        this.buttonLoading = false;
+                        this.paginate(this.options);
+                        this.closeModel();
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
 
-        close() {
-            this.dialog = false;
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
-        closeDelete() {
-            this.dialogDelete = false;
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
-        save() {
-            if (this.editedIndex > -1) {
-                Object.assign(this.desserts[this.editedIndex], this.editedItem);
-            } else {
-                this.desserts.push(this.editedItem);
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
+                        this.buttonLoading = false;
+                    });
             }
-            this.close();
-        }
+        },
+
+        ...mapActions(["fetchUsers"])
+    },
+    created() {
+        this.getAllCategories();
     }
 };
 </script>

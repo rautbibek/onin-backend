@@ -22,7 +22,7 @@
                 <template v-slot:top>
                     <v-toolbar flat dense extended>
                         <v-toolbar-title>{{ title }} </v-toolbar-title>
-
+                        <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
 
                         <v-col cols="4" class="mt-5">
@@ -64,7 +64,6 @@
                         </template>
                         <span>View </span>
                     </v-tooltip>
-
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
@@ -111,56 +110,35 @@ export default {
         search_keyword: "",
         title: "Users",
         dialog: false,
-
-        dialogDelete: false,
         loading: false,
         meta: [],
         users: [],
         formTitle: "Users",
-        breadcrumb: [
-            {
-                text: "Dashboard",
-                disabled: false,
-                href: "/dashboard"
-            },
-            {
-                text: "Users",
-                disabled: true,
-                href: "/users"
-            }
-        ],
+        // breadcrumb: [
+        //     {
+        //         text: "Dashboard",
+        //         disabled: false,
+        //         href: "/dashboard"
+        //     },
+        //     {
+        //         text: "Users",
+        //         disabled: true,
+        //         href: "/users"
+        //     }
+        // ],
 
         headers: [
-            { text: "id", align: "start", value: "id", sortable: true },
+            { text: "id", align: "start", value: "id", sortable: false },
             { text: "Name", value: "name", sortable: true },
             { text: "Email", value: "email" },
             { text: "Created At", value: "created_at" },
             { text: "Action", value: "action" }
-        ],
-
-        editedIndex: -1,
-        editedItem: {
-            name: "",
-            calories: 0,
-            fat: 0,
-            carbs: 0,
-            protein: 0
-        }
+        ]
     }),
 
     computed: mapGetters(["allUsers"]),
 
-    watch: {
-        dialog(val) {
-            val || this.close();
-        },
-        dialogDelete(val) {
-            val || this.closeDelete();
-        }
-    },
-
     created() {
-        //this.initialize();
         this.fetchUsers();
     },
 
@@ -171,8 +149,8 @@ export default {
                 .get(`/api/user?page=${e.page}`, {
                     params: {
                         per_page: e.itemsPerPage,
-                        sort_by: e.sortBy,
-                        order_by_desc: e.sortDesc,
+                        sortBy: e.sortBy,
+                        orderByDesc: e.sortDesc,
                         search_keyword: this.search_keyword
                     }
                 })
@@ -186,49 +164,7 @@ export default {
                 });
         },
 
-        ...mapActions(["fetchUsers"]),
-
-        editItem(item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialog = true;
-        },
-
-        deleteItem(item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialogDelete = true;
-        },
-
-        deleteItemConfirm() {
-            this.desserts.splice(this.editedIndex, 1);
-            this.closeDelete();
-        },
-
-        close() {
-            this.dialog = false;
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
-        closeDelete() {
-            this.dialogDelete = false;
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-            });
-        },
-
-        save() {
-            if (this.editedIndex > -1) {
-                Object.assign(this.desserts[this.editedIndex], this.editedItem);
-            } else {
-                this.desserts.push(this.editedItem);
-            }
-            this.close();
-        }
+        ...mapActions(["fetchUsers"])
     }
 };
 </script>

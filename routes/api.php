@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Login\LoginController;
 use App\Http\Controllers\Api\V1\Home\HomeController;
+use App\Http\Controllers\Api\V1\CommonDataController;
 
 
 /*
@@ -21,7 +22,7 @@ use App\Http\Controllers\Api\V1\Home\HomeController;
 // Route::get('/test', function () {
 //     return "welcome";
 // });
-
+Route::get('/category',[CommonDataController::class,'allCategories']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     //return $request->user();
     return "hello";

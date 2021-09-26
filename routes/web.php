@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\UserController;
@@ -38,7 +39,11 @@ Route::middleware(['auth:admin'])->group(function(){
 
     Route::group(['prefix'=>'api'],function(){
         Route::get('/user', [UserController::class,'index'])->name('user');
+        Route::resources([
+            'category' => CategoryController::class,
+        ]);
     });
+
 });
 
 Route::get('{path}', [DashboardController::class,'index'])->where('path','([A-z\d\-\/_.]+)?');

@@ -14,11 +14,7 @@ class UserController extends Controller
     public function index(Request $request){
         $users = new User;
         $users = Datatable::filter($users,['name','email']);
-
-        //$data = UserResource::collection($users);
         return  UserResource::collection($users)->response()
         ->setStatusCode(200);;
-
-        //return response()->json($users,200);
     }
 }

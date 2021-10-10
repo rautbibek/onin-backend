@@ -42,6 +42,7 @@ class CategoryController extends Controller
                 $category->update([
                     'parent_id'=> request()->get('parent_id'),
                     'name'=> request()->get('name'),
+                    'icon'=>request()->get('icon'),
                     //'is_featured' => request()->get('is_featured')
                 ]);
                 $message = "Category updated successfully !";
@@ -50,6 +51,7 @@ class CategoryController extends Controller
                 $category->create([
                     'parent_id'=> request()->get('parent_id'),
                     'name'=> request()->get('name'),
+                    'icon'=>request()->get('icon'),
                     //'is_featured' => false
             ]);
             }

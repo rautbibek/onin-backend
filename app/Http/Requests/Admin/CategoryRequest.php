@@ -23,8 +23,10 @@ class CategoryRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->id;
+
         return [
-            'name' => 'required |min:2| max:100',
+            'name' => 'required |min:2| max:100 ',
         ];
     }
 }

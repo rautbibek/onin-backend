@@ -22,11 +22,14 @@ use App\Http\Controllers\Api\V1\CommonDataController;
 // Route::get('/test', function () {
 //     return "welcome";
 // });
+Route::post('/login',[LoginController::class,'login']);
 Route::get('/category',[CommonDataController::class,'allCategories']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    //return $request->user();
-    return "hello";
+    return $request->user();
+    //return "hello";
 });
+
+
 
 
 

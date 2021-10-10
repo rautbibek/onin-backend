@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card>
+        <v-card flat tile>
             <v-data-table
                 :headers="headers"
                 :items="users.data"
@@ -60,67 +60,18 @@
                     <span>{{ item.created_at }}</span>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-icon small class="mr-2" @click="editItem(item)">
+                    <v-icon
+                        color="blue"
+                        small
+                        class="mr-2"
+                        @click="editItem(item)"
+                    >
                         mdi-pencil
                     </v-icon>
-                    <v-icon small @click="deleteItem(item)">
+                    <v-icon color="red" small @click="deleteItem(item)">
                         mdi-delete
                     </v-icon>
                 </template>
-                <!-- <template v-slot:item.action="{ item }">
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                x-small
-                                fab
-                                color="view"
-                                dark
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                <v-icon dark>
-                                    mdi-eye
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                        <span>View </span>
-                    </v-tooltip>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                x-small
-                                fab
-                                color="primary"
-                                dark
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                <v-icon dark>
-                                    mdi-pencil
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Edit </span>
-                    </v-tooltip>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                x-small
-                                fab
-                                color="error"
-                                dark
-                                v-bind="attrs"
-                                v-on="on"
-                                @click="alert(item.row)"
-                            >
-                                <v-icon dark>
-                                    mdi-delete
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Delete </span>
-                    </v-tooltip>
-                </template> -->
             </v-data-table>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
@@ -137,7 +88,7 @@
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <v-autocomplete
                             v-model="formData.parent_id"
-                            :items="allCategories"
+                            :items="fetAllCategories"
                             :item-text="'name'"
                             :item-value="'id'"
                             outlined
@@ -151,6 +102,51 @@
                             required
                             outlined
                         ></v-text-field>
+                        <v-row>
+                            <v-col>
+                                <v-text-field
+                                    v-model="formData.icon"
+                                    :rules="[required('Icon')]"
+                                    label="icon"
+                                    required
+                                    outlined
+                                ></v-text-field>
+                            </v-col>
+                            <v-col>
+                                <v-file-input
+                                    v-model="formData.image"
+                                    color="deep-purple accent-4"
+                                    counter
+                                    label="Cover Image"
+                                    placeholder="Select your files"
+                                    prepend-icon="mdi-camera"
+                                    outlined
+                                    show-size
+                                    accept="image/*"
+                                >
+                                    <template
+                                        v-slot:selection="{ index, text }"
+                                    >
+                                        <v-chip
+                                            v-if="index < 2"
+                                            color="deep-purple accent-4"
+                                            dark
+                                            label
+                                            small
+                                        >
+                                            {{ text }}
+                                        </v-chip>
+
+                                        <span
+                                            v-else-if="index === 2"
+                                            class="text-overline grey--text text--darken-3 mx-2"
+                                        >
+                                            +{{ files.length - 2 }} File(s)
+                                        </span>
+                                    </template>
+                                </v-file-input>
+                            </v-col>
+                        </v-row>
 
                         <!-- <v-checkbox
                             v-model="formData.is_featured"
@@ -194,8 +190,7 @@ export default {
         users: [],
         formTitle: "Categories",
         dialog: false,
-        allCategories: [],
-
+        image: [],
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },
             {
@@ -212,7 +207,7 @@ export default {
         ]
     }),
 
-    computed: mapGetters(["allUsers"]),
+    computed: mapGetters(["fetAllCategories"]),
 
     created() {
         this.fetchUsers();
@@ -239,16 +234,7 @@ export default {
                     this.loading = false;
                 });
         },
-        getAllCategories() {
-            axios
-                .get("api/v1/category")
-                .then(res => {
-                    this.allCategories = res.data.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
+
         deleteItem(item) {
             axios
                 .delete(`api/category/${item.id}`)
@@ -257,6 +243,7 @@ export default {
                         timeout: 2000
                     });
                     this.paginate(this.$options);
+                    this.getCategories();
                 })
                 .catch(error => {
                     console.log("error");
@@ -277,6 +264,7 @@ export default {
                         });
                         this.buttonLoading = false;
                         this.paginate(this.options);
+                        this.getCategories();
                         this.closeModel();
                     })
                     .catch(error => {
@@ -290,10 +278,11 @@ export default {
             }
         },
 
-        ...mapActions(["fetchUsers"])
+        ...mapActions(["getCategories"])
     },
+
     created() {
-        this.getAllCategories();
+        this.getCategories();
     }
 };
 </script>

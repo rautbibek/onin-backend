@@ -11,7 +11,7 @@ export const validation = {
             required(propertyType) {
                 return v =>
                     (v && v.length > 0) ||
-                    `${propertyType} field is mendatory. `;
+                    `${propertyType} field is mandatory. `;
             },
 
             // priceVlidate(propertyType) {

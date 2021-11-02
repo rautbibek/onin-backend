@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Models\Category;
-use App\Helper\Datatable;
+// use App\Helper\Datatable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
@@ -19,8 +19,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = new Category;
-        $categories = Datatable::filter($categories,['name']);
+        $categories = Category::where('parent_id',null)->with('children')->get();
+        //$categories = Datatable::filter($categories,['name']);
+        return $categories;
         return  CategoryResource::collection($categories)->response()
         ->setStatusCode(200);
     }
@@ -103,7 +104,17 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::with('children')->findOrFail($id);
+        //return $category;
+        if($category->children->count()>0){
+            return response()->json([
+                'error'=>'Please delete subcategory before deleting parent category'
+            ],422);
+        }
+
         $category->delete();
+        return response()->json([
+            'message'=>'Category deleted succefully',
+        ],200);
     }
 }

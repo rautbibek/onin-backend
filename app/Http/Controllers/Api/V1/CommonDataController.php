@@ -9,7 +9,13 @@ use Illuminate\Http\Request;
 class CommonDataController extends Controller
 {
     public function allCategories(){
-        $categories = Category::get();
+        $categories = Category::select('id','name','parent_id')->where('parent_id',null)->get();
+        return response()->json($categories,200);
+
+    }
+
+    public function getAllCategoryWithSubcategory(){
+        $categories = Category::select('id','name','parent_id')->where('parent_id',null)->get();
         return CategoryResource::collection($categories)->response();
     }
 

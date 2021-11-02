@@ -28,4 +28,9 @@ class Category extends Model
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class,'parent_id');
+    }
 }

@@ -10,7 +10,8 @@ const actions = {
         axios
             .get(`api/v1/category`)
             .then(response => {
-                commit("setCategories", response.data.data);
+                commit("setCategories", response.data);
+                //console.log(response.data);
             })
             .catch(error => {
                 console.log(error.response.data.errors);

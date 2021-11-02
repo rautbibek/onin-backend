@@ -1,6 +1,156 @@
 <template>
     <div>
-        <v-card flat tile>
+        <v-card class="mx-auto">
+            <v-toolbar flat>
+                <v-toolbar-title>{{ title }}</v-toolbar-title>
+
+                <v-spacer></v-spacer>
+
+                <v-btn
+                    class="ma-2"
+                    @click="openDialog"
+                    fab
+                    x-small
+                    color="success"
+                >
+                    <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <v-btn fab x-small color="primary">
+                    <v-icon>mdi-refresh</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-simple-table>
+                <template v-slot:default>
+                    <thead>
+                        <tr>
+                            <th class="text-left">
+                                ID
+                            </th>
+                            <th class="text-left">
+                                Category Name
+                            </th>
+                            <th class="text-left">
+                                Subcategories
+                            </th>
+                            <th class="text-left">
+                                Created Date
+                            </th>
+                            <th class="text-left">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in menu" :key="item.name">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>
+                                <v-card
+                                    v-if="item.children.length > 0"
+                                    flat
+                                    class="my-5"
+                                >
+                                    <v-list>
+                                        <v-list-item
+                                            v-for="scat in item.children"
+                                            :key="scat.name"
+                                        >
+                                            <v-list-item-avatar>
+                                                <v-icon class="grey" dark>
+                                                    arrow_right_alt
+                                                </v-icon>
+                                            </v-list-item-avatar>
+
+                                            <v-list-item-content>
+                                                <v-list-item-title
+                                                    v-text="scat.name"
+                                                ></v-list-item-title>
+
+                                                <v-list-item-subtitle>
+                                                    <span>{{
+                                                        scat.created_at
+                                                            | moment("calendar")
+                                                    }}</span>
+                                                </v-list-item-subtitle>
+                                            </v-list-item-content>
+
+                                            <v-list-item-action>
+                                                <v-btn
+                                                    @click="editItem(scat)"
+                                                    small
+                                                    icon
+                                                >
+                                                    <v-icon
+                                                        small
+                                                        color="primary"
+                                                        >mdi-pencil</v-icon
+                                                    >
+                                                </v-btn>
+                                                <v-btn
+                                                    @click="deleteItem(scat)"
+                                                    small
+                                                    icon
+                                                >
+                                                    <v-icon small color="red"
+                                                        >mdi-delete</v-icon
+                                                    >
+                                                </v-btn>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-card>
+                                <div v-else>No submenu</div>
+                            </td>
+                            <td>
+                                <span>{{
+                                    item.created_at | moment("ddd, hA")
+                                }}</span>
+                            </td>
+                            <td>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            x-small
+                                            fab
+                                            color="primary"
+                                            dark
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            @click="editItem(item)"
+                                        >
+                                            <v-icon dark>
+                                                mdi-pencil
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Edit </span>
+                                </v-tooltip>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            @click="deleteItem(item)"
+                                            x-small
+                                            fab
+                                            color="error"
+                                            dark
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >
+                                            <v-icon dark>
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Delete </span>
+                                </v-tooltip>
+                            </td>
+                        </tr>
+                    </tbody>
+                </template>
+            </v-simple-table>
+        </v-card>
+        <!-- <v-card flat tile>
             <v-data-table
                 :headers="headers"
                 :items="users.data"
@@ -73,7 +223,7 @@
                     </v-icon>
                 </template>
             </v-data-table>
-        </v-card>
+        </v-card> -->
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
@@ -191,44 +341,18 @@ export default {
         formTitle: "Categories",
         dialog: false,
         image: [],
-        headers: [
-            { text: "id", align: "start", value: "id", sortable: false },
-            {
-                text: "Parent",
-                align: "start",
-                value: "parent_id",
-                sortable: true
-            },
-            { text: "Name", value: "name", sortable: true },
-            { text: "Slug", value: "slug" },
-            { text: "Icon", value: "icon" },
-            { text: "Cover", value: "cover" },
-            { text: "Action", value: "actions", align: "center" }
-        ]
+        menu: {}
     }),
 
     computed: mapGetters(["fetAllCategories"]),
 
-    created() {
-        this.fetchUsers();
-    },
-
     methods: {
-        paginate(e) {
+        getMenu() {
             this.loading = true;
             axios
-                .get(`/api/category?page=${e.page}`, {
-                    params: {
-                        per_page: e.itemsPerPage,
-                        sortBy: e.sortBy,
-                        orderByDesc: e.sortDesc,
-                        search_keyword: this.search_keyword
-                    }
-                })
+                .get(`/api/category`)
                 .then(res => {
-                    this.users = res.data;
-                    this.meta = res.data.meta;
-                    this.loading = false;
+                    this.menu = res.data;
                 })
                 .catch(error => {
                     this.loading = false;
@@ -236,23 +360,32 @@ export default {
         },
 
         deleteItem(item) {
-            axios
-                .delete(`api/category/${item.id}`)
-                .then(res => {
-                    this.$toast.success(res.data.message, {
-                        timeout: 2000
+            let confirmAction = confirm(
+                "Are you sure to want to delete this ?"
+            );
+            if (confirmAction) {
+                axios
+                    .delete(`api/category/${item.id}`)
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
+                            timeout: 5000
+                        });
+                        //this.paginate(this.$options);
+                        this.getCategories();
+                        this.getMenu();
+                    })
+                    .catch(error => {
+                        this.$toast.error(error.response.data.error, {
+                            timeout: 2000
+                        });
                     });
-                    this.paginate(this.$options);
-                    this.getCategories();
-                })
-                .catch(error => {
-                    console.log("error");
-                });
+            }
         },
         editItem(item) {
             this.formData = item;
             this.openDialog();
         },
+
         submit() {
             if (this.$refs.form.validate()) {
                 this.buttonLoading = true;
@@ -263,9 +396,10 @@ export default {
                             timeout: 2000
                         });
                         this.buttonLoading = false;
-                        this.paginate(this.options);
-                        this.getCategories();
                         this.closeModel();
+                        //this.paginate(this.options);
+                        this.getCategories();
+                        this.getMenu();
                     })
                     .catch(error => {
                         this.errors = error.response.data.errors;
@@ -283,6 +417,7 @@ export default {
 
     created() {
         this.getCategories();
+        this.getMenu();
     }
 };
 </script>

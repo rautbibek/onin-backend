@@ -1,9 +1,13 @@
 <?php
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ColorFamilyController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\OptionController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('all/options',[OptionController::class,'options'])->name('option.all');
 Route::get('/',[WelcomeController::class,'index'])->name('welcome');
 Route::get('/login','App\Http\Controllers\Admin\LoginController@index')->name('login');
 Route::post('/admin/login','App\Http\Controllers\Admin\LoginController@login')->name('admin.login');
@@ -41,6 +45,9 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::get('/user', [UserController::class,'index'])->name('user');
         Route::resources([
             'category' => CategoryController::class,
+            'product' => ProductController::class,
+            'brand' => BrandController::class,
+            'colors' => ColorFamilyController::class,
         ]);
     });
 

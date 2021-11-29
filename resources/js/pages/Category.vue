@@ -150,80 +150,7 @@
                 </template>
             </v-simple-table>
         </v-card>
-        <!-- <v-card flat tile>
-            <v-data-table
-                :headers="headers"
-                :items="users.data"
-                :options.sync="options"
-                class="elevation-5"
-                :server-items-length="meta.total"
-                loading-text="Loading... Please wait"
-                :items-per-page="25"
-                :loading="loading"
-                show-current-page="true"
-                :footer-props="{
-                    'items-per-page-options': [5, 10, 20, 25, 50, 100],
-                    'items-per-page-text': 'users per page',
-                    'show-current-page': true,
-                    'show-first-last-page': true
-                }"
-                @update:options="paginate"
-            >
-                <template v-slot:top>
-                    <v-app-bar flat color="white">
-                        <v-toolbar-title>{{ title }}</v-toolbar-title>
 
-                        <v-spacer></v-spacer>
-                        <v-card style="background:none" flat>
-                            <v-text-field
-                                style="width:400px; margin-right:10px"
-                                v-model="search_keyword"
-                                class="mt-6"
-                                label="search"
-                                dense
-                                outlined
-                                append-icon="search"
-                                clearable
-                                placeholder="Start typing..."
-                                @click:append="paginate"
-                                @blur="paginate"
-                            ></v-text-field>
-                        </v-card>
-                        <v-btn
-                            class="ma-2"
-                            @click="openDialog"
-                            fab
-                            x-small
-                            color="success"
-                        >
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                        <v-btn fab x-small color="primary">
-                            <v-icon>mdi-refresh</v-icon>
-                        </v-btn>
-                    </v-app-bar>
-                </template>
-                <template v-slot:item.id="{ index }">
-                    <span>{{ index + meta.from }}</span>
-                </template>
-                <template v-slot:item.created_at="{ item }">
-                    <span>{{ item.created_at }}</span>
-                </template>
-                <template v-slot:item.actions="{ item }">
-                    <v-icon
-                        color="blue"
-                        small
-                        class="mr-2"
-                        @click="editItem(item)"
-                    >
-                        mdi-pencil
-                    </v-icon>
-                    <v-icon color="red" small @click="deleteItem(item)">
-                        mdi-delete
-                    </v-icon>
-                </template>
-            </v-data-table>
-        </v-card> -->
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
@@ -297,12 +224,6 @@
                                 </v-file-input>
                             </v-col>
                         </v-row>
-
-                        <!-- <v-checkbox
-                            v-model="formData.is_featured"
-                            label="is featured"
-                            required
-                        ></v-checkbox> -->
                     </v-form>
                 </v-card-text>
                 <v-divider></v-divider>

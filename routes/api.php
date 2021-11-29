@@ -24,6 +24,10 @@ use App\Http\Controllers\Api\V1\CommonDataController;
 // });
 Route::post('/login',[LoginController::class,'login']);
 Route::get('/category',[CommonDataController::class,'allCategories']);
+Route::get('/product_types',[CommonDataController::class,'getProductTypes']);
+Route::get('/category/options/{id}',[CommonDataController::class,'categoryOptions']);
+Route::get('/category/brand/{id}',[CommonDataController::class,'getCategoryBrand']);
+Route::get('/colors',[CommonDataController::class,'getColors']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
     //return "hello";

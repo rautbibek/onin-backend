@@ -15,6 +15,6 @@ class UserController extends Controller
         $users = new User;
         $users = Datatable::filter($users,['name','email']);
         return  UserResource::collection($users)->response()
-        ->setStatusCode(200);;
+        ->setStatusCode(200);
     }
 }

@@ -33,4 +33,12 @@ class Category extends Model
     {
         return $this->hasMany(Category::class,'parent_id');
     }
+
+    public function categoryOptions(){
+        return $this->hasMany(CategoryOption::class);
+    }
+
+    public function brand(){
+        return $this->hasMany(Brand::class);
+    }
 }

@@ -6,9 +6,9 @@
                 v-model="drawer"
                 :clipped="$vuetify.breakpoint.lgAndUp"
                 dark
-                expand-on-hover
                 app
             >
+                <!-- expand-on-hover -->
                 <v-list dense color="danger">
                     <template v-for="item in items">
                         <v-row
@@ -29,10 +29,7 @@
                             v-else-if="item.children"
                             :key="item.text"
                             v-model="item.model"
-                            :prepend-icon="
-                                item.model ? item.icon : item['icon-alt']
-                            "
-                            append-icon=""
+                            :prepend-icon="item.icon"
                         >
                             <template v-slot:activator>
                                 <v-list-item-content>
@@ -41,10 +38,10 @@
                                     </v-list-item-title>
                                 </v-list-item-content>
                             </template>
-
                             <v-list-item
                                 v-for="(child, i) in item.children"
                                 :key="i"
+                                :to="child.url"
                                 link
                             >
                                 <v-list-item-action v-if="child.icon">
@@ -290,15 +287,21 @@ export default {
                 text: "Dashboard",
                 url: "/dashboard"
             },
+
+            {
+                icon: "people",
+                text: "Users",
+                url: "/users"
+            },
             {
                 icon: "mdi-ballot",
                 text: "Category",
                 url: "/category"
             },
             {
-                icon: "people",
-                text: "Users",
-                url: "/users"
+                icon: "mdi-layers",
+                text: "Brands",
+                url: "/brand"
             },
             {
                 icon: "inventory",
@@ -309,17 +312,23 @@ export default {
                 icon: "mdi-content-copy",
                 text: "Duplicates"
             },
-            // {
-            //     icon: "mdi-chevron-up",
-            //     text: "Labels",
-            //     model: true,
-            //     children: [
-            //         {
-            //             icon: "mdi-home",
-            //             text: "Create label"
-            //         }
-            //     ]
-            // },
+            {
+                icon: "mdi-account-circle",
+                text: "Attributes",
+                model: false,
+                children: [
+                    {
+                        icon: "remove",
+                        text: "Color Family",
+                        url: "/color-family"
+                    },
+                    {
+                        icon: "remove",
+                        text: "Size Family",
+                        url: "/size-family"
+                    }
+                ]
+            },
             // {
             //     icon: "mdi-home",
             //     text: "More",
@@ -366,5 +375,12 @@ a {
 }
 .container-background {
     background-color: #f0f2f5;
+}
+.v-list-group--active .v-list-item__title {
+    color: white;
+}
+
+.v-list-group--active .v-list-item__icon {
+    color: white;
 }
 </style>

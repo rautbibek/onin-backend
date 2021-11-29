@@ -8,6 +8,9 @@ import NewProduct from "../pages/product/NewProduct";
 import NotFound from "../pages/404";
 import Dashboard from "../pages/Dashboard";
 import AdminLayout from "../layouts/AdminLayout.vue";
+import ColorFamily from "../pages/attributes/ColorFamily.vue";
+import SizeFamily from "../pages/attributes/SizeFamily.vue";
+import Brand from "../pages/brand";
 const routes = [
     {
         path: "*",
@@ -44,6 +47,21 @@ const routes = [
                 path: "product/add",
                 name: "NewProduct",
                 component: NewProduct
+            },
+            {
+                path: "color-family",
+                name: "ColorFamily",
+                component: ColorFamily
+            },
+            {
+                path: "size-family",
+                name: "SizeFamily",
+                component: ColorFamily
+            },
+            {
+                path: "brand",
+                name: "Brand",
+                component: Brand
             }
         ]
     }

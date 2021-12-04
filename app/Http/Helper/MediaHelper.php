@@ -15,6 +15,7 @@ class MediaHelper{
             if($image_type){
                 if($thumbnail){
 
+
                     $thumb = Image::make($file)->resize(200,150,function($constrain){
                         $constrain->aspectRatio();
                       })

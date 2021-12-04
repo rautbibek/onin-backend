@@ -145,8 +145,8 @@
                                     outlined
                                     x-small-chips
                                     :items="colors"
-                                    :item-text="name"
-                                    :item-value="code"
+                                    :item-text="'name'"
+                                    :item-value="'name'"
                                     :rules="[select('color')]"
                                     Basic
                                     dense
@@ -239,7 +239,7 @@
                                             v-if="available_colors.length > 0"
                                         >
                                             <v-text-field
-                                                v-model="attr.color.name"
+                                                v-model="attr.color"
                                                 label="color"
                                                 outlined
                                                 dense
@@ -265,6 +265,19 @@
                                         </v-col>
                                         <v-col>
                                             <v-text-field
+                                                v-model="attr.stock"
+                                                type="number"
+                                                label="Stock"
+                                                outlined
+                                                dense
+                                                :rules="[
+                                                    required('Stock'),
+                                                    maxLength('Stock', 200)
+                                                ]"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field
                                                 v-model="attr.sku"
                                                 label="sku"
                                                 outlined
@@ -275,6 +288,7 @@
                                                 ]"
                                             ></v-text-field>
                                         </v-col>
+
                                         <v-col>
                                             <v-text-field
                                                 v-model="attr.price"
@@ -287,6 +301,28 @@
                                                     maxLength('Price', 200)
                                                 ]"
                                             ></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field
+                                                v-model="attr.special_price"
+                                                type="number"
+                                                label="Special Price"
+                                                outlined
+                                                dense
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col cols="1" class="text-right">
+                                            <v-btn
+                                                fab
+                                                dark
+                                                outlined
+                                                small
+                                                color="error"
+                                            >
+                                                <v-icon dark>
+                                                    mdi-delete
+                                                </v-icon>
+                                            </v-btn>
                                         </v-col>
                                     </v-row>
                                 </div>
@@ -468,56 +504,9 @@ export default {
             brands: [],
             sizes: [],
             available_colors: [],
+            product_colors: [],
             product_attribute_values: []
         };
-    },
-
-    computed: {
-        // totalAttributes() {
-        //     if (this.available_colors.length > 0 && this.sizes.length > 0) {
-        //         this.product_attribute_values = [];
-        //         this.available_colors.forEach(color => {
-        //             this.sizes.forEach(size => {
-        //                 this.product_attribute_values.push({
-        //                     color: color,
-        //                     size: size,
-        //                     sku: "",
-        //                     price: null
-        //                 });
-        //             });
-        //         });
-        //         return this.available_colors.length * this.sizes.length;
-        //     } else if (
-        //         this.available_colors.length > 0 &&
-        //         this.sizes.length <= 0
-        //     ) {
-        //         this.product_attribute_values = [];
-        //         this.available_colors.forEach(color => {
-        //             this.product_attribute_values.push({
-        //                 color: color,
-        //                 size: "",
-        //                 sku: "",
-        //                 price: null
-        //             });
-        //         });
-        //         return this.available_colors.length;
-        //     } else if (
-        //         this.sizes.length > 0 &&
-        //         this.available_colors.length <= 0
-        //     ) {
-        //         this.product_attribute_values = [];
-        //         this.available_colors.forEach(size => {
-        //             this.sizes.push({
-        //                 color: "",
-        //                 size: size,
-        //                 sku: "",
-        //                 price: null
-        //             });
-        //         });
-        //         return this.sizes.length;
-        //     }
-        //     return 0;
-        // }
     },
 
     methods: {
@@ -567,13 +556,10 @@ export default {
             return 0;
         },
         handleImages(files) {
-            //console.log(files);
             this.images = files;
         },
         removeMetaTags(item) {
             this.meta_tags.splice(this.meta_tags.indexOf(item), 1);
-
-            //this.formData.meta_tags = [...this.formData.meta_tags];
         },
         removeColor(item) {
             this.available_colors.splice(
@@ -581,7 +567,6 @@ export default {
                 1
             );
             this.totalAttributes();
-            //this.formData.meta_tags = [...this.formData.meta_tags];
         },
         removeSizes(item) {
             this.sizes.splice(this.sizes.indexOf(item), 1);
@@ -667,30 +652,16 @@ export default {
                     console.log(error);
                 });
         },
-        getProductType() {
-            axios
-                .get("/api/v1/product_types")
-                .then(res => {
-                    this.product_types = res.data;
-                })
-                .catch();
-        },
+
         getSingleProductType() {
             this.product_types.find(product_type => {
                 if (product_type.id === this.product_type_id) {
                     this.product_type = [];
-                    //this.product_attribute_values = [];
                     this.product_type.push({ ...product_type.field });
                     product_type.field.map(function(value, key) {
-                        // this.product_attribute_values.push({});
-                        //console.log(value.name);
                         key = value.name;
                         console.log(key);
-
-                        //this.product_attribute_values.push(value);
                     });
-                    //this.product_attribute_values.push({});
-                    //console.log(this.product_attribute_values);
                 }
             });
         },
@@ -708,7 +679,6 @@ export default {
     },
     created() {
         this.getCategory();
-        this.getProductType();
     }
 };
 </script>

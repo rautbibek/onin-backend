@@ -15,7 +15,7 @@ class CreateOptionValuesTable extends Migration
     {
         Schema::create('option_values', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_type_id')->nullable()->constrained("product_types")->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('product_id')->nullable()->constrained("products")->cascadeOnUpdate()->nullOnDelete();
             $table->string('option');
             $table->string('option_value');
             $table->timestamps();

@@ -17,9 +17,11 @@ class CreateVariantsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products');
+            $table->string('color')->nullable();
+            $table->string('size')->nullable();
             $table->integer('quantity')->default(0 );
             $table->integer('sold')->default(0);
-            $table->string('code')->nullable();
+            $table->string('sku')->nullable();
             $table->integer('price');
             $table->integer('special_price')->nullable();
             $table->jsonb('extra')->nullable();

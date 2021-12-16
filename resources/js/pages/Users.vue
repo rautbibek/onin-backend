@@ -104,7 +104,6 @@
     </div>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
 export default {
     data: () => ({
         search_keyword: "",
@@ -136,12 +135,6 @@ export default {
         ]
     }),
 
-    computed: mapGetters(["allUsers"]),
-
-    created() {
-        this.fetchUsers();
-    },
-
     methods: {
         paginate(e) {
             this.loading = true;
@@ -162,9 +155,7 @@ export default {
                 .catch(error => {
                     this.loading = false;
                 });
-        },
-
-        ...mapActions(["fetchUsers"])
+        }
     }
 };
 </script>

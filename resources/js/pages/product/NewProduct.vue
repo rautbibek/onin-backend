@@ -112,7 +112,7 @@
                 </v-card>
 
                 <v-card class="mt-3" flat>
-                    <v-card-title>Product Attrributes</v-card-title>
+                    <v-card-title>Product Attributes</v-card-title>
                     <v-card-text>
                         <div v-if="category_options.length > 0" class="row">
                             <v-col
@@ -202,7 +202,7 @@
                                     multiple
                                     dense
                                     outlined
-                                    @change="totalAttributes"
+                                    @input="totalAttributes"
                                 >
                                     <template
                                         v-slot:selection="{
@@ -493,6 +493,7 @@ export default {
                     href: "/Product"
                 }
             ],
+            errors: [],
             formData: {},
             meta_tags: [],
             product_tags: [],
@@ -501,6 +502,7 @@ export default {
             cat: "",
             categories: [],
             subcategories: [],
+            buttonLoading: false,
             brands: [],
             sizes: [],
             available_colors: [],
@@ -543,9 +545,9 @@ export default {
                 this.available_colors.length <= 0
             ) {
                 this.product_attribute_values = [];
-                this.available_colors.forEach(size => {
-                    this.sizes.push({
-                        color: "",
+                this.sizes.forEach(size => {
+                    this.product_attribute_values.push({
+                        // color: "",
                         size: size,
                         sku: "",
                         price: null
@@ -579,7 +581,6 @@ export default {
         getSubcategory() {
             this.categories.find(category => {
                 if (category.id === this.formData.parent_id) {
-                    console.log(category);
                     this.subcategories = category.children;
                 }
             });
@@ -625,6 +626,9 @@ export default {
                 this.product_tags.forEach(product_tag => {
                     formData.append("product_tags[]", product_tag);
                 });
+                // this.product_attribute_values.forEach(product_attribute => {
+                //     formData.append("product_attribute[]", product_attribute);
+                // });
                 this.meta_tags.forEach(meta_tag => {
                     formData.append("meta_tags[]", meta_tag);
                 });
@@ -633,13 +637,35 @@ export default {
                     "option_values",
                     JSON.stringify(this.option_values)
                 );
+                formData.append(
+                    "product_atributes",
+                    JSON.stringify(this.product_attribute_values)
+                );
 
                 axios
                     .post("/api/product", formData, config)
                     .then(res => {
-                        console.log(res.data);
+                        this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                        this.$router.push({ name: "Product" });
+                        this.buttonLoading = false;
                     })
-                    .catch();
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
+                        this.buttonLoading = false;
+                    });
+            } else {
+                this.$toast.error(
+                    "Somethign weng wrong please recheck your form ",
+                    {
+                        timeout: 2000
+                    }
+                );
             }
         },
         getCategory() {

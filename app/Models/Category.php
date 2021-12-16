@@ -22,6 +22,11 @@ class Category extends Model
     ];
     protected $dates = ['deleted_at'];
 
+    protected $casts = [
+        'has_color' => 'boolean',
+        'has_size'  => 'boolean',
+    ];
+
     public function getSlugOptions() : SlugOptions
     {
         return SlugOptions::create()

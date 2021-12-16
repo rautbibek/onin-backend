@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProductTag;
 use App\Http\Controllers\Controller;
 use App\Models\OptionValue;
+use App\Helper\Datatable;
 use App\Http\Helper\MediaHelper;
+use App\Http\Resources\Admin\ProductResource;
+use App\Models\Variant;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -19,7 +22,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $product = Product::with(['category:id,name','brand:id,name']);
+        //return response()->json($product);
+        $product = Datatable::filter($product,['name','email']);
+        return  ProductResource::collection($product)->response()
+        ->setStatusCode(200);
     }
 
     /**
@@ -40,17 +47,17 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        //return response()->json($request->all());
-        //return gettype($request->product_images);
+
         $images=[];
             if($request->hasFile('product_images')){
 
                 foreach($request->product_images as $image){
                     $mediaHelper = new MediaHelper;
-                    $images= $mediaHelper->storeMedia($image,'product',true,false);
+                    $images_data = $mediaHelper->storeMedia($image,'product',true,false);
+                    array_push($images,$images_data);
                 }
             }
-        return $images;
+
         try{
             DB::beginTransaction();
             $product = new product();
@@ -62,9 +69,13 @@ class ProductController extends Controller
             $product->meta_keyword = $request->get('meta_tags');
             $product->meta_title = $request->get('meta_title');
             $product->meta_description = $request->get('meta_description');
+            if(!empty($images)){
+                $product->image = $images;
+            }
             $product->save();
 
             $product_option_values = json_decode($request->option_values);
+            $product_attribute = json_decode($request->product_atributes);
 
             if(!empty($product_option_values)){
                 foreach($product_option_values as $key=>$options){
@@ -81,6 +92,19 @@ class ProductController extends Controller
                     $product_tag->product_id = $product->id;
                     $product_tag->tag = $tag;
                     $product_tag->save();
+                }
+            }
+            if(!empty($product_attribute)){
+                foreach($product_attribute as $key => $attribute){
+                    $p_variant = new Variant();
+                    $p_variant->product_id = $product->id;
+                    $p_variant->color = $attribute->color;
+                    $p_variant->size = $attribute->size;
+                    $p_variant->quantity = $attribute->stock;
+                    $p_variant->price = $attribute->price;
+                    $p_variant->sku = $attribute->sku;
+                    $p_variant->special_price = $attribute->special_price;
+                    $p_variant->save();
                 }
             }
 

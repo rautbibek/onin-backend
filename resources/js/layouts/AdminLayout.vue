@@ -110,7 +110,7 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn icon large dark v-bind="attrs" v-on="on">
                             <v-avatar size="32px" item>
-                                <v-img src="src/logo.png" alt="Vuetify"></v-img
+                                <v-img src="/src/logo.png" alt="Vuetify"></v-img
                             ></v-avatar>
                         </v-btn>
                     </template>
@@ -119,7 +119,7 @@
                         <v-list>
                             <v-list-item>
                                 <v-list-item-avatar>
-                                    <img src="src/user.png" alt="John" />
+                                    <img src="/src/user.png" alt="John" />
                                 </v-list-item-avatar>
 
                                 <v-list-item-content>

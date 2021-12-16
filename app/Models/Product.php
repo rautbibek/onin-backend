@@ -16,6 +16,7 @@ class Product extends Model
 
     protected $casts = [
         'meta_keyword' => 'array',
+        'image'=>'array',
     ];
 
     public function getSlugOptions() : SlugOptions
@@ -23,5 +24,13 @@ class Product extends Model
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
+    }
+
+    public function brand(){
+        return $this->belongsTo(Brand::class,'brand_id');
+    }
+
+    public function category(){
+        return $this->belongsTo(Category::class,'brand_id');
     }
 }

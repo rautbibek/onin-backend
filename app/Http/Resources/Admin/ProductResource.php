@@ -14,14 +14,22 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
+
         return [
             'id'=>$this->id,
             'title'=>$this->title,
             'category' => $this->category?$this->category->name:'-',
             'brand' => $this->brand?$this->brand->name:'-',
             'discount' => $this->discount_percent,
-            'image' => $this->image?$this->image?MediaHelper::getThumbnailUrl($this->image[0],'thumb'):'':'not availabel',
-            'created_at'=>$this->created_at->diffForHumans(),
+            'status'   =>$this->status,
+            'category_id'=> $this->category_id,
+            'brand_id' =>$this->brand_id,
+            //'total_variant'=> $this->variant_count,
+            'variant'=>$this->variant,
+            'inventory_track' => $this->inventory_track,
+            'image' => $this->image?$this->image?MediaHelper::getThumbnailUrl($this->image[0],'thumb'):'':asset('/images/no-image.png'),
+            'created_at'=>$this->created_at,
+
         ];
     }
 }

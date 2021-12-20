@@ -489,6 +489,11 @@ export default {
                 },
                 {
                     text: "Product",
+                    disabled: false,
+                    href: "/Product"
+                },
+                {
+                    text: "Add Product",
                     disabled: true,
                     href: "/Product"
                 }

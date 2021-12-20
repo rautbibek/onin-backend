@@ -48,7 +48,7 @@ class MediaHelper{
 
     public static function getThumbnailUrl($image,$path){
         $file = $path.'/'.$image;
-        return asset($file);
+        return Storage::disk('public')->url($file);
 
     }
 }

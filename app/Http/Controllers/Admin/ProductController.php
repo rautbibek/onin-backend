@@ -22,7 +22,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::with(['category:id,name','brand:id,name']);
+        $product = Product::with(['category:id,name','brand:id,name','variant']);
+        //return $product->withCount('variant')->get();
+
         //return response()->json($product);
         $product = Datatable::filter($product,['name','email']);
         return  ProductResource::collection($product)->response()
@@ -95,17 +97,23 @@ class ProductController extends Controller
                 }
             }
             if(!empty($product_attribute)){
+                $qty = 0;
                 foreach($product_attribute as $key => $attribute){
                     $p_variant = new Variant();
+
                     $p_variant->product_id = $product->id;
                     $p_variant->color = $attribute->color;
                     $p_variant->size = $attribute->size;
                     $p_variant->quantity = $attribute->stock;
                     $p_variant->price = $attribute->price;
                     $p_variant->sku = $attribute->sku;
-                    $p_variant->special_price = $attribute->special_price;
+                    //$p_variant->special_price = $attribute->special_price;
                     $p_variant->save();
+                    $qty += $attribute->stock;
                 }
+                $product->update([
+                    'inventory_track'=> $qty
+                ]);
             }
 
             DB::commit();
@@ -119,7 +127,7 @@ class ProductController extends Controller
             return response()->json([
                 'message' => 'Something went wrong',
                 'error' =>$e->getMessage()
-            ], 202);
+            ], 404);
         }
     }
 

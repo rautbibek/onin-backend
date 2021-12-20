@@ -26,6 +26,18 @@ class Product extends Model
             ->saveSlugsTo('slug');
     }
 
+    public function getCoverAttribute(){
+        //
+    }
+
+    public function variant(){
+        return $this->hasMany(Variant::class);
+    }
+
+    public function firstVariant(){
+        return $this->hasOne(Variant::class);
+    }
+
     public function brand(){
         return $this->belongsTo(Brand::class,'brand_id');
     }

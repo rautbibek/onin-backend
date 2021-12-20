@@ -57,9 +57,61 @@
                 <template v-slot:item.id="{ index }">
                     <span>{{ index + meta.from }}</span>
                 </template>
-                <template v-slot:item.created_at="{ item }">
-                    <span>{{ item.created_at }}</span>
+                <template v-slot:item.image="{ item }">
+                    <v-img
+                        class="ma-2"
+                        :src="item.image"
+                        :lazy-src="item.image"
+                        max-width="100"
+                        max-height="100"
+                    >
+                        <template v-slot:placeholder>
+                            <v-row
+                                class="fill-height ma-0"
+                                align="center"
+                                justify="center"
+                            >
+                                <v-progress-circular
+                                    indeterminate
+                                    color="grey lighten-5"
+                                ></v-progress-circular>
+                            </v-row>
+                        </template>
+                    </v-img>
                 </template>
+                <template v-slot:item.status="{ item }">
+                    <v-chip
+                        v-if="item.status"
+                        @click="updateStatus(item)"
+                        text-color="white"
+                        color="green"
+                        label
+                    >
+                        Active
+                    </v-chip>
+                    <v-chip
+                        v-else
+                        @click="updateStatus(item)"
+                        text-color="white"
+                        color="red"
+                        label
+                    >
+                        Inactive
+                    </v-chip>
+                </template>
+                <template v-slot:item.variant="{ item }">
+                    <span>{{ item.variant.length }}</span>
+                </template>
+                <template v-slot:item.created_at="{ item }">
+                    <span>{{ item.created_at | moment("calendar") }}</span>
+                </template>
+                <template v-slot:item.category_id="{ item }">
+                    <span>{{ item.category | moment("calendar") }}</span>
+                </template>
+                <template v-slot:item.brand_id="{ item }">
+                    <span>{{ item.brand | moment("calendar") }}</span>
+                </template>
+
                 <template v-slot:item.action="{ item }">
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
@@ -118,6 +170,7 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
 export default {
     data: () => ({
@@ -144,10 +197,14 @@ export default {
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },
             { text: "Name", value: "title", sortable: true },
-            { text: "Category", value: "category" },
-            { text: "Brand", value: "brand" },
+            { text: "Category", value: "category_id" },
+            { text: "Brand", value: "brand_id" },
             { text: "Image", value: "image" },
-            { text: "Action", value: "action" }
+            { text: "Available Stock", value: "inventory_track" },
+            { text: "Total Variant", value: "variant" },
+            { text: "Status", value: "status" },
+            { text: "Date", value: "created_at" },
+            { text: "Action", value: "action", align: "right" }
         ]
     }),
 
@@ -171,6 +228,13 @@ export default {
                 .catch(error => {
                     this.loading = false;
                 });
+        },
+        updateStatus(item) {
+            console.log(item);
+            axios
+                .post(`/api/product/status/${item.id}`)
+                .then(res => {})
+                .catch();
         }
     }
 };

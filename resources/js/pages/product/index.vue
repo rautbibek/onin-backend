@@ -48,7 +48,12 @@
                             >
                                 <v-icon>mdi-plus</v-icon>
                             </v-btn>
-                            <v-btn fab x-small color="primary">
+                            <v-btn
+                                @click="paginate"
+                                fab
+                                x-small
+                                color="primary"
+                            >
                                 <v-icon>mdi-refresh</v-icon>
                             </v-btn>
                         </div>
@@ -80,24 +85,14 @@
                     </v-img>
                 </template>
                 <template v-slot:item.status="{ item }">
-                    <v-chip
-                        v-if="item.status"
-                        @click="updateStatus(item)"
-                        text-color="white"
-                        color="green"
-                        label
-                    >
-                        Active
-                    </v-chip>
-                    <v-chip
-                        v-else
-                        @click="updateStatus(item)"
-                        text-color="white"
+                    <v-switch
+                        class="text-right"
+                        :input-value="item.status"
+                        value
                         color="red"
-                        label
-                    >
-                        Inactive
-                    </v-chip>
+                        inset
+                        @click="updateStatus(item)"
+                    ></v-switch>
                 </template>
                 <template v-slot:item.variant="{ item }">
                     <span>{{ item.variant.length }}</span>
@@ -113,57 +108,44 @@
                 </template>
 
                 <template v-slot:item.action="{ item }">
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                x-small
-                                fab
-                                color="view"
-                                dark
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                <v-icon dark>
-                                    mdi-eye
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                        <span>View </span>
-                    </v-tooltip>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                x-small
-                                fab
-                                color="primary"
-                                dark
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                <v-icon dark>
-                                    mdi-pencil
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Edit </span>
-                    </v-tooltip>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                x-small
-                                fab
-                                color="error"
-                                dark
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                <v-icon dark>
-                                    mdi-delete
-                                </v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Delete </span>
-                    </v-tooltip>
+                    <v-btn
+                        x-small
+                        fab
+                        color="view"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        <v-icon dark>
+                            mdi-eye
+                        </v-icon>
+                    </v-btn>
+
+                    <!-- <v-btn
+                        x-small
+                        fab
+                        color="primary"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        <v-icon dark>
+                            mdi-pencil
+                        </v-icon>
+                    </v-btn>
+
+                    <v-btn
+                        x-small
+                        fab
+                        color="error"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        <v-icon dark>
+                            mdi-delete
+                        </v-icon>
+                    </v-btn> -->
                 </template>
             </v-data-table>
         </v-card>
@@ -203,7 +185,7 @@ export default {
             { text: "Available Stock", value: "inventory_track" },
             { text: "Total Variant", value: "variant" },
             { text: "Status", value: "status" },
-            { text: "Date", value: "created_at" },
+            // { text: "Date", value: "created_at" },
             { text: "Action", value: "action", align: "right" }
         ]
     }),
@@ -230,7 +212,6 @@ export default {
                 });
         },
         updateStatus(item) {
-            console.log(item);
             axios
                 .post(`/api/product/status/${item.id}`)
                 .then(res => {})

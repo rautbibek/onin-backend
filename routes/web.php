@@ -3,6 +3,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CollectionController;
 use App\Http\Controllers\Admin\ColorFamilyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -43,11 +44,13 @@ Route::middleware(['auth:admin'])->group(function(){
 
     Route::group(['prefix'=>'api'],function(){
         Route::get('/user', [UserController::class,'index'])->name('user');
+        Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,
             'brand' => BrandController::class,
             'colors' => ColorFamilyController::class,
+            'collection' => CollectionController::class
         ]);
     });
 

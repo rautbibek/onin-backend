@@ -49,10 +49,9 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-
+        //return response()->json($request->all(),500);
         $images=[];
             if($request->hasFile('product_images')){
-
                 foreach($request->product_images as $image){
                     $mediaHelper = new MediaHelper;
                     $images_data = $mediaHelper->storeMedia($image,'product',true,false);
@@ -68,6 +67,7 @@ class ProductController extends Controller
             $product->brand_id = $request->brand_id;
             $product->description = $request->description;
             $product->short_description = $request->short_description;
+            $product->status = $request->status;
             $product->meta_keyword = $request->get('meta_tags');
             $product->meta_title = $request->get('meta_title');
             $product->meta_description = $request->get('meta_description');
@@ -96,6 +96,11 @@ class ProductController extends Controller
                     $product_tag->save();
                 }
             }
+
+            if($request->has('product_collection')){
+                $collection = $request->get('product_collection');
+                $product->collection()->sync($collection);
+            }
             if(!empty($product_attribute)){
                 $qty = 0;
                 foreach($product_attribute as $key => $attribute){
@@ -115,6 +120,7 @@ class ProductController extends Controller
                     'inventory_track'=> $qty
                 ]);
             }
+
 
             DB::commit();
             return response()->json([
@@ -174,5 +180,19 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function updateStatus($id){
+        $product = Product::findOrFail($id);
+        //return $product->status;
+        $status = true;
+        if($product->status == true){
+            $status = false;
+        }
+
+       $product->update([
+           'status'=>$status
+       ]);
     }
 }

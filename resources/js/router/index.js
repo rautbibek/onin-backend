@@ -10,6 +10,7 @@ import Dashboard from "../pages/Dashboard";
 import AdminLayout from "../layouts/AdminLayout.vue";
 import ColorFamily from "../pages/attributes/ColorFamily.vue";
 import SizeFamily from "../pages/attributes/SizeFamily.vue";
+import Collection from "../pages/collection";
 import Brand from "../pages/brand";
 const routes = [
     {
@@ -62,6 +63,11 @@ const routes = [
                 path: "brand",
                 name: "Brand",
                 component: Brand
+            },
+            {
+                path: "collection",
+                name: "Collection",
+                component: Collection
             }
         ]
     }

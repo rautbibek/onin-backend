@@ -8,6 +8,7 @@ use App\Models\ColorFamily;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\CategoryResource;
 use App\Models\CategoryOption;
+use App\Models\Collection;
 use App\Models\Option;
 use Illuminate\Http\Request;
 
@@ -48,6 +49,11 @@ class CommonDataController extends Controller
     public function getColors(){
         $colors = ColorFamily::select('id','name','code')->get();
         return response()->json($colors);
+    }
+
+    public function getCollection(){
+        $collection = Collection::select('id','name')->get();
+        return response()->json($collection,200);
     }
 
 }

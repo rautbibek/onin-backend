@@ -1,7 +1,10 @@
+import axios from "axios";
+
 export const ProductMixins = {
     data() {
         return {
-            colors: []
+            colors: [],
+            collections: []
         };
     },
     methods: {
@@ -10,7 +13,17 @@ export const ProductMixins = {
                 .get("/api/v1/colors")
                 .then(res => {
                     this.colors = res.data;
-                    console.log(this.colors);
+                })
+                .catch(error => {
+                    console.log(error.response.data.errors);
+                });
+        },
+        getCollection() {
+            axios
+                .get("/api/v1/collection")
+                .then(res => {
+                    this.collections = res.data;
+                    console.log(this.collections);
                 })
                 .catch(error => {
                     console.log(error.response.data.errors);
@@ -19,6 +32,7 @@ export const ProductMixins = {
     },
     created() {
         this.getColors();
+        this.getCollection();
     },
     mounted() {}
 };

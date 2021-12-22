@@ -28,6 +28,7 @@ Route::get('/product_types',[CommonDataController::class,'getProductTypes']);
 Route::get('/category/options/{id}',[CommonDataController::class,'categoryOptions']);
 Route::get('/category/brand/{id}',[CommonDataController::class,'getCategoryBrand']);
 Route::get('/colors',[CommonDataController::class,'getColors']);
+Route::get('/collection',[CommonDataController::class,'getCollection']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
     //return "hello";

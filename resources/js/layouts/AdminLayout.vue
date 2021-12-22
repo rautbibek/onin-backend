@@ -304,6 +304,11 @@ export default {
                 url: "/brand"
             },
             {
+                icon: "mdi-call-split",
+                text: "Collection",
+                url: "/collection"
+            },
+            {
                 icon: "inventory",
                 text: "Product",
                 url: "/product"

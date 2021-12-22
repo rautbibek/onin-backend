@@ -107,6 +107,39 @@
                                     dense
                                 ></v-autocomplete>
                             </v-col>
+
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="product_collection"
+                                    :items="collections"
+                                    :item-text="'name'"
+                                    :item-value="'id'"
+                                    label="Collection"
+                                    attach
+                                    chips
+                                    multiple
+                                    dense
+                                    outlined
+                                    clearable
+                                >
+                                </v-select>
+                            </v-col>
+                            <v-row>
+                                <v-col style="text-aligne:right" class="ml-3">
+                                    <v-switch
+                                        class="text-right"
+                                        v-model="product_status"
+                                        :label="
+                                            product_status
+                                                ? 'Product Status(Active)'
+                                                : 'Product Status(Inactive)'
+                                        "
+                                        color="red"
+                                        inset
+                                        hide-details
+                                    ></v-switch>
+                                </v-col>
+                            </v-row>
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -500,9 +533,11 @@ export default {
             ],
             errors: [],
             formData: {},
+            product_collection: [],
             meta_tags: [],
             product_tags: [],
             category_options: [],
+            product_status: true,
             option_values: {},
             cat: "",
             categories: [],
@@ -628,6 +663,7 @@ export default {
                 this.images.forEach(image => {
                     formData.append("product_images[]", image, image.name);
                 });
+                formData.append("statis", this.product_status);
                 this.product_tags.forEach(product_tag => {
                     formData.append("product_tags[]", product_tag);
                 });
@@ -637,6 +673,12 @@ export default {
                 this.meta_tags.forEach(meta_tag => {
                     formData.append("meta_tags[]", meta_tag);
                 });
+
+                this.product_collection.forEach(collection => {
+                    formData.append("product_collection[]", collection);
+                });
+
+                // product_collection
 
                 formData.append(
                     "option_values",

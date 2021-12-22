@@ -374,7 +374,6 @@ export default {
             }
         },
         edit(item) {
-            console.log(item);
             this.formData.id = item.id;
             this.formData.name = item.name;
             this.formData.parent_id = item.category.parent_id;

@@ -363,6 +363,29 @@
                         </v-card-text>
                     </v-card-text>
                 </v-card>
+                <v-card class="mt-3" v-if="color_values.length > 0">
+                    <v-card-text>
+                        <v-col
+                            cols="6"
+                            v-for="(color_prop, index) in color_values"
+                            :key="index"
+                        >
+                            <v-text-field
+                                v-model="color_prop.name"
+                                disabled
+                                label="Product Name"
+                                outlined
+                                placeholder="Product Name Eg: Apple MacBook Pro13 M1 Chip with 8-Core CPU"
+                                dense
+                                :rules="[
+                                    required('Product Title'),
+                                    maxLength('Product Title', 200)
+                                ]"
+                                counter="200"
+                            ></v-text-field>
+                        </v-col>
+                    </v-card-text>
+                </v-card>
 
                 <v-card flat class="mt-3">
                     <v-card-title>Detailed Description</v-card-title>
@@ -533,70 +556,14 @@ export default {
             ],
             errors: [],
             formData: {},
-            product_collection: [],
-            meta_tags: [],
-            product_tags: [],
-            category_options: [],
+
             product_status: true,
             option_values: {},
-            cat: "",
-            categories: [],
-            subcategories: [],
-            buttonLoading: false,
-            brands: [],
-            sizes: [],
-            available_colors: [],
-            product_colors: [],
-            product_attribute_values: []
+            cat: ""
         };
     },
 
     methods: {
-        totalAttributes() {
-            if (this.available_colors.length > 0 && this.sizes.length > 0) {
-                this.product_attribute_values = [];
-                this.available_colors.forEach(color => {
-                    this.sizes.forEach(size => {
-                        this.product_attribute_values.push({
-                            color: color,
-                            size: size,
-                            sku: "",
-                            price: null
-                        });
-                    });
-                });
-                return this.available_colors.length * this.sizes.length;
-            } else if (
-                this.available_colors.length > 0 &&
-                this.sizes.length <= 0
-            ) {
-                this.product_attribute_values = [];
-                this.available_colors.forEach(color => {
-                    this.product_attribute_values.push({
-                        color: color,
-                        size: "",
-                        sku: "",
-                        price: null
-                    });
-                });
-                return this.available_colors.length;
-            } else if (
-                this.sizes.length > 0 &&
-                this.available_colors.length <= 0
-            ) {
-                this.product_attribute_values = [];
-                this.sizes.forEach(size => {
-                    this.product_attribute_values.push({
-                        // color: "",
-                        size: size,
-                        sku: "",
-                        price: null
-                    });
-                });
-                return this.sizes.length;
-            }
-            return 0;
-        },
         handleImages(files) {
             this.images = files;
         },
@@ -617,35 +584,6 @@ export default {
 
         removerProductTags(item) {
             this.product_tags.splice(this.product_tags.indexOf(item), 1);
-        },
-        getSubcategory() {
-            this.categories.find(category => {
-                if (category.id === this.formData.parent_id) {
-                    this.subcategories = category.children;
-                }
-            });
-        },
-        getOptions() {
-            axios
-                .get(`/api/v1/category/options/${this.formData.category_id}`)
-                .then(res => {
-                    console.log(res.data);
-                    this.category_options = res.data;
-                })
-                .catch(error => {
-                    console.log(error.response.data.errors);
-                });
-            this.getBrand();
-        },
-        getBrand() {
-            axios
-                .get(`/api/v1/category/brand/${this.formData.category_id}`)
-                .then(res => {
-                    this.brands = res.data;
-                })
-                .catch(error => {
-                    console.log(error.response.data);
-                });
         },
 
         saveProduct() {
@@ -715,29 +653,7 @@ export default {
                 );
             }
         },
-        getCategory() {
-            axios
-                .get("/api/category")
-                .then(res => {
-                    this.categories = res.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
 
-        getSingleProductType() {
-            this.product_types.find(product_type => {
-                if (product_type.id === this.product_type_id) {
-                    this.product_type = [];
-                    this.product_type.push({ ...product_type.field });
-                    product_type.field.map(function(value, key) {
-                        key = value.name;
-                        console.log(key);
-                    });
-                }
-            });
-        },
         addItem() {
             this.product_types.find(product_type => {
                 if (product_type.id === this.product_type_id) {

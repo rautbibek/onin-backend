@@ -29,6 +29,7 @@ class ProductResource extends JsonResource
             'inventory_track' => $this->inventory_track,
             'image' => $this->image?$this->image?MediaHelper::getThumbnailUrl($this->image[0],'thumb'):'':asset('/images/no-image.png'),
             'created_at'=>$this->created_at,
+            'short_desc'=>$this->short_description,
 
         ];
     }

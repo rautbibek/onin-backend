@@ -97,25 +97,16 @@
                 <template v-slot:item.variant="{ item }">
                     <span>{{ item.variant.length }}</span>
                 </template>
-                <template v-slot:item.created_at="{ item }">
-                    <span>{{ item.created_at | moment("calendar") }}</span>
-                </template>
+
                 <template v-slot:item.category_id="{ item }">
-                    <span>{{ item.category | moment("calendar") }}</span>
+                    <span>{{ item.category }}</span>
                 </template>
                 <template v-slot:item.brand_id="{ item }">
-                    <span>{{ item.brand | moment("calendar") }}</span>
+                    <span>{{ item.brand }}</span>
                 </template>
 
                 <template v-slot:item.action="{ item }">
-                    <v-btn
-                        x-small
-                        fab
-                        color="view"
-                        dark
-                        v-bind="attrs"
-                        v-on="on"
-                    >
+                    <v-btn x-small fab color="view" @click="detail(item)" dark>
                         <v-icon dark>
                             mdi-eye
                         </v-icon>
@@ -149,12 +140,30 @@
                 </template>
             </v-data-table>
         </v-card>
+        <ProductDetail
+            :product_detail_dialog="view_detail"
+            :detail="current_product"
+            v-if="view_detail"
+        >
+            <div slot="toolbar">
+                <v-toolbar dark color="primary">
+                    <v-toolbar-title>Product Detail</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-items>
+                        <v-btn dark text @click="view_detail = false">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                    </v-toolbar-items>
+                </v-toolbar>
+            </div>
+        </ProductDetail>
     </div>
 </template>
 <script>
 import axios from "axios";
-import { mapGetters, mapActions } from "vuex";
+import ProductDetail from "./ProductDetail.vue";
 export default {
+    components: { ProductDetail },
     data: () => ({
         search_keyword: "",
         title: "Products",
@@ -162,7 +171,9 @@ export default {
         loading: false,
         meta: [],
         product: [],
-        formTitle: "Users",
+        view_detail: false,
+        current_product: [],
+        formTitle: "Products",
         // breadcrumb: [
         //     {
         //         text: "Dashboard",
@@ -216,6 +227,10 @@ export default {
                 .post(`/api/product/status/${item.id}`)
                 .then(res => {})
                 .catch();
+        },
+        detail(item) {
+            this.view_detail = true;
+            this.current_product = item;
         }
     }
 };

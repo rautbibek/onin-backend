@@ -109,7 +109,7 @@
                             </v-col>
 
                             <v-col cols="12">
-                                <v-select
+                                <v-autocomplete
                                     v-model="product_collection"
                                     :items="collections"
                                     :item-text="'name'"
@@ -122,7 +122,7 @@
                                     outlined
                                     clearable
                                 >
-                                </v-select>
+                                </v-autocomplete>
                             </v-col>
                             <v-row>
                                 <v-col style="text-aligne:right" class="ml-3">
@@ -601,7 +601,7 @@ export default {
                 this.images.forEach(image => {
                     formData.append("product_images[]", image, image.name);
                 });
-                formData.append("statis", this.product_status);
+                formData.append("status", this.product_status);
                 this.product_tags.forEach(product_tag => {
                     formData.append("product_tags[]", product_tag);
                 });

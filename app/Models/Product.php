@@ -50,4 +50,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Collection::class)->withTimestamps();
     }
+
+    public function optionValues(){
+        return $this->hasMany(OptionValue::class);
+    }
 }

@@ -30,6 +30,8 @@ class ProductResource extends JsonResource
             'image' => $this->image?$this->image?MediaHelper::getThumbnailUrl($this->image[0],'thumb'):'':asset('/images/no-image.png'),
             'created_at'=>$this->created_at,
             'short_desc'=>$this->short_description,
+            'description'=>$this->description,
+            'option_values'=>$this->optionValues
 
         ];
     }

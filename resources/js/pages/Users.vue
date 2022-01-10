@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <b-link :items="breadcrumb"></b-link> -->
+        <b-link :items="breadcrumb"></b-link>
         <v-card>
             <v-data-table
                 :headers="headers"
@@ -113,18 +113,18 @@ export default {
         meta: [],
         users: [],
         formTitle: "Users",
-        // breadcrumb: [
-        //     {
-        //         text: "Dashboard",
-        //         disabled: false,
-        //         href: "/dashboard"
-        //     },
-        //     {
-        //         text: "Users",
-        //         disabled: true,
-        //         href: "/users"
-        //     }
-        // ],
+        breadcrumb: [
+            {
+                text: "Dashboard",
+                disabled: false,
+                to: "/dashboard"
+            },
+            {
+                text: "Users",
+                disabled: true,
+                to: "/users"
+            }
+        ],
 
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },

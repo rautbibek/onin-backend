@@ -1,47 +1,46 @@
 <template>
     <div>
         <b-link></b-link>
-        <v-col>
-            <v-row>
-                <v-col cols="12" md="6" sm="12">
-                    <v-card>
-                        <div>
-                            <apexchart
-                                width="85%"
-                                type="bar"
-                                :options="options"
-                                :series="series"
-                            ></apexchart>
-                        </div>
-                    </v-card>
-                </v-col>
-                <v-col cols="12" md="6" sm="12">
-                    <v-card>
-                        <div>
-                            <apexchart
-                                width="73%"
-                                type="donut"
-                                :options="d_options"
-                                :series="d_series"
-                            ></apexchart>
-                        </div>
-                    </v-card>
-                </v-col>
-                <v-col cols="12">
-                    <v-card>
-                        <div>
-                            <apexchart
-                                width="95%"
-                                type="line"
-                                height="400"
-                                :options="options"
-                                :series="series"
-                            ></apexchart>
-                        </div>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-col>
+
+        <v-row>
+            <v-col cols="12" md="6" sm="12">
+                <v-card>
+                    <div>
+                        <apexchart
+                            width="85%"
+                            type="bar"
+                            :options="options"
+                            :series="series"
+                        ></apexchart>
+                    </div>
+                </v-card>
+            </v-col>
+            <v-col cols="12" md="6" sm="12">
+                <v-card>
+                    <div>
+                        <apexchart
+                            width="73%"
+                            type="donut"
+                            :options="d_options"
+                            :series="d_series"
+                        ></apexchart>
+                    </div>
+                </v-card>
+            </v-col>
+            <v-col cols="12">
+                <v-card>
+                    <div>
+                        <apexchart
+                            width="95%"
+                            type="line"
+                            height="400"
+                            :options="options"
+                            :series="series"
+                        ></apexchart>
+                    </div>
+                </v-card>
+            </v-col>
+        </v-row>
     </div>
 </template>
 <script>

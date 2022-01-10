@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <b-link :items="breadcrumb"></b-link> -->
+        <b-link :items="breadcrumb"></b-link>
         <v-card>
             <v-data-table
                 :headers="headers"
@@ -199,12 +199,12 @@ export default {
             {
                 text: "Dashboard",
                 disabled: false,
-                href: "/dashboard"
+                to: "/dashboard"
             },
             {
                 text: "Collection",
                 disabled: true,
-                href: "/collection"
+                to: "/collection"
             }
         ],
         discount_types: [

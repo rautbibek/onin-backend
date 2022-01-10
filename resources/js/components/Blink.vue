@@ -1,14 +1,12 @@
 <template>
-    <div>
-        <v-col>
-            <v-card flat>
-                <v-breadcrumbs :items="items">
-                    <template v-slot:divider>
-                        <v-icon>mdi-forward</v-icon>
-                    </template>
-                </v-breadcrumbs>
-            </v-card>
-        </v-col>
+    <div class="mb-2">
+        <v-card flat>
+            <v-breadcrumbs :items="items">
+                <template v-slot:divider>
+                    <v-icon>mdi-forward</v-icon>
+                </template>
+            </v-breadcrumbs>
+        </v-card>
     </div>
 </template>
 
@@ -21,9 +19,9 @@ export default {
             default: function() {
                 return [
                     {
-                        text: "Admin Home",
+                        text: "Dashboard",
                         disabled: true,
-                        href: "/dashboard"
+                        to: "/dashboard"
                     }
                 ];
             }

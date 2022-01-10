@@ -1,5 +1,6 @@
 <template>
     <div>
+        <b-link :items="breadcrumb"></b-link>
         <v-card class="mx-auto">
             <v-toolbar flat>
                 <v-toolbar-title>{{ title }}</v-toolbar-title>
@@ -257,6 +258,18 @@ export default {
         title: "Categories",
         dialog: false,
         loading: false,
+        breadcrumb: [
+            {
+                text: "Dashboard",
+                disabled: false,
+                to: "/dashboard"
+            },
+            {
+                text: "Category",
+                disabled: true,
+                to: "/category"
+            }
+        ],
         meta: [],
         users: [],
         formTitle: "Categories",

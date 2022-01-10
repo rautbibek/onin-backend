@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <b-link :items="breadcrumb"></b-link> -->
+        <b-link :items="breadcrumb"></b-link>
         <v-card>
             <v-data-table
                 :headers="headers"
@@ -255,18 +255,18 @@ export default {
         categories: [],
         subcategories: {},
         formTitle: "Users",
-        // breadcrumb: [
-        //     {
-        //         text: "Dashboard",
-        //         disabled: false,
-        //         href: "/dashboard"
-        //     },
-        //     {
-        //         text: "Users",
-        //         disabled: true,
-        //         href: "/users"
-        //     }
-        // ],
+        breadcrumb: [
+            {
+                text: "Dashboard",
+                disabled: false,
+                to: "/dashboard"
+            },
+            {
+                text: "Category",
+                disabled: true,
+                to: "/category"
+            }
+        ],
 
         headers: [
             { text: "ID", align: "start", value: "id", sortable: false },

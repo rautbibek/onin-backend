@@ -24,10 +24,30 @@
                             <h3 class="text-h5 text--primary">
                                 {{ detail.title }}
                             </h3>
+                            <v-card-title>
+                                <v-row align="center" class="mx-0">
+                                    <v-rating
+                                        v-model="rating"
+                                        color="amber"
+                                        dense
+                                        half-increments
+                                        size="44"
+                                    ></v-rating>
+
+                                    <div class="grey--text ms-4">
+                                        4.5 (413)
+                                    </div>
+                                </v-row>
+                            </v-card-title>
+
+                            <v-card-text
+                                class="text--primary "
+                                v-html="detail.short_desc"
+                            ></v-card-text>
                             <v-card-title
                                 style="color:red !important"
                                 color="primary"
-                                class="p-0 m-0 mb-3"
+                                class="mb-3"
                             >
                                 Rs.{{ detail.variant[0].price }}.00 &nbsp;
                                 &nbsp;
@@ -41,67 +61,86 @@
                                     <strong>(Out Of Stock)</strong>
                                 </span>
                             </v-card-title>
+                            <v-divider></v-divider>
+                            <v-card-text class="my-0 py-0">
+                                <div class="row">
+                                    <div class="col-1">SKU :</div>
+                                    <div class="col-2">
+                                        {{ detail.variant[0].sku }}
+                                    </div>
+                                    <div class="col-2">Total Stock :</div>
+                                    <div class="col-1">
+                                        {{ detail.inventory_track }}
+                                    </div>
+                                    <div class="col-4">
+                                        Current Variant Stock :
+                                    </div>
+                                    <div class="col-2">
+                                        {{ detail.variant[0].quantity }}
+                                    </div>
+                                </div>
+                            </v-card-text>
 
-                            <v-card-text
-                                class="text--primary p-0 m-0"
-                                v-html="detail.short_desc"
-                            ></v-card-text>
-                            <div class="row">
-                                <div class="col-1">SKU :</div>
-                                <div class="col-2">
-                                    {{ detail.variant[0].sku }}
-                                </div>
-                                <div class="col-2">Total Stock :</div>
-                                <div class="col-1">
-                                    {{ detail.inventory_track }}
-                                </div>
-                                <div class="col-4">Current Variant Stock :</div>
-                                <div class="col-2">
-                                    {{ detail.variant[0].quantity }}
-                                </div>
-                            </div>
+                            <v-divider></v-divider>
+
+                            <v-card-title>Available Colors</v-card-title>
+                            <v-card-text>
+                                <v-chip-group
+                                    v-model="selection"
+                                    active-class="deep-purple accent-4 white--text"
+                                    column
+                                >
+                                    <v-chip>Red</v-chip>
+
+                                    <v-chip>Green</v-chip>
+
+                                    <v-chip>Blue</v-chip>
+
+                                    <v-chip>Yellow</v-chip>
+                                </v-chip-group>
+                            </v-card-text>
                         </v-col>
                     </v-row>
-                    <v-card>
-                        <v-toolbar flat>
-                            <template v-slot:extension>
-                                <v-tabs v-model="tabs" fixed-tabs>
-                                    <v-tabs-slider></v-tabs-slider>
-                                    <v-tab
-                                        href="#mobile-tabs-5-1"
-                                        class="primary--text"
-                                    >
-                                        <v-icon>mdi-phone</v-icon>
-                                    </v-tab>
+                    <v-card flat class="mt-5 mb-5">
+                        <v-tabs v-model="tab" color="deep-purple accent-4">
+                            <v-tab href="#description">Description</v-tab>
+                            <v-tab href="#detail">Detail</v-tab>
+                            <v-tab href="#test">Test</v-tab>
 
-                                    <v-tab
-                                        href="#mobile-tabs-5-2"
-                                        class="primary--text"
-                                    >
-                                        <v-icon>mdi-heart</v-icon>
-                                    </v-tab>
-
-                                    <v-tab
-                                        href="#mobile-tabs-5-3"
-                                        class="primary--text"
-                                    >
-                                        <v-icon>mdi-account-box</v-icon>
-                                    </v-tab>
-                                </v-tabs>
-                            </template>
-                        </v-toolbar>
-
-                        <v-tabs-items v-model="tabs">
-                            <v-tab-item
-                                v-for="i in 3"
-                                :key="i"
-                                :value="'mobile-tabs-5-' + i"
-                            >
-                                <v-card flat>
-                                    <v-card-text v-text="text"></v-card-text>
-                                </v-card>
-                            </v-tab-item>
-                        </v-tabs-items>
+                            <v-tabs-items v-model="tab">
+                                <v-tab-item value="description">
+                                    <v-card class="mt-3" flat>
+                                        <v-card-text
+                                            class="text--primary p-0 m-0"
+                                            v-html="detail.description"
+                                        ></v-card-text>
+                                    </v-card>
+                                </v-tab-item>
+                                <v-tab-item value="detail">
+                                    <v-card flat>
+                                        <v-card-text class="text--primary">
+                                            <v-row
+                                                v-for="item in detail.option_values"
+                                                :key="item.id"
+                                            >
+                                                <v-col cols="4">{{
+                                                    item.option
+                                                }}</v-col>
+                                                <v-col cols="1">-</v-col>
+                                                <v-col cols="4">{{
+                                                    item.option_value
+                                                }}</v-col>
+                                            </v-row>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-tab-item>
+                                <v-tab-item value="test">
+                                    <v-card flat>
+                                        <v-card-text>test</v-card-text>
+                                    </v-card>
+                                </v-tab-item>
+                            </v-tabs-items>
+                        </v-tabs>
                     </v-card>
                 </v-card-text>
             </v-card>
@@ -122,9 +161,11 @@ export default {
     },
     data() {
         return {
+            tab: "description",
             notifications: false,
             sound: true,
             widgets: false,
+            rating: 4.5,
             items: [
                 {
                     src:

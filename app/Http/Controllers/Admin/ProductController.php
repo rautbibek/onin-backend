@@ -22,7 +22,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::with(['category:id,name','brand:id,name','variant']);
+        $product = Product::with(['category:id,name','brand:id,name','variant','optionValues']);
         //return $product->withCount('variant')->get();
 
         //return response()->json($product);
@@ -67,7 +67,7 @@ class ProductController extends Controller
             $product->brand_id = $request->brand_id;
             $product->description = $request->description;
             $product->short_description = $request->short_description;
-            $product->status = $request->status;
+            $product->status = true;
             $product->meta_keyword = $request->get('meta_tags');
             $product->meta_title = $request->get('meta_title');
             $product->meta_description = $request->get('meta_description');

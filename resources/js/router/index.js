@@ -6,6 +6,7 @@ import Users from "../pages/Users.vue";
 import Product from "../pages/product";
 import NewProduct from "../pages/product/NewProduct";
 import NotFound from "../pages/404";
+import EditProduct from "../pages/product/EditProduct";
 import Dashboard from "../pages/Dashboard";
 import AdminLayout from "../layouts/AdminLayout.vue";
 import ColorFamily from "../pages/attributes/ColorFamily.vue";
@@ -68,6 +69,11 @@ const routes = [
                 path: "collection",
                 name: "Collection",
                 component: Collection
+            },
+            {
+                path: "/product/edit/:id",
+                name: "EditProduct",
+                component: EditProduct
             }
         ]
     }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <b-link :items="breadcrumb"></b-link> -->
+        <b-link :items="breadcrumb"></b-link>
         <v-card>
             <v-data-table
                 :headers="headers"
@@ -112,8 +112,10 @@
                         </v-icon>
                     </v-btn>
 
-                    <!-- <v-btn
+                    <v-btn
                         x-small
+                        router
+                        to="/product/edit/1"
                         fab
                         color="primary"
                         dark
@@ -136,7 +138,7 @@
                         <v-icon dark>
                             mdi-delete
                         </v-icon>
-                    </v-btn> -->
+                    </v-btn>
                 </template>
             </v-data-table>
         </v-card>
@@ -174,18 +176,18 @@ export default {
         view_detail: false,
         current_product: [],
         formTitle: "Products",
-        // breadcrumb: [
-        //     {
-        //         text: "Dashboard",
-        //         disabled: false,
-        //         href: "/dashboard"
-        //     },
-        //     {
-        //         text: "Users",
-        //         disabled: true,
-        //         href: "/users"
-        //     }
-        // ],
+        breadcrumb: [
+            {
+                text: "Dashboard",
+                disabled: false,
+                to: "/dashboard"
+            },
+            {
+                text: "Product",
+                disabled: true,
+                to: "/product"
+            }
+        ],
 
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },

@@ -172,7 +172,7 @@
                         </div>
                         <v-divider></v-divider>
                         <v-row>
-                            <v-col cols="6">
+                            <v-col cols="6" v-if="formData.has_color">
                                 <v-autocomplete
                                     v-model="available_colors"
                                     outlined
@@ -180,7 +180,7 @@
                                     :items="colors"
                                     :item-text="'name'"
                                     :item-value="'name'"
-                                    :rules="[select('color')]"
+                                    :rules="[required('Available Colors')]"
                                     Basic
                                     dense
                                     multiple
@@ -226,14 +226,16 @@
                                     </template>
                                 </v-autocomplete>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="6" v-if="formData.has_size">
                                 <v-combobox
                                     v-model="sizes"
                                     label="Available Sizes"
                                     x-small-chips
                                     close
                                     multiple
+                                    :rules="[required('Available Sizes')]"
                                     dense
+                                    hint="Hit enter after putting each size"
                                     outlined
                                     @input="totalAttributes"
                                 >
@@ -260,107 +262,85 @@
                             </v-col>
                         </v-row>
 
-                        <v-card-text>
-                            <v-row>
-                                <div>
-                                    <v-row
-                                        v-for="(attr,
-                                        index) in product_attribute_values"
-                                        :key="index"
-                                    >
-                                        <v-col
-                                            v-if="available_colors.length > 0"
-                                        >
-                                            <v-text-field
-                                                v-model="attr.color"
-                                                label="color"
-                                                outlined
-                                                dense
-                                                disabled
-                                                :rules="[
-                                                    required('Color'),
-                                                    maxLength('color', 100)
-                                                ]"
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col v-if="sizes.length > 0">
-                                            <v-text-field
-                                                v-model="attr.size"
-                                                label="size"
-                                                outlined
-                                                dense
-                                                disabled
-                                                :rules="[
-                                                    required('Size'),
-                                                    maxLength('Size', 200)
-                                                ]"
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field
-                                                v-model="attr.stock"
-                                                type="number"
-                                                label="Stock"
-                                                outlined
-                                                dense
-                                                :rules="[
-                                                    required('Stock'),
-                                                    maxLength('Stock', 200)
-                                                ]"
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field
-                                                v-model="attr.sku"
-                                                label="sku"
-                                                outlined
-                                                dense
-                                                :rules="[
-                                                    required('SKU'),
-                                                    maxLength('SKU', 50)
-                                                ]"
-                                            ></v-text-field>
-                                        </v-col>
+                        <div>
+                            <v-row
+                                v-for="(attr,
+                                index) in product_attribute_values"
+                                :key="index"
+                            >
+                                <v-col v-if="available_colors.length > 0">
+                                    <v-text-field
+                                        v-model="attr.color"
+                                        label="color"
+                                        outlined
+                                        dense
+                                        disabled
+                                        :rules="[
+                                            required('Color'),
+                                            maxLength('color', 100)
+                                        ]"
+                                    ></v-text-field>
+                                </v-col>
 
-                                        <v-col>
-                                            <v-text-field
-                                                v-model="attr.price"
-                                                type="number"
-                                                label="price"
-                                                outlined
-                                                dense
-                                                :rules="[
-                                                    required('Price'),
-                                                    maxLength('Price', 200)
-                                                ]"
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field
-                                                v-model="attr.special_price"
-                                                type="number"
-                                                label="Special Price"
-                                                outlined
-                                                dense
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col cols="1" class="text-right">
-                                            <v-btn
-                                                fab
-                                                dark
-                                                outlined
-                                                small
-                                                color="error"
-                                            >
-                                                <v-icon dark>
-                                                    mdi-delete
-                                                </v-icon>
-                                            </v-btn>
-                                        </v-col>
-                                    </v-row>
-                                </div>
+                                <v-col>
+                                    <v-text-field
+                                        v-model="attr.stock"
+                                        type="number"
+                                        label="Stock"
+                                        outlined
+                                        dense
+                                        :rules="[
+                                            required('Stock'),
+                                            maxLength('Stock', 200)
+                                        ]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col>
+                                    <v-text-field
+                                        v-model="attr.sku"
+                                        label="sku"
+                                        outlined
+                                        dense
+                                        :rules="[
+                                            required('SKU'),
+                                            maxLength('SKU', 50)
+                                        ]"
+                                    ></v-text-field>
+                                </v-col>
+
+                                <v-col>
+                                    <v-text-field
+                                        v-model="attr.price"
+                                        type="number"
+                                        label="price"
+                                        outlined
+                                        dense
+                                        :rules="[
+                                            required('Price'),
+                                            maxLength('Price', 200)
+                                        ]"
+                                    ></v-text-field>
+                                </v-col>
+
+                                <v-col
+                                    class="text-right"
+                                    v-if="product_attribute_values.length > 1"
+                                >
+                                    <v-btn
+                                        @click="removeAttributes(index)"
+                                        fab
+                                        dark
+                                        outlined
+                                        small
+                                        color="error"
+                                    >
+                                        <v-icon dark>
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-btn>
+                                </v-col>
                             </v-row>
-                        </v-card-text>
+                        </div>
                     </v-card-text>
                 </v-card>
                 <v-card class="mt-3" v-if="color_values.length > 0">
@@ -554,19 +534,16 @@ export default {
                     href: "/Product"
                 }
             ],
-            errors: [],
             formData: {},
+            errors: [],
 
             product_status: true,
-            option_values: {},
+
             cat: ""
         };
     },
 
     methods: {
-        handleImages(files) {
-            this.images = files;
-        },
         removeMetaTags(item) {
             this.meta_tags.splice(this.meta_tags.indexOf(item), 1);
         },
@@ -610,6 +587,9 @@ export default {
                 // });
                 this.meta_tags.forEach(meta_tag => {
                     formData.append("meta_tags[]", meta_tag);
+                });
+                this.sizes.forEach(size => {
+                    formData.append("sizes[]", size);
                 });
 
                 this.product_collection.forEach(collection => {
@@ -665,9 +645,6 @@ export default {
         removeItem(index) {
             this.product_type.splice(index, 1);
         }
-    },
-    created() {
-        this.getCategory();
     }
 };
 </script>

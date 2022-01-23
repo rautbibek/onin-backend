@@ -353,9 +353,7 @@ export default {
             { icon: "mdi-keyboard", text: "Go to the old version" }
         ]
     }),
-    created() {
-        //this.mode = JSON.stringify(localStorage.getItem("mode"));
-    },
+
     methods: {
         changeMode() {
             this.$vuetify.theme.dark = this.mode;

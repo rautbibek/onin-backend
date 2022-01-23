@@ -16,11 +16,21 @@ export const ProductMixins = {
             sizes: [],
             available_colors: [],
             product_colors: [],
-            product_attribute_values: [],
-            color_values: []
+            product_attribute_values: [
+                {
+                    color: "",
+                    sku: "",
+                    price: null
+                }
+            ],
+            color_values: [],
+            option_values: {}
         };
     },
     methods: {
+        handleImages(files) {
+            this.images = files;
+        },
         getColors() {
             axios
                 .get("/api/v1/colors")
@@ -36,7 +46,6 @@ export const ProductMixins = {
                 .get("/api/v1/collection")
                 .then(res => {
                     this.collections = res.data;
-                    console.log(this.collections);
                 })
                 .catch(error => {
                     console.log(error.response.data.errors);
@@ -49,11 +58,19 @@ export const ProductMixins = {
                 }
             });
         },
+        checkColorAndSizeIfAvailable() {
+            this.subcategories.find(scat => {
+                if (scat.id === this.formData.category_id) {
+                    this.formData.has_color = scat.has_color;
+                    this.formData.has_size = scat.has_size;
+                }
+            });
+        },
         getOptions() {
+            this.checkColorAndSizeIfAvailable();
             axios
                 .get(`/api/v1/category/options/${this.formData.category_id}`)
                 .then(res => {
-                    console.log(res.data);
                     this.category_options = res.data;
                 })
                 .catch(error => {
@@ -88,54 +105,22 @@ export const ProductMixins = {
                     this.product_type.push({ ...product_type.field });
                     product_type.field.map(function(value, key) {
                         key = value.name;
-                        console.log(key);
                     });
                 }
             });
         },
         totalAttributes() {
             this.calculate_color_values();
-            if (this.available_colors.length > 0 && this.sizes.length > 0) {
-                this.product_attribute_values = [];
-                this.available_colors.forEach(color => {
-                    this.sizes.forEach(size => {
-                        this.product_attribute_values.push({
-                            color: color,
-                            size: size,
-                            sku: "",
-                            price: null
-                        });
-                    });
-                });
-                return this.available_colors.length * this.sizes.length;
-            } else if (
-                this.available_colors.length > 0 &&
-                this.sizes.length <= 0
-            ) {
+            if (this.available_colors.length > 0) {
                 this.product_attribute_values = [];
                 this.available_colors.forEach(color => {
                     this.product_attribute_values.push({
                         color: color,
-                        size: "",
                         sku: "",
                         price: null
                     });
                 });
                 return this.available_colors.length;
-            } else if (
-                this.sizes.length > 0 &&
-                this.available_colors.length <= 0
-            ) {
-                this.product_attribute_values = [];
-                this.sizes.forEach(size => {
-                    this.product_attribute_values.push({
-                        // color: "",
-                        size: size,
-                        sku: "",
-                        price: null
-                    });
-                });
-                return this.sizes.length;
             }
             return 0;
         },
@@ -148,12 +133,18 @@ export const ProductMixins = {
                     }
                 });
             });
+        },
+        removeAttributes(index) {
+            this.product_attribute_values.splice(index, 1);
         }
     },
     created() {
         this.getColors();
         this.getCollection();
+        this.getCategory();
     },
 
-    mounted() {}
+    mounted() {
+        // /this.getBrand();
+    }
 };

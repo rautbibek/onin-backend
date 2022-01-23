@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             $table->foreignId('category_id')->nullable()->constrained("categories")->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('brand_id')->nullable()->constrained("brands")->cascadeOnUpdate()->nullOnDelete();
-            $table->integer('discount_percent')->nullable();
+            $table->integer('discount')->dafault(0);
             // $table->unsignedBigInteger('product_type_id')->nullable();
             // $table->foreign('product_type_id')->references('id')->on('product_types');
             $table->text('short_description');

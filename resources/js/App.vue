@@ -30,8 +30,9 @@ export default {
     created() {
         if (window.user.isLoggedIn) {
             window.href = "/dashboard";
+        } else {
+            window.location.href = "/";
         }
-        console.log(window.user.isLoggedIn);
     }
 };
 </script>

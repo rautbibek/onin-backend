@@ -17,6 +17,9 @@ class Product extends Model
     protected $casts = [
         'meta_keyword' => 'array',
         'image'=>'array',
+        'sizes'=>'array',
+        'has_color'=> 'boolean',
+        'has_size' => 'boolean'
     ];
 
     public function getSlugOptions() : SlugOptions

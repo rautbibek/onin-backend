@@ -115,26 +115,17 @@
                     <v-btn
                         x-small
                         router
-                        to="/product/edit/1"
+                        :to="`/product/edit/${item.id}`"
                         fab
                         color="primary"
                         dark
-                        v-bind="attrs"
-                        v-on="on"
                     >
                         <v-icon dark>
                             mdi-pencil
                         </v-icon>
                     </v-btn>
 
-                    <v-btn
-                        x-small
-                        fab
-                        color="error"
-                        dark
-                        v-bind="attrs"
-                        v-on="on"
-                    >
+                    <v-btn x-small fab color="error" dark>
                         <v-icon dark>
                             mdi-delete
                         </v-icon>

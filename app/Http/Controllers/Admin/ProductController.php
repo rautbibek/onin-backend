@@ -59,9 +59,6 @@ class ProductController extends Controller
                     array_push($images,$images_data);
                 }
             }
-
-
-
         try{
             DB::beginTransaction();
             $search_text = $request->get('search_text');
@@ -69,9 +66,9 @@ class ProductController extends Controller
             $product = new product();
             $product->title = $request->title;
             $product->category_id = $request->category_id;
-            if($request->has('sizes')){
-                $product->sizes = $request->sizes;
-            }
+            // if($request->has('sizes')){
+            //     $product->sizes = $request->sizes;
+            // }
             if($request->has_color == "true" || $request->has_color == true){
                 $product->has_color = true;
             }else{
@@ -104,25 +101,21 @@ class ProductController extends Controller
             $product->save();
 
             $product_option_values = json_decode($request->option_values);
+
             $product_attribute = json_decode($request->product_atributes);
+            //return response()->json($product_attribute,500);
 
             if(!empty($product_option_values)){
                 foreach($product_option_values as $key=>$options){
                     $option_value = new OptionValue();
                     $option_value->product_id = $product->id;
                     $option_value->option = $key;
+
                     $option_value->option_value = $options;
                     $option_value->save();
                 }
             }
-            if(!empty($request->product_tags)){
-                foreach($request->product_tags as $tag){
-                    $product_tag= new ProductTag();
-                    $product_tag->product_id = $product->id;
-                    $product_tag->tag = $tag;
-                    $product_tag->save();
-                }
-            }
+
 
             if($request->has('product_collection')){
                 $collection = $request->get('product_collection');
@@ -139,6 +132,11 @@ class ProductController extends Controller
                     $p_variant->price = $attribute->price;
                     $p_variant->sku = $attribute->sku;
                     //$p_variant->special_price = $attribute->special_price;
+                    if(!empty($attribute->sizes)){
+                        $p_variant->sizes = $attribute->sizes;
+                        //return response()->json(gettype($attribute->sizes),500);
+                    }
+                    //return response()->json('error',500);
                     $p_variant->save();
                     $qty += $attribute->stock;
                 }
@@ -155,7 +153,7 @@ class ProductController extends Controller
 
         }catch(\Exception $e){
             DB::rollBack();
-
+            return response()->json($e,500);
             return response()->json([
                 'message' => 'Something went wrong',
                 'error' =>$e->getMessage()
@@ -197,6 +195,26 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $product = Product::findOrFail($id);
+        $search_text = $request->get('search_text');
+        if(isset($search_text)){
+            $product->search_text = $search_text;
+        }
+        $product->title = $request->title;
+        $product->brand_id = $request->brand_id;
+        $product->description = $request->description;
+        $product->short_description = $request->short_description;
+        $product->meta_keyword = $request->get('meta_tags');
+        $product->meta_title = $request->get('meta_title');
+        $product->meta_description = $request->get('meta_description');
+        $product->update();
+        if($request->has('product_collection')){
+            $collection = $request->get('product_collection');
+            $product->collection()->sync($collection);
+        }
+    }
+
+    public function updateOptions(){
         //
     }
 
@@ -208,7 +226,11 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $product->delete();
+        return response()->json([
+            'message'=>'Product deleted succefully'
+        ]);
     }
 
 

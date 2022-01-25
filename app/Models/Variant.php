@@ -11,11 +11,15 @@ class Variant extends Model
     protected $fillable = [
         'product_id',
         'color',
-        'size',
+        'sizes',
         'quantity',
         'sku',
         'price',
         'special_price',
         'extra'
+    ];
+
+    protected $casts = [
+        'sizes'=>'array',
     ];
 }

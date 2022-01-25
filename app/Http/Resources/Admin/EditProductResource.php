@@ -32,12 +32,7 @@ class EditProductResource extends JsonResource
                 return $item->id;
             }),
             'option_value'=> $this->optionValues->map(function($data){
-                // $arr = [];
-                // $arr[$data->option] = $data->option_value;
-                // return $arr;
-                return [
-                    $data->option => $data->option_value
-                ];
+                return $data;
             }),
             'variant'=>$this->variant
         ];

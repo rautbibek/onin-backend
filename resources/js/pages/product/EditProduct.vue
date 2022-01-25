@@ -70,14 +70,14 @@
                             ]"
                             counter="200"
                         ></v-text-field>
-                        <v-autocomplete
+                        <!-- <v-autocomplete
                             v-model="formData.parent_id"
                             :items="categories"
                             :item-text="'name'"
                             :item-value="'id'"
                             label="Categories"
                             @change="getSubcategory"
-                            :rules="[select('category')]"
+                            disabled
                             outlined
                             dense
                         ></v-autocomplete>
@@ -87,11 +87,11 @@
                             :item-text="'name'"
                             :item-value="'id'"
                             label="Subcategories"
-                            :rules="[select('category')]"
+                            disabled
                             @change="getOptions"
                             outlined
                             dense
-                        ></v-autocomplete>
+                        ></v-autocomplete> -->
                         <v-autocomplete
                             v-model="formData.brand_id"
                             :items="brands"
@@ -116,18 +116,7 @@
                             clearable
                         >
                         </v-autocomplete>
-                        <v-switch
-                            class="text-right"
-                            v-model="product_status"
-                            :label="
-                                product_status
-                                    ? 'Product Status(Active)'
-                                    : 'Product Status(Inactive)'
-                            "
-                            color="red"
-                            inset
-                            hide-details
-                        ></v-switch>
+
                         <div style="margin-top:20px">
                             <span style="font-weight:bold; margin-bottom:10px"
                                 >Short description :</span
@@ -173,15 +162,25 @@
                                 }"
                             />
                         </div>
+                        <v-spacer></v-spacer>
+                        <div class="text-right mt-5">
+                            <v-btn color="primary" @click="saveProduct">
+                                <v-icon left dark>
+                                    mdi-cloud-upload
+                                </v-icon>
+                                update basic Information
+                            </v-btn>
+                        </div>
                     </v-card>
                 </v-tab-item>
                 <v-tab-item>
                     <v-card flat class="p-5 auto">
-                        <div>
-                            <v-row
-                                v-for="(attr, index) in formData.variant"
-                                :key="index"
-                            >
+                        <div
+                            v-for="(attr, index) in formData.variant"
+                            :key="index"
+                            style="border:1px solid black; padding:10px; margin-top:20px; margin-bottom:10px; border-radius:10px; position:relative"
+                        >
+                            <v-row>
                                 <v-col v-if="attr.color">
                                     <v-text-field
                                         v-model="attr.color"
@@ -234,36 +233,76 @@
                                         ]"
                                     ></v-text-field>
                                 </v-col>
-
-                                <v-col
-                                    class="text-right"
-                                    v-if="product_attribute_values.length > 1"
-                                >
-                                    <v-btn
-                                        @click="removeAttributes(index)"
-                                        fab
-                                        dark
+                            </v-row>
+                            <v-row>
+                                <v-col v-if="attr.color">
+                                    <v-combobox
+                                        v-model="attr.sizes"
+                                        label="Available Sizes"
+                                        x-small-chips
+                                        close
+                                        multiple
+                                        :rules="[required('Available Sizes')]"
+                                        dense
+                                        hint="Hit enter after putting each size"
                                         outlined
-                                        small
-                                        color="error"
                                     >
-                                        <v-icon dark>
-                                            mdi-delete
-                                        </v-icon>
-                                    </v-btn>
+                                        <template
+                                            v-slot:selection="{
+                                                attrs,
+                                                item,
+                                                select,
+                                                selected
+                                            }"
+                                        >
+                                            <v-chip
+                                                v-bind="attrs"
+                                                :input-value="selected"
+                                                @click="select"
+                                            >
+                                                <strong>{{ item }}</strong
+                                                >&nbsp;
+                                            </v-chip>
+                                        </template>
+                                    </v-combobox>
+                                </v-col>
+                                <v-col class="text-right">
+                                    <v-btn
+                                        v-if="formData.variant.length > 1"
+                                        dark
+                                        color="error"
+                                        ><v-icon>mdi-delete</v-icon
+                                        >Delete</v-btn
+                                    >
+                                    <v-btn dark color="success"
+                                        ><v-icon>mdi-update</v-icon
+                                        >update</v-btn
+                                    >
                                 </v-col>
                             </v-row>
+                            <!-- <v-btn
+                                v-if="formData.variant.length > 1"
+                                color="error"
+                                @click="removeAttributes(index)"
+                                fab
+                                dark
+                                small
+                                absolute
+                                top
+                                right
+                            >
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn> -->
                         </div>
                     </v-card>
                 </v-tab-item>
                 <v-tab-item>
                     <v-card flat class="p-5 auto">
-                        {{ category_options.length }}
                         <div v-if="category_options.length > 0" class="row">
                             <v-col
                                 v-for="(cat_opts, index) in category_options"
                                 :key="index"
-                                cols="4"
+                                cols="12"
                             >
                                 <v-autocomplete
                                     v-model="option_values[cat_opts.key]"
@@ -400,6 +439,9 @@ export default {
         };
     },
     methods: {
+        removeMetaTags(item) {
+            this.meta_tags.splice(this.meta_tags.indexOf(item), 1);
+        },
         getProduct() {
             axios
                 .get(`/api/product/${this.$route.params.id}`)
@@ -410,13 +452,13 @@ export default {
                     this.getSubcategory();
                     this.getOptions();
                     this.getCollectionIds(this.formData.collection);
-                    // this.formData.option_value.forEach((key, data) => {
-                    //     this.option_values[data];
-                    //     //console.log(key);
-                    // });
+                    console.log(this.formData.option_value);
+                    var n = {};
+                    this.formData.option_value.forEach((element, key) => {
+                        n[element.option] = element.option_value;
+                    });
 
-                    console.log(this.option_values);
-                    this.option_values = this.formData.option_value[0];
+                    this.option_values = n;
                 })
                 .catch(err => {
                     console.log(error.response.data.errors);

@@ -23,39 +23,6 @@
                             </v-col>
 
                             <v-col cols="6">
-                                <v-combobox
-                                    v-model="product_tags"
-                                    label="Product Tags"
-                                    x-small-chips
-                                    close
-                                    multiple
-                                    dense
-                                    outlined
-                                >
-                                    <template
-                                        v-slot:selection="{
-                                            attrs,
-                                            item,
-                                            select,
-                                            selected
-                                        }"
-                                    >
-                                        <v-chip
-                                            v-bind="attrs"
-                                            :input-value="selected"
-                                            close
-                                            @click="select"
-                                            @click:close="
-                                                removerProductTags(item)
-                                            "
-                                        >
-                                            <strong>{{ item }}</strong
-                                            >&nbsp;
-                                        </v-chip>
-                                    </template>
-                                </v-combobox>
-                            </v-col>
-                            <v-col cols="6">
                                 <v-text-field
                                     v-model="formData.search_text"
                                     label="Search Text"
@@ -69,7 +36,7 @@
                                 ></v-text-field>
                             </v-col>
 
-                            <v-col>
+                            <v-col cols="6">
                                 <v-autocomplete
                                     v-model="formData.parent_id"
                                     :items="categories"
@@ -170,7 +137,7 @@
                                 </v-autocomplete>
                             </v-col>
                         </div>
-                        <v-divider></v-divider>
+
                         <v-row>
                             <v-col cols="6" v-if="formData.has_color">
                                 <v-autocomplete
@@ -226,48 +193,14 @@
                                     </template>
                                 </v-autocomplete>
                             </v-col>
-                            <v-col cols="6" v-if="formData.has_size">
-                                <v-combobox
-                                    v-model="sizes"
-                                    label="Available Sizes"
-                                    x-small-chips
-                                    close
-                                    multiple
-                                    :rules="[required('Available Sizes')]"
-                                    dense
-                                    hint="Hit enter after putting each size"
-                                    outlined
-                                    @input="totalAttributes"
-                                >
-                                    <template
-                                        v-slot:selection="{
-                                            attrs,
-                                            item,
-                                            select,
-                                            selected
-                                        }"
-                                    >
-                                        <v-chip
-                                            v-bind="attrs"
-                                            :input-value="selected"
-                                            close
-                                            @click="select"
-                                            @click:close="removeSizes(item)"
-                                        >
-                                            <strong>{{ item }}</strong
-                                            >&nbsp;
-                                        </v-chip>
-                                    </template>
-                                </v-combobox>
-                            </v-col>
                         </v-row>
 
-                        <div>
-                            <v-row
-                                v-for="(attr,
-                                index) in product_attribute_values"
-                                :key="index"
-                            >
+                        <div
+                            v-for="(attr, index) in product_attribute_values"
+                            :key="index"
+                            style="border:1px solid black; padding:10px; margin-top:10px; margin-bottom:10px; border-radius:10px; position:relative"
+                        >
+                            <v-row class="mt-2">
                                 <v-col v-if="available_colors.length > 0">
                                     <v-text-field
                                         v-model="attr.color"
@@ -280,6 +213,39 @@
                                             maxLength('color', 100)
                                         ]"
                                     ></v-text-field>
+                                </v-col>
+                                <v-col v-if="formData.has_size">
+                                    <v-combobox
+                                        v-model="attr.sizes"
+                                        label="Available Sizes"
+                                        x-small-chips
+                                        close
+                                        multiple
+                                        :rules="[required('Available Sizes')]"
+                                        dense
+                                        hint="Hit enter after putting each size"
+                                        outlined
+                                    >
+                                        <template
+                                            v-slot:selection="{
+                                                attrs,
+                                                item,
+                                                select,
+                                                selected
+                                            }"
+                                        >
+                                            <v-chip
+                                                v-bind="attrs"
+                                                :input-value="selected"
+                                                close
+                                                @click="select"
+                                                @click:close="removeSizes(item)"
+                                            >
+                                                <strong>{{ item }}</strong
+                                                >&nbsp;
+                                            </v-chip>
+                                        </template>
+                                    </v-combobox>
                                 </v-col>
 
                                 <v-col>
@@ -321,49 +287,22 @@
                                         ]"
                                     ></v-text-field>
                                 </v-col>
-
-                                <v-col
-                                    class="text-right"
-                                    v-if="product_attribute_values.length > 1"
-                                >
-                                    <v-btn
-                                        @click="removeAttributes(index)"
-                                        fab
-                                        dark
-                                        outlined
-                                        small
-                                        color="error"
-                                    >
-                                        <v-icon dark>
-                                            mdi-delete
-                                        </v-icon>
-                                    </v-btn>
-                                </v-col>
                             </v-row>
+
+                            <v-btn
+                                v-if="product_attribute_values.length > 1"
+                                color="error"
+                                @click="removeAttributes(index)"
+                                fab
+                                dark
+                                small
+                                absolute
+                                top
+                                right
+                            >
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
                         </div>
-                    </v-card-text>
-                </v-card>
-                <v-card class="mt-3" v-if="color_values.length > 0">
-                    <v-card-text>
-                        <v-col
-                            cols="6"
-                            v-for="(color_prop, index) in color_values"
-                            :key="index"
-                        >
-                            <v-text-field
-                                v-model="color_prop.name"
-                                disabled
-                                label="Product Name"
-                                outlined
-                                placeholder="Product Name Eg: Apple MacBook Pro13 M1 Chip with 8-Core CPU"
-                                dense
-                                :rules="[
-                                    required('Product Title'),
-                                    maxLength('Product Title', 200)
-                                ]"
-                                counter="200"
-                            ></v-text-field>
-                        </v-col>
                     </v-card-text>
                 </v-card>
 

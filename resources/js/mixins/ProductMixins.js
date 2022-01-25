@@ -20,7 +20,8 @@ export const ProductMixins = {
                 {
                     color: "",
                     sku: "",
-                    price: null
+                    price: null,
+                    sizes: []
                 }
             ],
             color_values: [],
@@ -117,7 +118,8 @@ export const ProductMixins = {
                     this.product_attribute_values.push({
                         color: color,
                         sku: "",
-                        price: null
+                        price: null,
+                        sizes: []
                     });
                 });
                 return this.available_colors.length;

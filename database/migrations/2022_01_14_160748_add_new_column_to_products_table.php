@@ -17,7 +17,6 @@ class AddNewColumnToProductsTable extends Migration
             $table->boolean('has_color')->default(false)->after('status');
             $table->boolean('search_text')->nullable()->after('slug');
             $table->boolean('has_size')->default(false)->after('status');
-            $table->jsonb('sizes')->nullable()->after('status');
             $table->enum('discount_type',['flat', 'percent'])->nullable()->after('brand_id');
         });
     }

@@ -50,7 +50,10 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        //return response()->json($request->all(),500);
+        // return response()->json($request->all(),500);
+        $discount_type = $request->get('discount_value');
+        $discount = $request->get('discount');
+
         $images=[];
             if($request->hasFile('product_images')){
                 foreach($request->product_images as $image){
@@ -66,9 +69,10 @@ class ProductController extends Controller
             $product = new product();
             $product->title = $request->title;
             $product->category_id = $request->category_id;
-            // if($request->has('sizes')){
-            //     $product->sizes = $request->sizes;
-            // }
+            if(isset($discount_type) && isset($discount)){
+                $product->discount_type = $discount_type;
+                $product->discount = (int) $discount;
+            }
             if($request->has_color == "true" || $request->has_color == true){
                 $product->has_color = true;
             }else{
@@ -195,11 +199,30 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //return $request->all();
+        $this->validate($request,[
+            'title'=>'required | max:200',
+            'search_text'=>'required|max:200',
+            'brand_id' =>'required',
+            'short_description'=>'required',
+            'description'=>'required'
+        ]);
+
+
         $product = Product::findOrFail($id);
+        $discount_type = $request->get('discount_value');
+        $discount = $request->get('discount');
         $search_text = $request->get('search_text');
         if(isset($search_text)){
             $product->search_text = $search_text;
         }
+        if(isset($discount_type) && isset($discount)){
+            $product->discount_type = $discount_type;
+            $product->discount = (int) $discount;
+        }
+        $product->meta_keyword = $request->get('meta_tags');
+        $product->meta_title = $request->get('meta_title');
+        $product->meta_description = $request->get('meta_description');
         $product->title = $request->title;
         $product->brand_id = $request->brand_id;
         $product->description = $request->description;
@@ -208,10 +231,13 @@ class ProductController extends Controller
         $product->meta_title = $request->get('meta_title');
         $product->meta_description = $request->get('meta_description');
         $product->update();
-        if($request->has('product_collection')){
-            $collection = $request->get('product_collection');
+        if($request->has('collection')){
+            $collection = $request->get('collection');
             $product->collection()->sync($collection);
         }
+        return response()->json([
+            'message'=>'Basic information updated successfully'
+        ],200);
     }
 
     public function updateOptions(){

@@ -15,6 +15,7 @@ class EditProductResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' =>$this->id,
             'title' => $this->title,
             'category_id' =>$this->category_id,
             'meta_tags' => $this->meta_keyword,
@@ -27,6 +28,8 @@ class EditProductResource extends JsonResource
             'parent_id'=> $this->category->id,
             'has_color'=>$this->has_color,
             'has_size' => $this->has_size,
+            'discount_value'=> $this->discount_type,
+            'discount'=>$this->discount,
             'brand_id'=> $this->brand_id,
             'collection' => $this->collection->map(function($item){
                 return $item->id;

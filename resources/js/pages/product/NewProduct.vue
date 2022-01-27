@@ -10,7 +10,7 @@
                             <v-col cols="12">
                                 <v-text-field
                                     v-model="formData.title"
-                                    label="Product Name"
+                                    label="Product Name *"
                                     outlined
                                     placeholder="Product Name Eg: Apple MacBook Pro13 M1 Chip with 8-Core CPU"
                                     dense
@@ -25,7 +25,7 @@
                             <v-col cols="6">
                                 <v-text-field
                                     v-model="formData.search_text"
-                                    label="Search Text"
+                                    label="Search Text *"
                                     outlined
                                     dense
                                     :rules="[
@@ -42,7 +42,7 @@
                                     :items="categories"
                                     :item-text="'name'"
                                     :item-value="'id'"
-                                    label="Categories"
+                                    label="Categories *"
                                     @change="getSubcategory"
                                     :rules="[select('category')]"
                                     outlined
@@ -55,7 +55,7 @@
                                     :items="subcategories"
                                     :item-text="'name'"
                                     :item-value="'id'"
-                                    label="Subcategories"
+                                    label="Subcategories *"
                                     :rules="[select('category')]"
                                     @change="getOptions"
                                     outlined
@@ -68,7 +68,7 @@
                                     :items="brands"
                                     :item-text="'name'"
                                     :item-value="'id'"
-                                    label="Brand"
+                                    label="Brand *"
                                     :rules="[select('Brand')]"
                                     outlined
                                     dense
@@ -91,8 +91,37 @@
                                 >
                                 </v-autocomplete>
                             </v-col>
+                            <v-col cols="12">
+                                <v-row>
+                                    <v-col>
+                                        <v-select
+                                            :items="discount_type"
+                                            item-text="name"
+                                            item-value="value"
+                                            v-model="formData.discount_value"
+                                            outlined
+                                            dense
+                                            label="Discount Type"
+                                        ></v-select>
+                                    </v-col>
+                                    <v-col>
+                                        <v-text-field
+                                            label="Discount"
+                                            type="number"
+                                            outlined
+                                            dense
+                                            v-model="formData.discount"
+                                            placeholder="Discount"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
                             <v-row>
-                                <v-col style="text-aligne:right" class="ml-3">
+                                <v-col
+                                    cols="12"
+                                    style="text-aligne:right"
+                                    class="ml-3"
+                                >
                                     <v-switch
                                         class="text-right"
                                         v-model="product_status"
@@ -132,7 +161,7 @@
                                     Basic
                                     dense
                                     Information
-                                    :label="cat_opts.code"
+                                    :label="cat_opts.code + ' *'"
                                 >
                                 </v-autocomplete>
                             </v-col>
@@ -152,7 +181,7 @@
                                     dense
                                     multiple
                                     @change="totalAttributes"
-                                    label="Available Colors"
+                                    label="Available Colors *"
                                 >
                                     <template v-slot:item="{ item }">
                                         {{ item.name }}
@@ -217,7 +246,7 @@
                                 <v-col v-if="formData.has_size">
                                     <v-combobox
                                         v-model="attr.sizes"
-                                        label="Available Sizes"
+                                        label="Available Sizes *"
                                         x-small-chips
                                         close
                                         multiple
@@ -252,7 +281,7 @@
                                     <v-text-field
                                         v-model="attr.stock"
                                         type="number"
-                                        label="Stock"
+                                        label="Stock *"
                                         outlined
                                         dense
                                         :rules="[
@@ -264,7 +293,7 @@
                                 <v-col>
                                     <v-text-field
                                         v-model="attr.sku"
-                                        label="sku"
+                                        label="SKU *"
                                         outlined
                                         dense
                                         :rules="[
@@ -278,7 +307,7 @@
                                     <v-text-field
                                         v-model="attr.price"
                                         type="number"
-                                        label="price"
+                                        label="Price *"
                                         outlined
                                         dense
                                         :rules="[

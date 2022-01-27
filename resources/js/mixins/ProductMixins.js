@@ -14,8 +14,19 @@ export const ProductMixins = {
             buttonLoading: false,
             brands: [],
             sizes: [],
+            errors: [],
             available_colors: [],
             product_colors: [],
+            discount_type: [
+                {
+                    name: "Flat Rate(Rs)",
+                    value: "flat"
+                },
+                {
+                    name: "Percentage(%)",
+                    value: "percent"
+                }
+            ],
             product_attribute_values: [
                 {
                     color: "",

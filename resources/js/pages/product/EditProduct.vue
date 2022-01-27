@@ -18,19 +18,24 @@
             <v-tabs-items v-model="tab">
                 <v-tab-item>
                     <v-card class="p-5 auto" flat>
-                        <v-text-field
-                            v-model="formData.title"
-                            label="Product Name"
-                            outlined
-                            placeholder="Product Name Eg: Apple MacBook Pro13 M1 Chip with 8-Core CPU"
-                            dense
-                            :rules="[
-                                required('Product Title'),
-                                maxLength('Product Title', 200)
-                            ]"
-                            counter="200"
-                        ></v-text-field>
-                        <!-- <v-combobox
+                        <v-form
+                            ref="basic_information"
+                            v-model="valid"
+                            lazy-validation
+                        >
+                            <v-text-field
+                                v-model="formData.title"
+                                label="Product Name"
+                                outlined
+                                placeholder="Product Name Eg: Apple MacBook Pro13 M1 Chip with 8-Core CPU"
+                                dense
+                                :rules="[
+                                    required('Product Title'),
+                                    maxLength('Product Title', 200)
+                                ]"
+                                counter="200"
+                            ></v-text-field>
+                            <!-- <v-combobox
                             v-model="product_tags"
                             label="Product Tags"
                             x-small-chips
@@ -59,118 +64,126 @@
                                 </v-chip>
                             </template>
                         </v-combobox> -->
-                        <v-text-field
-                            v-model="formData.search_text"
-                            label="Search Text"
-                            outlined
-                            dense
-                            :rules="[
-                                required('Search Text'),
-                                maxLength('Search Text', 200)
-                            ]"
-                            counter="200"
-                        ></v-text-field>
-                        <!-- <v-autocomplete
-                            v-model="formData.parent_id"
-                            :items="categories"
-                            :item-text="'name'"
-                            :item-value="'id'"
-                            label="Categories"
-                            @change="getSubcategory"
-                            disabled
-                            outlined
-                            dense
-                        ></v-autocomplete>
-                        <v-autocomplete
-                            v-model="formData.category_id"
-                            :items="subcategories"
-                            :item-text="'name'"
-                            :item-value="'id'"
-                            label="Subcategories"
-                            disabled
-                            @change="getOptions"
-                            outlined
-                            dense
-                        ></v-autocomplete> -->
-                        <v-autocomplete
-                            v-model="formData.brand_id"
-                            :items="brands"
-                            :item-text="'name'"
-                            :item-value="'id'"
-                            label="Brand"
-                            :rules="[select('Brand')]"
-                            outlined
-                            dense
-                        ></v-autocomplete>
-                        <v-autocomplete
-                            v-model="product_collection"
-                            :items="collections"
-                            :item-text="'name'"
-                            :item-value="'id'"
-                            label="Collection"
-                            attach
-                            chips
-                            multiple
-                            dense
-                            outlined
-                            clearable
-                        >
-                        </v-autocomplete>
+                            <v-text-field
+                                v-model="formData.search_text"
+                                label="Search Text"
+                                outlined
+                                dense
+                                :rules="[
+                                    required('Search Text'),
+                                    maxLength('Search Text', 200)
+                                ]"
+                                counter="200"
+                            ></v-text-field>
 
-                        <div style="margin-top:20px">
-                            <span style="font-weight:bold; margin-bottom:10px"
-                                >Short description :</span
+                            <v-autocomplete
+                                v-model="formData.brand_id"
+                                :items="brands"
+                                :item-text="'name'"
+                                :item-value="'id'"
+                                label="Brand"
+                                :rules="[select('Brand')]"
+                                outlined
+                                dense
+                            ></v-autocomplete>
+                            <v-autocomplete
+                                v-model="formData.collection"
+                                :items="collections"
+                                :item-text="'name'"
+                                :item-value="'id'"
+                                label="Collection"
+                                attach
+                                chips
+                                multiple
+                                dense
+                                outlined
+                                clearable
                             >
-                            <editor
-                                api-key="mw953fmxqhyj06dim9f021ezz1q7vc9klgm46zhj4lahay02"
-                                v-model="formData.short_description"
-                                aria-placeholder="short description"
-                                :init="{
-                                    height: 200,
-                                    menubar: false,
-                                    plugins: [
-                                        'advlist autolink lists link image charmap print preview anchor',
-                                        'searchreplace visualblocks code fullscreen',
-                                        'insertdatetime media table paste code help wordcount'
-                                    ],
-                                    toolbar:
-                                        'undo redo | formatselect | bold italic backcolor | \
+                            </v-autocomplete>
+
+                            <v-select
+                                :items="discount_type"
+                                item-text="name"
+                                item-value="value"
+                                v-model="formData.discount_value"
+                                outlined
+                                dense
+                                label="Discount Type"
+                            ></v-select>
+
+                            <v-text-field
+                                label="Discount"
+                                type="number"
+                                outlined
+                                dense
+                                v-model="formData.discount"
+                                placeholder="Discount"
+                            ></v-text-field>
+
+                            <div style="margin-top:20px">
+                                <span
+                                    style="font-weight:bold; margin-bottom:10px"
+                                    >Short description :</span
+                                >
+                                <editor
+                                    api-key="mw953fmxqhyj06dim9f021ezz1q7vc9klgm46zhj4lahay02"
+                                    v-model="formData.short_description"
+                                    aria-placeholder="short description"
+                                    :init="{
+                                        height: 200,
+                                        menubar: false,
+                                        plugins: [
+                                            'advlist autolink lists link image charmap print preview anchor',
+                                            'searchreplace visualblocks code fullscreen',
+                                            'insertdatetime media table paste code help wordcount'
+                                        ],
+                                        toolbar:
+                                            'undo redo | formatselect | bold italic backcolor | \
                                     alignleft aligncenter alignright alignjustify | \
                                     bullist numlist outdent indent | removeformat | help'
-                                }"
-                            />
-                        </div>
-                        <div style="margin-top:20px">
-                            <span style="font-weight:bold; margin-bottom:10px"
-                                >Description :</span
-                            >
-                            <editor
-                                api-key="mw953fmxqhyj06dim9f021ezz1q7vc9klgm46zhj4lahay02"
-                                v-model="formData.description"
-                                :init="{
-                                    height: 450,
-                                    menubar: false,
-                                    plugins: [
-                                        'advlist autolink lists link image charmap print preview anchor',
-                                        'searchreplace visualblocks code fullscreen',
-                                        'insertdatetime media table paste code help wordcount'
-                                    ],
-                                    toolbar:
-                                        'undo redo | formatselect | bold italic backcolor | \
+                                    }"
+                                />
+                            </div>
+                            <div style="margin-top:20px">
+                                <span
+                                    style="font-weight:bold; margin-bottom:10px"
+                                    >Description :</span
+                                >
+                                <editor
+                                    api-key="mw953fmxqhyj06dim9f021ezz1q7vc9klgm46zhj4lahay02"
+                                    v-model="formData.description"
+                                    :init="{
+                                        height: 450,
+                                        menubar: false,
+                                        plugins: [
+                                            'advlist autolink lists link image charmap print preview anchor',
+                                            'searchreplace visualblocks code fullscreen',
+                                            'insertdatetime media table paste code help wordcount'
+                                        ],
+                                        toolbar:
+                                            'undo redo | formatselect | bold italic backcolor | \
                                     alignleft aligncenter alignright alignjustify | \
                                     bullist numlist outdent indent | removeformat | help'
-                                }"
-                            />
-                        </div>
-                        <v-spacer></v-spacer>
-                        <div class="text-right mt-5">
-                            <v-btn color="primary" @click="saveProduct">
-                                <v-icon left dark>
-                                    mdi-cloud-upload
-                                </v-icon>
-                                update basic Information
-                            </v-btn>
-                        </div>
+                                    }"
+                                />
+                            </div>
+                            <v-spacer></v-spacer>
+                            <div class="text-right mt-5">
+                                <v-btn
+                                    color="primary"
+                                    @click="updateBasicInformation"
+                                    :loading="buttonLoading"
+                                >
+                                    <v-icon left dark>
+                                        mdi-cloud-upload
+                                    </v-icon>
+                                    update basic Information
+                                    <template v-slot:loader>
+                                        <span>Loading...</span>
+                                    </template>
+                                </v-btn>
+                            </div>
+                        </v-form>
                     </v-card>
                 </v-tab-item>
                 <v-tab-item>
@@ -336,7 +349,7 @@
                             <div class="row">
                                 <v-col cols="12" sm="12" md="6">
                                     <v-combobox
-                                        v-model="meta_tags"
+                                        v-model="formData.meta_tags"
                                         label="Meta Keyword"
                                         x-small-chips
                                         close
@@ -383,6 +396,22 @@
                                         label="Meta Description"
                                     ></v-textarea>
                                 </v-col>
+                            </div>
+                            <v-spacer></v-spacer>
+                            <div class="text-right mt-5 mb-5">
+                                <v-btn
+                                    color="primary"
+                                    @click="updateBasicInformation"
+                                    :loading="buttonLoading"
+                                >
+                                    <v-icon left dark>
+                                        mdi-cloud-upload
+                                    </v-icon>
+                                    update basic Information
+                                    <template v-slot:loader>
+                                        <span>Loading...</span>
+                                    </template>
+                                </v-btn>
                             </div>
                         </v-card-text>
                     </v-card>
@@ -442,6 +471,30 @@ export default {
         removeMetaTags(item) {
             this.meta_tags.splice(this.meta_tags.indexOf(item), 1);
         },
+        updateBasicInformation() {
+            if (this.$refs.basic_information.validate()) {
+                this.buttonLoading = true;
+
+                axios
+                    .put(`/api/product/${this.formData.id}`, this.formData)
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                        this.$router.push({ name: "Product" });
+                        this.buttonLoading = false;
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
+                        this.buttonLoading = false;
+                    });
+                this.buttonLoading = false;
+            }
+        },
         getProduct() {
             axios
                 .get(`/api/product/${this.$route.params.id}`)
@@ -452,7 +505,7 @@ export default {
                     this.getSubcategory();
                     this.getOptions();
                     this.getCollectionIds(this.formData.collection);
-                    console.log(this.formData.option_value);
+
                     var n = {};
                     this.formData.option_value.forEach((element, key) => {
                         n[element.option] = element.option_value;

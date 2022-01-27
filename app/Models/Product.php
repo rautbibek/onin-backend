@@ -19,7 +19,8 @@ class Product extends Model
         'image'=>'array',
         'sizes'=>'array',
         'has_color'=> 'boolean',
-        'has_size' => 'boolean'
+        'has_size' => 'boolean',
+        'discount' => 'integer'
     ];
 
     public function getSlugOptions() : SlugOptions

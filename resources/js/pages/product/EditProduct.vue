@@ -615,6 +615,7 @@ export default {
             this.confirm = false;
             this.single_attribute = {};
         },
+
         editAttribute(data) {
             this.single_attribute = {};
             this.single_attribute = data;

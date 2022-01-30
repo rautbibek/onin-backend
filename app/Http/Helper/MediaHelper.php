@@ -21,11 +21,7 @@ class MediaHelper{
                       ->stream();
                       Storage::disk('public')->put('thumb/'.$fileName,$thumb);
                 }
-                $image = Image::make($file)->resize(100,100,function($constrain){
-                    $constrain->aspectRatio();
-                  })
-
-                  ->stream();
+                $image = Image::make($file)->stream();
                  Storage::disk('public')->put($path.'/'.$fileName, $image);
                  return $fileName;
             }else{

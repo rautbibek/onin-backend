@@ -284,12 +284,15 @@
                                         v-if="formData.variant.length > 1"
                                         dark
                                         color="error"
+                                        @click="confirmDialog(attr)"
                                         ><v-icon>mdi-delete</v-icon
                                         >Delete</v-btn
                                     >
-                                    <v-btn dark color="success"
-                                        ><v-icon>mdi-update</v-icon
-                                        >update</v-btn
+                                    <v-btn
+                                        @click="editAttribute(attr)"
+                                        dark
+                                        color="primary"
+                                        ><v-icon>mdi-pencil</v-icon>EDIT</v-btn
                                     >
                                 </v-col>
                             </v-row>
@@ -306,6 +309,12 @@
                             >
                                 <v-icon>mdi-delete</v-icon>
                             </v-btn> -->
+                        </div>
+                        <div class="text-center">
+                            <v-btn @click="addAttribute" color="success">
+                                <v-icon left>mdi-plus</v-icon> Add New
+                                Variant</v-btn
+                            >
                         </div>
                     </v-card>
                 </v-tab-item>
@@ -418,11 +427,133 @@
                 </v-tab-item>
             </v-tabs-items>
         </v-card>
+        <ConfirmationBox v-if="confirm" :confirm="confirm">
+            <template v-slot:cancel>
+                <v-btn small color="error" dark @click="cancel">
+                    <v-icon left>mdi-cancel</v-icon>
+                    no
+                </v-btn>
+            </template>
+            <template v-slot:ok>
+                <div>
+                    <v-btn
+                        small
+                        color="green darken-1"
+                        dark
+                        @click="deleteItem"
+                    >
+                        <v-icon left>mdi-check-circle</v-icon>
+                        yes
+                    </v-btn>
+                </div>
+            </template>
+        </ConfirmationBox>
+        <v-dialog v-model="editAttributeDialog" persistent max-width="600px">
+            <v-card>
+                <v-card-title>
+                    <span class="text-h5">Edit Attribute</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-form
+                        ref="attributes"
+                        v-model="attribute_valid"
+                        lazy-validation
+                    >
+                        <v-container>
+                            <v-select
+                                label="Color *"
+                                :items="colors"
+                                :item-text="'name'"
+                                :item-value="'name'"
+                                small-chips
+                                outlined
+                                dense
+                                :rules="[required('Color')]"
+                                v-model="single_attribute.color"
+                            ></v-select>
+
+                            <v-text-field
+                                type="number"
+                                label="Stock *"
+                                :rules="[required('Stock')]"
+                                v-model="single_attribute.quantity"
+                                outlined
+                                dense
+                            ></v-text-field>
+                            <v-text-field
+                                label="SKU *"
+                                v-model="single_attribute.sku"
+                                :rules="[required('SKU')]"
+                                outlined
+                                dense
+                            ></v-text-field>
+                            <v-text-field
+                                type="number"
+                                label="Price *"
+                                v-model="single_attribute.price"
+                                :rules="[required('Price')]"
+                                outlined
+                                dense
+                            ></v-text-field>
+                            <v-combobox
+                                v-model="single_attribute.sizes"
+                                label="Available Sizes"
+                                x-small-chips
+                                close
+                                multiple
+                                :rules="[required('Available Sizes')]"
+                                dense
+                                hint="Hit enter after putting each size"
+                                outlined
+                            >
+                                <template
+                                    v-slot:selection="{
+                                        attrs,
+                                        item,
+                                        select,
+                                        selected
+                                    }"
+                                >
+                                    <v-chip
+                                        v-bind="attrs"
+                                        :input-value="selected"
+                                        @click="select"
+                                    >
+                                        <strong>{{ item }}</strong
+                                        >&nbsp;
+                                    </v-chip>
+                                </template>
+                            </v-combobox>
+                        </v-container>
+                    </v-form>
+                    <small>*indicates required field</small>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="red"
+                        dark
+                        @click="editAttributeDialog = false"
+                    >
+                        <v-icon left>cancel</v-icon>
+                        Close
+                    </v-btn>
+                    <v-btn
+                        :loading="buttonLoading"
+                        color="success"
+                        @click="updateAttributes"
+                        ><v-icon left>save</v-icon>
+                        Save
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
 import Editor from "@tinymce/tinymce-vue";
 import UploadImages from "vue-upload-drop-images";
+import ConfirmationBox from "../../components/ConfirmationBox.vue";
 import { commonMixin } from "../../mixins/commonMixin";
 import { ProductMixins } from "../../mixins/ProductMixins";
 import { validation } from "../../mixins/validationMixin";
@@ -430,11 +561,16 @@ export default {
     mixins: [commonMixin, validation, ProductMixins],
     components: {
         UploadImages,
+        ConfirmationBox,
         Editor
     },
     data() {
         return {
+            editAttributeDialog: false,
+            single_attribute: {},
             product: [],
+            attribute_valid: true,
+            confirm: false,
             formData: {},
             tab: "web",
             items: [
@@ -471,6 +607,47 @@ export default {
         removeMetaTags(item) {
             this.meta_tags.splice(this.meta_tags.indexOf(item), 1);
         },
+        confirmDialog(data) {
+            this.single_attribute = data;
+            this.confirm = true;
+        },
+        cancel() {
+            this.confirm = false;
+            this.single_attribute = {};
+        },
+        editAttribute(data) {
+            this.single_attribute = {};
+            this.single_attribute = data;
+            this.editAttributeDialog = true;
+        },
+        addAttribute() {
+            let product_id = this.$route.params.id;
+            this.single_attribute = {
+                product_id: product_id
+            };
+            this.editAttributeDialog = true;
+            this.$refs.attributes.resetValidation();
+        },
+        deleteItem() {
+            axios
+                .delete(`/api/product/variant/${this.single_attribute.id}`)
+                .then(res => {
+                    this.$refs.attributes.resetValidation();
+                    this.$toast.success(res.data.message, {
+                        timeout: 5000
+                    });
+
+                    this.confirm = false;
+                    this.single_attribute = {};
+
+                    this.getProduct();
+                })
+                .catch(error => {
+                    this.$toast.error(error.response.data.error, {
+                        timeout: 2000
+                    });
+                });
+        },
         updateBasicInformation() {
             if (this.$refs.basic_information.validate()) {
                 this.buttonLoading = true;
@@ -483,6 +660,34 @@ export default {
                         });
                         this.$router.push({ name: "Product" });
                         this.buttonLoading = false;
+                        this.getProduct();
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
+                        this.buttonLoading = false;
+                    });
+                this.buttonLoading = false;
+            }
+        },
+        updateAttributes() {
+            //this.$refs.attributes.resetValidation();
+            if (this.$refs.attributes.validate()) {
+                this.buttonLoading = true;
+
+                axios
+                    .post(`/api/product/variant`, this.single_attribute)
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                        this.editAttributeDialog = false;
+                        //this.$router.push({ name: "Product" });
+                        this.buttonLoading = false;
+                        this.getProduct();
                     })
                     .catch(error => {
                         this.errors = error.response.data.errors;

@@ -10,13 +10,12 @@ export const validation = {
 
             required(propertyType) {
                 return v =>
-                    (v && v.length > 0) ||
-                    `${propertyType} field is mandatory. `;
+                    (v && !!v) || `${propertyType} field is mandatory. `;
             },
 
-            // priceVlidate(propertyType) {
+            // number(propertyType) {
             //     return v =>
-            //         (v && v > 99) ||
+            //         (v && !!v) ||
             //         `${propertyType} must be grater than or equal to 100.`;
             // },
 

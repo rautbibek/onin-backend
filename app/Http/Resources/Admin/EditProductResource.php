@@ -37,6 +37,7 @@ class EditProductResource extends JsonResource
             'option_value'=> $this->optionValues->map(function($data){
                 return $data;
             }),
+            'images'=>$this->images,
             'variant'=>$this->variant
         ];
     }

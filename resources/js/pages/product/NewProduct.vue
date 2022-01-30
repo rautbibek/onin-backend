@@ -101,6 +101,7 @@
                                             v-model="formData.discount_value"
                                             outlined
                                             dense
+                                            clearable
                                             label="Discount Type"
                                         ></v-select>
                                     </v-col>
@@ -110,6 +111,7 @@
                                             type="number"
                                             outlined
                                             dense
+                                            clearable
                                             v-model="formData.discount"
                                             placeholder="Discount"
                                         ></v-text-field>
@@ -593,6 +595,7 @@ export default {
                         this.buttonLoading = false;
                     });
             } else {
+                window.scrollTo(0, 0, { behavior: "smooth" });
                 this.$toast.error(
                     "Somethign weng wrong please recheck your form ",
                     {

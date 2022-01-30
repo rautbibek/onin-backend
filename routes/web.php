@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VariantController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +46,7 @@ Route::middleware(['auth:admin'])->group(function(){
     Route::group(['prefix'=>'api'],function(){
         Route::get('/user', [UserController::class,'index'])->name('user');
         Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
+
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,
@@ -52,6 +54,8 @@ Route::middleware(['auth:admin'])->group(function(){
             'colors' => ColorFamilyController::class,
             'collection' => CollectionController::class
         ]);
+        Route::post('product/variant',[VariantController::class,'save']);
+        Route::delete('product/variant/{id}',[VariantController::class,'delete']);
     });
 
 });

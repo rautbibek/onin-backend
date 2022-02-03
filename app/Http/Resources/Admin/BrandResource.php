@@ -20,7 +20,6 @@ class BrandResource extends JsonResource
             'category' => $this->category,
             'logo' => $this->logo,
             'created_at'=>$this->created_at->diffForHumans(),
-
         ];
     }
 }

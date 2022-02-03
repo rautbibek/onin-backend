@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddHasAttributeToCategoriesTable extends Migration
+class AddLevelToCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddHasAttributeToCategoriesTable extends Migration
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->string('has_color')->default(false);
-            $table->string('has_size')->default(false);
+            $table->integer('lvl')->default(1)->after('slug');
+            $table->boolean('status')->default(true)->after('slug');
         });
     }
 
@@ -27,8 +27,8 @@ class AddHasAttributeToCategoriesTable extends Migration
     public function down()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->dropColumn('has_color');
-            $table->dropColumn('has_size');
+            $table->dropColumn('lvl');
+            $table->dropColumn('status');
         });
     }
 }

@@ -20,7 +20,8 @@ class CategoryResource extends JsonResource
             'name'=>$this->name,
             'slug' => $this->slug,
             'icon' => $this->icon,
-            'cover'=> $this->cover,
+            'parent'=> $this->parent,
+            'created_at' => $this->created_at->diffForHumans(),
         ];
     }
 }

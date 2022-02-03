@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/category/children',[CategoryController::class,'getChildrenData']);
 Route::get('all/options',[OptionController::class,'options'])->name('option.all');
 Route::get('/',[WelcomeController::class,'index'])->name('welcome');
 Route::get('/login','App\Http\Controllers\Admin\LoginController@index')->name('login');
@@ -46,7 +47,7 @@ Route::middleware(['auth:admin'])->group(function(){
     Route::group(['prefix'=>'api'],function(){
         Route::get('/user', [UserController::class,'index'])->name('user');
         Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
-
+        Route::get('/category/parent',[CategoryController::class,'getParentData']);
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,
@@ -54,6 +55,7 @@ Route::middleware(['auth:admin'])->group(function(){
             'colors' => ColorFamilyController::class,
             'collection' => CollectionController::class
         ]);
+        
         Route::post('product/variant',[VariantController::class,'save']);
         Route::delete('product/variant/{id}',[VariantController::class,'delete']);
     });

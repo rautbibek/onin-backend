@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Models\Category;
-// use App\Helper\Datatable;
+use App\Helper\Datatable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
@@ -19,9 +19,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('parent_id',null)->with('children')->get();
-        //$categories = Datatable::filter($categories,['name']);
-        return $categories;
+        $categories = Category::where('last_child',true)->with('parent.parent');
+        $categories = Datatable::filter($categories,['name']);
         return  CategoryResource::collection($categories)->response()
         ->setStatusCode(200);
     }
@@ -34,9 +33,22 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
+        
+        $parent_id = $request->has('parent_id')?$request->get('parent_id'):null;
+        $level = 1;
+        
         try{
-            $message = "New category Added successfully !";
             DB::beginTransaction();
+            if(isset($parent_id) && $parent_id != 'undefined'){
+                $cat = Category::where('id',$parent_id)->first();
+                if($cat){
+                    $level = $level+1;
+                    $cat->last_child = false;
+                    $cat->update();
+                }
+            }
+            $message = "New category Added successfully !";
+            
             $id = $request->get('id');
             if (isset($id) && $id != 'undefined') {
                 $category = Category::findorfail($id);
@@ -44,17 +56,24 @@ class CategoryController extends Controller
                     'parent_id'=> request()->get('parent_id'),
                     'name'=> request()->get('name'),
                     'icon'=>request()->get('icon'),
-                    //'is_featured' => request()->get('is_featured')
+                    'lvl' => $level
                 ]);
-                $message = "Category updated successfully !";
+
+            
+            
+            $message = "Category updated successfully !";
             }else{
                 $category = new Category();
+                
                 $category->create([
                     'parent_id'=> request()->get('parent_id'),
                     'name'=> request()->get('name'),
                     'icon'=>request()->get('icon'),
+                    'lvl' => $level
                     //'is_featured' => false
-            ]);
+                ]);
+                
+                
             }
             DB::commit();
             return response()->json([
@@ -63,8 +82,10 @@ class CategoryController extends Controller
         }catch(\Exception $exception){
             Log::channel('slack')->error($exception);
             DB::rollBack();
+            
             return response()->json(array(
                 'code' => 500,
+                'error'=> $exception,
                 'message' => 'something went wrong'
             ), 500);
         }
@@ -117,4 +138,20 @@ class CategoryController extends Controller
             'message'=>'Category deleted succefully',
         ],200);
     }
+
+
+    public function getParentData(){
+       
+        $category = Category::whereIn('lvl',[1,2])
+        ->select('id','parent_id','name','last_child','lvl')
+        ->with(['parent'=>function($query){
+            
+            $query->select('id','parent_id','name')->with(['parent:id,parent_id,name']);
+        }])->orderBy('parent_id','asc')->get();
+        // $category = Category::where('id',9)->with('parent.parent')->first();
+        return $category;
+    }
+    
+
+
 }

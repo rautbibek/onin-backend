@@ -17,6 +17,9 @@ class Category extends Model
         'parent_id',
         'meta_title',
         'is_featured',
+        'last_child',
+        'status',
+        'lvl',
         'icon',
         'cover'
     ];
@@ -25,6 +28,8 @@ class Category extends Model
     protected $casts = [
         'has_color' => 'boolean',
         'has_size'  => 'boolean',
+        'status'    => 'boolean',
+        'last_child'=> 'boolean'
     ];
 
     public function getSlugOptions() : SlugOptions
@@ -37,6 +42,11 @@ class Category extends Model
     public function children()
     {
         return $this->hasMany(Category::class,'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class,'parent_id');
     }
 
     public function categoryOptions(){

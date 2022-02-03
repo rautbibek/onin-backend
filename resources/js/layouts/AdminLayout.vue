@@ -2,10 +2,14 @@
     <v-app id="inspire">
         <v-app id="inspire">
             <v-navigation-drawer
-                color="primary"
+                elevation="10"
+                expand-on-hover
+                floating
+                dark
+                style="background: rgb(75,14,65);
+background: linear-gradient(24deg, rgba(75,14,65,1) 15%, rgba(49,14,162,1) 100%);"
                 v-model="drawer"
                 :clipped="$vuetify.breakpoint.lgAndUp"
-                dark
                 app
             >
                 <!-- expand-on-hover -->
@@ -76,7 +80,8 @@
             <v-app-bar
                 :clipped-left="$vuetify.breakpoint.lgAndUp"
                 app
-                color="primary"
+                style="background: rgb(2,0,36);
+background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(121,9,38,0.804359243697479) 100%, rgba(0,212,255,1) 100%);"
                 dark
             >
                 <v-app-bar-nav-icon

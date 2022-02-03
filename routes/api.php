@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Login\LoginController;
 use App\Http\Controllers\Api\V1\Home\HomeController;
 use App\Http\Controllers\Api\V1\CommonDataController;
+use App\Http\Controllers\Admin\CategoryController;
 
 
 /*
@@ -22,6 +23,7 @@ use App\Http\Controllers\Api\V1\CommonDataController;
 // Route::get('/test', function () {
 //     return "welcome";
 // });
+
 Route::post('/login',[LoginController::class,'login']);
 Route::get('/category',[CommonDataController::class,'allCategories']);
 Route::get('/product_types',[CommonDataController::class,'getProductTypes']);

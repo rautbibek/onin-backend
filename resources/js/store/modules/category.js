@@ -8,7 +8,7 @@ const getters = {
 const actions = {
     getCategories({ commit }) {
         axios
-            .get(`api/v1/category`)
+            .get(`/api/category/parent`)
             .then(response => {
                 commit("setCategories", response.data);
                 //console.log(response.data);

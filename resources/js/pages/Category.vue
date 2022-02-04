@@ -263,7 +263,7 @@
             color="primary"
             dense
           >
-            <v-toolbar-title>Category option setting</v-toolbar-title>
+            <v-toolbar-title><strong>{{category_name}} </strong>  option setting </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn
               icon
@@ -305,16 +305,16 @@
             </v-list>
             <v-divider></v-divider>
             <v-subheader>Choose your options</v-subheader>
-            <v-row>
-                <v-col md="4" sm="12" v-for="(option,index) in options" :key="index" cols="4">
-                    <v-list
+            <v-row no-gutters>
+                <v-col md="4" sm="12" class="pa-4" v-for="(option,index) in options" :key="index" cols="12">
+                    <!-- <v-list
                     three-line
                     subheader
-                    >
-                    
-                    <v-list-item >
+                    > -->
+                     <v-checkbox :value="option.id" :label="option.code" v-model="category_options"></v-checkbox>
+                    <!-- <v-list-item >
                         <v-list-item-action>
-                        <v-checkbox :value="option.id" v-model="category_options"></v-checkbox>
+                        <v-checkbox :value="option.id"  v-model="category_options"></v-checkbox>
                         </v-list-item-action>
                         <v-list-item-content>
                         <v-list-item-title>{{option.code}}</v-list-item-title>
@@ -323,9 +323,9 @@
                             - {{op}}
                         </v-list-item-subtitle>
                         </v-list-item-content>
-                    </v-list-item>
+                    </v-list-item> -->
                     
-                    </v-list>
+                    <!-- </v-list> -->
                 </v-col>
             </v-row>
             <v-card-actions>
@@ -361,6 +361,7 @@ export default {
         title: "Categories",
         dialog: false,
         id:null,
+        category_name:'',
         loading: false,
         optionDialog:false,
         has_color:false,
@@ -485,6 +486,7 @@ export default {
         openOptionDialog(item){
             
             this.id = item.id;
+            this.category_name = item.name
             this.has_color = item.has_color;
             this.has_size  = item.has_size,
             this.category_options = item.cat_options;
@@ -497,13 +499,16 @@ export default {
                 has_color: this.has_color,
                 has_size : this.has_size,
                 category_options:this.category_options,
-                
-
             }).then(res=>{
                 console.log(res.data);
                 this.optionDialog = false;
+                this.$toast.success(res.data.message, {
+                    timeout: 2000
+                });
             }).catch(error=>{
-                console.log(error.response.data.errors);
+                this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
             });
         },
 

@@ -31,13 +31,13 @@ class BrandRequest extends FormRequest
         ];
         if(isset($id)){
             $rules = [
-                'category_id'=>'required',
+                // 'category_id'=>'required',
                 'name'=> 'required | unique:brands,id,'.$id,
-                'logo'=>'sometimes | mimes:jpeg,png,jpg,svg|max:2048',
+                //'logo'=>'sometimes | mimes:jpeg,png,jpg,svg|max:2048',
             ];
         }else{
             $rules =[
-                'logo'=>'required | mimes:jpeg,png,jpg,svg|max:2048',
+                //'logo'=>'required | mimes:jpeg,png,jpg,svg|max:2048',
                 'name'=> 'required',
             ];
         }

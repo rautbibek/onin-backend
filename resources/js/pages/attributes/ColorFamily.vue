@@ -30,6 +30,7 @@
                                 v-model="search_keyword"
                                 class="mt-5"
                                 label="search"
+                                clearable
                                 outlined
                                 dense
                                 append-icon="search"
@@ -38,6 +39,18 @@
                                 @blur="paginate"
                             ></v-text-field>
                         </v-col>
+                        <v-btn
+                            class="ma-2"
+                            @click="addColorFamily"
+                            fab
+                            x-small
+                            color="success"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-btn @click="paginate" fab x-small color="primary">
+                            <v-icon>mdi-refresh</v-icon>
+                        </v-btn>
                     </v-toolbar>
                 </template>
                 <template v-slot:item.id="{ index }">
@@ -61,6 +74,7 @@
                                 color="primary"
                                 dark
                                 v-bind="attrs"
+                                @click="editColor(item)"
                                 v-on="on"
                             >
                                 <v-icon dark>
@@ -78,6 +92,7 @@
                                 color="error"
                                 dark
                                 v-bind="attrs"
+                                @click="confirmation(item)"
                                 v-on="on"
                             >
                                 <v-icon dark>
@@ -90,17 +105,100 @@
                 </template>
             </v-data-table>
         </v-card>
+         <v-dialog v-model="dialog" persistent max-width="600px">
+            <v-card>
+                <v-card-title>
+                    <span class="text-h5">{{title}}</span>
+                    <v-spacer></v-spacer>
+                    <v-icon left @click="closeModel">close</v-icon>
+                </v-card-title>
+
+                <v-card-text>
+                    <ValidationErrors :errors="errors"></ValidationErrors>
+                    <v-container> </v-container>
+                    <v-form ref="form" v-model="valid" lazy-validation>
+                        
+
+                        
+                        <v-text-field
+                            v-model="formData.name"
+                            :rules="[required('Color Name')]"
+                            label="Color Name"
+                            required
+                            outlined
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="formData.code"
+                            :rules="[required('Color Code')]"
+                            label="Color Code"
+                            required
+                            outlined
+                        ></v-text-field>
+                        
+                    </v-form>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="closeModel" color="error">
+                        <v-icon left>mdi-cancel</v-icon>
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        color="success"
+                        @click="saveColor"
+                        :loading="buttonLoading"
+                    >
+                        <v-icon left>save</v-icon>
+                        Save
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <ConfirmationBox :confirm="confirm">
+            <template v-slot:cancel>
+                <v-btn small color="error" dark @click="cancel">
+                    <v-icon left>mdi-cancel</v-icon>
+                    no
+                </v-btn>
+            </template>
+            <template v-slot:ok>
+                <div>
+                    <v-btn
+                        small
+                        color="green darken-1"
+                        dark
+                        @click="deleteItem"
+                    >
+                        <v-icon left>mdi-check-circle</v-icon>
+                        yes
+                    </v-btn>
+                </div>
+            </template>
+        </ConfirmationBox>
     </div>
 </template>
 <script>
+import axios from "axios";
+import ConfirmationBox from "../../components/ConfirmationBox.vue";
+import { commonMixin } from "../../mixins/commonMixin";
+import { validation } from "../../mixins/validationMixin";
 export default {
+    name: "ColorFamily",
+    mixins: [commonMixin, validation],
+    components: {
+        ConfirmationBox
+    },
     data: () => ({
         search_keyword: "",
         title: "Color Families",
         dialog: false,
+        color_id:null,
         loading: false,
+        confirm: false,
         meta: [],
         colors: [],
+        
         formTitle: "ColorFamilies",
         // breadcrumb: [
         //     {
@@ -118,10 +216,10 @@ export default {
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },
             { text: "Name", value: "name", sortable: true },
-            { text: "Code", value: "code" },
-            { text: "Smple", value: "sample" },
-            { text: "Created At", value: "created_at" },
-            { text: "Action", value: "action" }
+            { text: "Code", value: "code" ,sortable: true},
+            { text: "Smple", value: "sample" ,sortable: false },
+            { text: "Created At", value: "created_at" ,sortable: false},
+            { text: "Action", value: "action", sortable: false}
         ]
     }),
 
@@ -147,7 +245,71 @@ export default {
                 .catch(error => {
                     this.loading = false;
                 });
+        },
+        addColorFamily(){
+            this.dialog = true;
+        },
+         cancel() {
+            this.confirm = false;
+            
+        },
+
+        closeModel() {
+            this.dialog = false;
+            this.$refs.form.reset();
+        },
+        saveColor(){
+            if (this.$refs.form.validate()) {
+                axios.post('/api/colors',this.formData).then(res=>{
+                    this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                    this.dialog = false;
+                    this.paginate(this.$options);
+                    this.formData = {};
+                    
+                }).catch(error=>{
+                    this.errors = error.response.data.errors;
+
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
+                        
+                        this.buttonLoading = false;
+                })
+            }
+        },
+        confirmation(item) {
+            this.confirm = true;
+            this.color_id = item.id;
+            //this.deleteItem(item);
+        },
+        editColor(item){
+            //this.color_id = item.id;
+            this.formData = item;
+            this.dialog = true;
+        },
+        deleteItem() {
+            axios
+                .delete(`api/colors/${this.color_id} `)
+                .then(res => {
+                    this.$toast.success(res.data.message, {
+                        timeout: 2000
+                    });
+                    this.getBrands(this.$options);
+                    this.brand_id = "";
+                    this.confirm = false;
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+
+                    this.$toast.error(error.response.data.message, {
+                        timeout: 2000
+                    });
+                    this.confirm = false;
+                });
         }
+
     }
 };
 </script>

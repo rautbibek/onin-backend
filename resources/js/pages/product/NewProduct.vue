@@ -5,49 +5,31 @@
             <v-form ref="form" value v-model="valid" lazy-validation>
                 <v-card flat>
                     <v-card-title>Basic Information</v-card-title>
+                    <v-card-subtitle v-if="errors">
+                        <v-alert v-for="(error,index) in errors" :key="index"
+                            
+                            border="left"
+                            close-text="Close Alert"
+                            color="red lighten-2"
+                            dark
+                            
+                            >
+                            {{error[0]}}
+                        </v-alert>
+                    </v-card-subtitle>
                     <v-card-text>
                         <v-row class="pa-1">
                             <v-col cols="12">
-                                <v-text-field
-                                    v-model="formData.title"
-                                    label="Product Name *"
-                                    outlined
-                                    placeholder="Product Name Eg: Apple MacBook Pro13 M1 Chip with 8-Core CPU"
-                                    dense
-                                    :rules="[
-                                        required('Product Title'),
-                                        maxLength('Product Title', 200)
-                                    ]"
-                                    counter="200"
-                                ></v-text-field>
-                            </v-col>
-
-                            <v-col cols="6">
-                                <v-text-field
-                                    v-model="formData.search_text"
-                                    label="Search Text *"
-                                    placeholder="Best laptop under 100,000 price"
-                                    outlined
-                                    dense
-                                    :rules="[
-                                        required('Search Text'),
-                                        maxLength('Search Text', 200)
-                                    ]"
-                                    counter="200"
-                                ></v-text-field>
-                            </v-col>
-
-                            <v-col cols="6">
                                 <!-- @change="getSubcategory" -->
+                                {{selected_category.length}}
                                 <v-autocomplete
                                     v-model="selected_category"
                                     :items="categories"
                                     item-text="name"
                                     return-object
-                                    label="Categories *"
+                                    label="Choose Categorie *"
                                     @change="checkColorAndSizeIfAvailable"
-                                    
-                                    :rules="[select('category')]"
+                                    :rules="[v => (v && v.id ) || 'Category field is mandatory.',]"
                                     outlined
                                     dense
                                 >
@@ -73,21 +55,52 @@
                                 </template>
                                 </v-autocomplete>
                             </v-col>
+                            <v-col cols="12" md="6" lg="6" sm="12" xs="12">
+                                <v-text-field
+                                    v-model="formData.title"
+                                    label="Product Name *"
+                                    outlined
+                                    placeholder="Product Name Eg: Apple MacBook Pro13 M1 Chip with 8-Core CPU"
+                                    dense
+                                    :rules="[
+                                        required('Product Title'),
+                                        maxLength('Product Title', 200)
+                                    ]"
+                                    counter="200"
+                                ></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="6" lg="6" sm="12" xs="12">
+                                <v-text-field
+                                    v-model="formData.search_text"
+                                    label="Search Text *"
+                                    placeholder="Best laptop under 100,000 price"
+                                    outlined
+                                    dense
+                                    :rules="[
+                                        required('Search Text'),
+                                        maxLength('Search Text', 200)
+                                    ]"
+                                    counter="200"
+                                ></v-text-field>
+                            </v-col>
+
                             
-                            <v-col>
+                            
+                            <v-col cols="12" md="4" lg="4" sm="6" xs="12">
                                 <v-autocomplete
                                     v-model="formData.brand_id"
                                     :items="brands"
                                     :item-text="'name'"
                                     :item-value="'id'"
-                                    label="Brand *"
-                                    :rules="[select('Brand')]"
+                                    label="Brand"
+                                    
                                     outlined
                                     dense
                                 ></v-autocomplete>
                             </v-col>
 
-                            <v-col cols="12">
+                            <v-col cols="12" md="4" lg="4" sm="6" xs="12">
                                 <v-autocomplete
                                     v-model="product_collection"
                                     :items="collections"
@@ -103,7 +116,7 @@
                                 >
                                 </v-autocomplete>
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="12" md="4" lg="4" sm="6" xs="12">
                                 <v-row>
                                     <v-col>
                                         <v-select
@@ -190,7 +203,7 @@
                                     :items="colors"
                                     :item-text="'name'"
                                     :item-value="'name'"
-                                    :rules="[required('Available Colors')]"
+                                    :rules="[combo('Available Colors')]"
                                     Basic
                                     dense
                                     multiple
@@ -265,7 +278,7 @@
                                         close
                                         multiple
                                         :rules="[
-                                            required('Sizes')
+                                            combo('Sizes')
                                         ]"
                                         dense
                                         hint="Hit enter after putting each size"
@@ -362,6 +375,7 @@
                                 api-key="mw953fmxqhyj06dim9f021ezz1q7vc9klgm46zhj4lahay02"
                                 v-model="formData.short_description"
                                 aria-placeholder="short description"
+                                aria-required="Requrie"
                                 :init="{
                                     height: 200,
                                     menubar: false,
@@ -606,6 +620,7 @@ export default {
                         this.$toast.error(error.response.data.message, {
                             timeout: 2000
                         });
+                        window.scrollTo(0, 0, { behavior: "smooth" });
                         this.buttonLoading = false;
                     });
             } else {

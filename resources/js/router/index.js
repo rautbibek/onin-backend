@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 import Category from "../pages/Category.vue";
+import Test from "../pages/test.vue";
 import Users from "../pages/Users.vue";
 import Product from "../pages/product";
 import NewProduct from "../pages/product/NewProduct";
@@ -10,7 +11,7 @@ import EditProduct from "../pages/product/EditProduct";
 import Dashboard from "../pages/Dashboard";
 import AdminLayout from "../layouts/AdminLayout.vue";
 import ColorFamily from "../pages/attributes/ColorFamily.vue";
-import SizeFamily from "../pages/attributes/SizeFamily.vue";
+import CategoryOption from "../pages/attributes/CategoryOptions.vue";
 import Collection from "../pages/collection";
 import Brand from "../pages/brand";
 const routes = [
@@ -29,6 +30,11 @@ const routes = [
                 path: "dashboard",
                 name: "Dashboard",
                 component: Dashboard
+            },
+            {
+                path: "test",
+                name: "Test",
+                component: Test
             },
             {
                 path: "/category",
@@ -56,9 +62,9 @@ const routes = [
                 component: ColorFamily
             },
             {
-                path: "size-family",
-                name: "SizeFamily",
-                component: ColorFamily
+                path: "category-option",
+                name: "CategoryOption",
+                component: CategoryOption
             },
             {
                 path: "brand",

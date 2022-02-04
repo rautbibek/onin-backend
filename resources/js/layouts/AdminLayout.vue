@@ -324,19 +324,20 @@ export default {
             },
             {
                 icon: "mdi-account-circle",
-                text: "Attributes",
+                text: "Setups",
                 model: false,
                 children: [
+                    {
+                        icon: "remove",
+                        text: "Category Options",
+                        url: "/category-option"
+                    },
                     {
                         icon: "remove",
                         text: "Color Family",
                         url: "/color-family"
                     },
-                    {
-                        icon: "remove",
-                        text: "Size Family",
-                        url: "/size-family"
-                    }
+                    
                 ]
             },
             // {

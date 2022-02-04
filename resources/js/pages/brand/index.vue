@@ -55,6 +55,7 @@
                 <template v-slot:item.id="{ index }">
                     <span>{{ index + meta.from }}</span>
                 </template>
+                
                 <template v-slot:item.created_at="{ item }">
                     <span>{{ item.created_at }}</span>
                 </template>
@@ -65,9 +66,14 @@
                             <v-icon left>
                                 mdi-tag
                             </v-icon>
-                            {{ item.name }}
+                            {{ item.category.name }}
                         </v-chip></span
                     >
+                </template>
+                <template v-slot:item.logo="{ item }">
+                    
+                    <span v-if="item.logo">{{item.logo}}</span>
+                    <span v-else>N/A</span>
                 </template>
 
                 <template v-slot:item.action="{ item }">
@@ -123,27 +129,39 @@
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <v-autocomplete
-                            v-model="formData.parent_id"
-                            :items="categories"
-                            :item-text="'name'"
-                            :item-value="'id'"
-                            outlined
-                            label="Category"
-                            :rules="[select('category')]"
-                            @change="child_category"
-                        ></v-autocomplete>
+                                    v-model="formData.category_id"
+                                    :items="categories"
+                                    item-text="name"
+                                    item-value="id"
+                                    label="Choose Categorie *"
+                                    
+                                    :rules="[required('Category')]"
+                                    outlined
+                                    
+                                >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                    v-bind="data.attrs"
+                                    :input-value="data.selected"
+                                    
+                                    @click="data.select"
+                                    
+                                    >
+                                    <span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span>{{ data.item.name }} 
+                                    </v-chip>
+                                </template>
+                                <template v-slot:item="data">
+                                    
+                                    <template>
+                                    <v-list-item-content>
+                                        <v-list-item-title ><span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span> {{data.item.name}}</v-list-item-title>
+                                        <v-list-item-subtitle ></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    </template>
+                                </template>
+                                </v-autocomplete>
 
-                        <v-autocomplete
-                            v-if="formData.parent_id"
-                            v-model="formData.category_id"
-                            :items="subcategories"
-                            :item-text="'name'"
-                            :item-value="'id'"
-                            outlined
-                            label="Subcategory"
-                            :rules="[select('Subcategory')]"
-                            @change="child_category"
-                        ></v-autocomplete>
+                        
                         <v-text-field
                             v-model="formData.name"
                             :rules="[required('Brand name')]"
@@ -253,7 +271,7 @@ export default {
         brands: [],
         formData: {},
         categories: [],
-        subcategories: {},
+        
         formTitle: "Users",
         breadcrumb: [
             {
@@ -285,7 +303,7 @@ export default {
     //computed: mapGetters(["allBrnads"]),
 
     created() {
-        this.getCategories();
+        this.getCategory();
     },
 
     methods: {
@@ -316,24 +334,19 @@ export default {
                     this.loading = false;
                 });
         },
-        getCategories() {
+        getCategory() {
             axios
-                .get("/api/category")
+                .get("/api/select/category")
                 .then(res => {
                     this.categories = res.data;
-                    console.log(this.categories);
+                    console.log(res.data);
                 })
-                .catch();
+                .catch(error => {
+                    console.log(error);
+                });
         },
 
-        child_category() {
-            this.categories.find(category => {
-                if (category.id === this.formData.parent_id) {
-                    console.log(category);
-                    this.subcategories = category.children;
-                }
-            });
-        },
+        
         cancel() {
             this.confirm = false;
             this.brand_id = "";
@@ -376,9 +389,7 @@ export default {
         edit(item) {
             this.formData.id = item.id;
             this.formData.name = item.name;
-            this.formData.parent_id = item.category.parent_id;
             this.formData.category_id = item.category.id;
-            this.child_category();
             this.addBrand();
         },
         confirmation(item) {

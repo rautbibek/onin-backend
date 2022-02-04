@@ -4,6 +4,9 @@ export const validation = {
             select(propertyType) {
                 return v => !!v || `${propertyType} field is mandatory.`;
             },
+            combo(propertyType) {
+                return v => (v && v.length > 0) || `${propertyType}  field is mandatory.`
+            },
             checked(propertyType) {
                 return v => !!v || `${propertyType} field is mandatory.`;
             },

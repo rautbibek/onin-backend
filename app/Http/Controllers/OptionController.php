@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 use App\Models\Option;
 use App\Models\Category;
+use Illuminate\Support\Str;
+use App\Helper\Datatable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\Admin\OptionResource;
 use Illuminate\Http\Request;
 
 class OptionController extends Controller
@@ -10,6 +15,56 @@ class OptionController extends Controller
     public function options(){
         $options = Option::all();
         return response()->json($options);
+    }
+    public function index()
+    {
+        $options = Option::latest();
+        $options = Datatable::filter($options,['key','code']);
+        
+        return  OptionResource::collection($options)->response()
+        ->setStatusCode(200);
+
+    }
+
+    public function save(Request $request){
+        // return response()->json($request->all(),500);
+        $this->validate($request,[
+            'name' => 'required',
+            'values' => 'required'
+        ]);
+        $id = $request->id;
+        $message = "";
+        $slug = Str::slug($request->name, '_');
+        
+        try{
+            DB::beginTransaction();
+            if(isset($id)){
+                $option = Option::findOrFail($id);
+                $option->code = $request->name;
+                $option->key = $slug;
+                $option->values = $request->values;
+                $option->update();
+                $message = "Category option updated successfully";
+            }else{
+                $option = new Option();
+                $option->code = $request->name;
+                $option->key = $slug;
+                $option->values = $request->values;
+                $option->save();
+                $message = "New category option created successfully";
+            }
+            DB::commit();
+            return response()->json([
+                'message'=> $message
+            ],200);
+
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json(array(
+                'code' => 500,
+                'message' => 'something went wrong'
+            ), 500);
+        }
     }
 
     public function updateCategoryOption(Request $request){

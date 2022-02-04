@@ -60,6 +60,8 @@ Route::middleware(['auth:admin'])->group(function(){
         
         Route::post('product/variant',[VariantController::class,'save']);
         Route::delete('product/variant/{id}',[VariantController::class,'delete']);
+        Route::get('all/category/options',[OptionController::class,'index']);
+        Route::post('store/options',[OptionController::class,'save']);
         Route::post('update/category/options',[OptionController::class,'updateCategoryOption']);
         
     });

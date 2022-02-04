@@ -82,7 +82,7 @@
                                 :item-text="'name'"
                                 :item-value="'id'"
                                 label="Brand"
-                                :rules="[select('Brand')]"
+                                
                                 outlined
                                 dense
                             ></v-autocomplete>

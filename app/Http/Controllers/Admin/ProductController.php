@@ -23,7 +23,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::with(['category:id,name','brand:id,name','variant','optionValues']);
+        $product = Product::with(['category:id,name','brand:id,name','variant','optionValues'])->latest();
         //return $product->withCount('variant')->get();
 
         //return response()->json($product);
@@ -50,9 +50,10 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        // return response()->json($request->all(),500);
-        $discount_type = $request->get('discount_value');
-        $discount = $request->get('discount');
+        //return response()->json($request->all(),500);
+        $discount_type = $request->has('discount_value')?$request->get('discount_value'):null;
+        $discount = $request->has('discount')?$request->get('discount'):null;
+        $brand_id = $request->has('brand_id')?$request->get('brand_id'):null;
 
         $images=[];
             if($request->hasFile('product_images')){
@@ -92,7 +93,7 @@ class ProductController extends Controller
                 $product->status = false;
             }
 
-            $product->brand_id = $request->brand_id;
+            $product->brand_id = $brand_id;
             $product->description = $request->description;
             $product->short_description = $request->short_description;
 
@@ -157,11 +158,11 @@ class ProductController extends Controller
 
         }catch(\Exception $e){
             DB::rollBack();
-            return response()->json($e,500);
+            
             return response()->json([
                 'message' => 'Something went wrong',
                 'error' =>$e->getMessage()
-            ], 404);
+            ], 500);
         }
     }
 
@@ -199,16 +200,16 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //return $request->all();
+        
         $this->validate($request,[
             'title'=>'required | max:200',
             'search_text'=>'required|max:200',
-            'brand_id' =>'required',
+            //'brand_id' =>'required',
             'short_description'=>'required',
             'description'=>'required'
         ]);
 
-
+        $brand_id = $request->has('brand_id')?$request->get('brand_id'):null;
         $product = Product::findOrFail($id);
         $discount_type = $request->get('discount_value');
         $discount = $request->get('discount');
@@ -224,7 +225,7 @@ class ProductController extends Controller
         $product->meta_title = $request->get('meta_title');
         $product->meta_description = $request->get('meta_description');
         $product->title = $request->title;
-        $product->brand_id = $request->brand_id;
+        $product->brand_id = $brand_id;
         $product->description = $request->description;
         $product->short_description = $request->short_description;
         $product->meta_keyword = $request->get('meta_tags');

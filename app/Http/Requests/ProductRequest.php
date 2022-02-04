@@ -25,10 +25,11 @@ class ProductRequest extends FormRequest
     {
 
         return [
+            'category_id' =>'required',
             'title'=>'required | max:200',
             'description' => 'required',
             'short_description'=>'required',
-            'brand_id' =>'required',
+            //'brand_id' =>'required',
 
         ];
     }

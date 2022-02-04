@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\ColorFamily;
 use App\Helper\Datatable;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ColorFamilyResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -31,7 +32,40 @@ class ColorFamilyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required| max:100',
+            'code' => 'required| max:100',
+        ]);
+        $id = $request->id;
+        $message = "";
+        DB::beginTransaction();
+        try{
+            if(isset($id)){
+                $color = ColorFamily::findOrFail($id);
+                $color->name = $request->name;
+                $color->code = $request->code;
+                $color->update();
+                $message = "Color Family updated successfullty";
+            }else{
+                $color = new ColorFamily();
+                $color->name = $request->name;
+                $color->code = $request->code;
+                $color->save();
+                $message = "New color added successfully";
+            }
+        DB::commit();
+        return response()->json([
+            'message' => $message,
+
+        ],200);
+        }catch(\Exception $e){
+            DB::rollback();
+            return response()->json([
+                'message' => 'Something went wrong',
+                'error' =>$e->getMessage()
+            ], 500);
+        }
+        
     }
 
     /**

@@ -25,7 +25,7 @@ class EditProductResource extends JsonResource
             'status'=> $this->status,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
-            'parent_id'=> $this->category->id,
+            'parent_id'=> $this->category_id,
             'has_color'=>$this->has_color,
             'has_size' => $this->has_size,
             'discount_value'=> $this->discount_type,

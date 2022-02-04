@@ -26,6 +26,7 @@
                                 <v-text-field
                                     v-model="formData.search_text"
                                     label="Search Text *"
+                                    placeholder="Best laptop under 100,000 price"
                                     outlined
                                     dense
                                     :rules="[
@@ -37,31 +38,42 @@
                             </v-col>
 
                             <v-col cols="6">
+                                <!-- @change="getSubcategory" -->
                                 <v-autocomplete
-                                    v-model="formData.parent_id"
+                                    v-model="selected_category"
                                     :items="categories"
-                                    :item-text="'name'"
-                                    :item-value="'id'"
+                                    item-text="name"
+                                    return-object
                                     label="Categories *"
-                                    @change="getSubcategory"
+                                    @change="checkColorAndSizeIfAvailable"
+                                    
                                     :rules="[select('category')]"
                                     outlined
                                     dense
-                                ></v-autocomplete>
+                                >
+                                <template v-slot:selection="data">
+                                    <v-chip
+                                    v-bind="data.attrs"
+                                    :input-value="data.selected"
+                                    
+                                    @click="data.select"
+                                    
+                                    >
+                                    <span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span>{{ data.item.name }} 
+                                    </v-chip>
+                                </template>
+                                <template v-slot:item="data">
+                                    
+                                    <template>
+                                    <v-list-item-content>
+                                        <v-list-item-title ><span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span> {{data.item.name}}</v-list-item-title>
+                                        <v-list-item-subtitle ></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    </template>
+                                </template>
+                                </v-autocomplete>
                             </v-col>
-                            <v-col>
-                                <v-autocomplete
-                                    v-model="formData.category_id"
-                                    :items="subcategories"
-                                    :item-text="'name'"
-                                    :item-value="'id'"
-                                    label="Subcategories *"
-                                    :rules="[select('category')]"
-                                    @change="getOptions"
-                                    outlined
-                                    dense
-                                ></v-autocomplete>
-                            </v-col>
+                            
                             <v-col>
                                 <v-autocomplete
                                     v-model="formData.brand_id"
@@ -252,7 +264,9 @@
                                         x-small-chips
                                         close
                                         multiple
-                                        :rules="[required('Available Sizes')]"
+                                        :rules="[
+                                            required('Sizes')
+                                        ]"
                                         dense
                                         hint="Hit enter after putting each size"
                                         outlined

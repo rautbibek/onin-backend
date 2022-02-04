@@ -53,6 +53,10 @@ class Category extends Model
         return $this->hasMany(CategoryOption::class);
     }
 
+    public function options(){
+        return $this->belongsToMany(Option::class,'category_options');
+    }
+
     public function brand(){
         return $this->hasMany(Brand::class);
     }

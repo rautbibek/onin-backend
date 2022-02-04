@@ -48,6 +48,8 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::get('/user', [UserController::class,'index'])->name('user');
         Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
         Route::get('/category/parent',[CategoryController::class,'getParentData']);
+        Route::get('/select/category',[CategoryController::class,'getSelectableCategory']);
+        Route::post('update/product/options',[ProductController::class,'updateProductOptions']);
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,
@@ -58,6 +60,8 @@ Route::middleware(['auth:admin'])->group(function(){
         
         Route::post('product/variant',[VariantController::class,'save']);
         Route::delete('product/variant/{id}',[VariantController::class,'delete']);
+        Route::post('update/category/options',[OptionController::class,'updateCategoryOption']);
+        
     });
 
 });

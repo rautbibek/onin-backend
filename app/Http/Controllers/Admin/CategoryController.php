@@ -19,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('last_child',true)->with('parent.parent');
+        $categories = Category::where('last_child',true)->with('parent.parent','categoryOptions')->orderBy('id','desc');
         $categories = Datatable::filter($categories,['name']);
         return  CategoryResource::collection($categories)->response()
         ->setStatusCode(200);
@@ -141,7 +141,6 @@ class CategoryController extends Controller
 
 
     public function getParentData(){
-       
         $category = Category::whereIn('lvl',[1,2])
         ->select('id','parent_id','name','last_child','lvl')
         ->with(['parent'=>function($query){
@@ -149,9 +148,16 @@ class CategoryController extends Controller
             $query->select('id','parent_id','name')->with(['parent:id,parent_id,name']);
         }])->orderBy('parent_id','asc')->get();
         // $category = Category::where('id',9)->with('parent.parent')->first();
-        return $category;
+        return response()->json($category,200);
     }
-    
-
-
+    public function getSelectableCategory(){
+        $category = Category::where('last_child',true)
+        ->select('id','parent_id','has_color','has_size','name','last_child','lvl')
+        ->with(['parent'=>function($query){
+            
+            $query->select('id','parent_id','name')->with(['parent:id,parent_id,name']);
+        }])->orderBy('parent_id','asc')->get();
+        // $category = Category::where('id',9)->with('parent.parent')->first();
+        return response()->json($category,200);
+    }
 }

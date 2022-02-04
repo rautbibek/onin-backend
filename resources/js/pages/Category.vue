@@ -75,6 +75,24 @@
                     <span>{{ item.created_at }}</span>
                 </template>
                 <template v-slot:item.action="{ item }">
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                x-small
+                                fab
+                                color="teal"
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                                @click="openOptionDialog(item)"
+                            >
+                                <v-icon dark>
+                                    mdi-cog
+                                </v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Category Oprion </span>
+                    </v-tooltip>
                     
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
@@ -231,6 +249,105 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog
+            v-model="optionDialog"
+            fullscreen
+            hide-overlay
+            transition="dialog-bottom-transition"
+            scrollable
+        >
+        <v-card tile>
+          <v-toolbar
+            flat
+            dark
+            color="primary"
+            dense
+          >
+            <v-toolbar-title>Category option setting</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn
+              icon
+              dark
+              @click="optionDialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <v-list
+              three-line
+              subheader
+            >
+              <v-subheader>Category Option Controls</v-subheader>
+              <v-list-item>
+                <v-list-item-content>
+                 <v-list-item-subtitle>Choose if this category contains color attribute</v-list-item-subtitle>
+                  <v-list-item-action>
+                      <v-switch
+                        v-model="has_color"
+                        label="Has Color"
+                        color="red"                      
+                        hide-details
+                        ></v-switch>
+                    </v-list-item-action>
+                    
+                     <v-list-item-subtitle>Choose if this category contains sizes attribute</v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                      <v-switch
+                        v-model="has_size"
+                        label="Has Sizes"
+                        color="red"
+                        hide-details
+                        ></v-switch>
+                    </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <v-divider></v-divider>
+            <v-subheader>Choose your options</v-subheader>
+            <v-row>
+                <v-col md="4" sm="12" v-for="(option,index) in options" :key="index" cols="4">
+                    <v-list
+                    three-line
+                    subheader
+                    >
+                    
+                    <v-list-item >
+                        <v-list-item-action>
+                        <v-checkbox :value="option.id" v-model="category_options"></v-checkbox>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                        <v-list-item-title>{{option.code}}</v-list-item-title>
+                        
+                        <v-list-item-subtitle class="pa-1" v-for="op in option.values" :key="op">
+                            - {{op}}
+                        </v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                    
+                    </v-list>
+                </v-col>
+            </v-row>
+            <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="optionDialog = false" color="error">
+                        <v-icon left>mdi-cancel</v-icon>
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        color="success"
+                        @click="updateCategoryOptions"
+                        :loading="buttonLoading"
+                    >
+                        <v-icon left>save</v-icon>
+                        proceed
+                    </v-btn>
+                </v-card-actions>
+          </v-card-text>
+
+          <div style="flex: 1 1 auto;"></div>
+        </v-card>
+      </v-dialog>
     </div>
 </template>
 <script>
@@ -243,7 +360,13 @@ export default {
         search_keyword: "",
         title: "Categories",
         dialog: false,
+        id:null,
         loading: false,
+        optionDialog:false,
+        has_color:false,
+        has_size:false,
+        options:[],
+        category_options:[],
         breadcrumb: [
             {
                 text: "Dashboard",
@@ -294,6 +417,15 @@ export default {
                 .catch(error => {
                     this.loading = false;
                 });
+        },
+
+        getOptions(){
+            axios.get('all/options').then(res=>{
+                this.options = res.data;
+                console.log(this.options);
+            }).catch(error=>{
+                console.log(error.response.data.errors);
+            });
         },
 
         deleteItem(item) {
@@ -350,7 +482,35 @@ export default {
             }
         },
 
+        openOptionDialog(item){
+            
+            this.id = item.id;
+            this.has_color = item.has_color;
+            this.has_size  = item.has_size,
+            this.category_options = item.cat_options;
+            this.optionDialog = true;
+        },
+
+        updateCategoryOptions(){
+            axios.post(`api/update/category/options`,{
+                id: this.id,
+                has_color: this.has_color,
+                has_size : this.has_size,
+                category_options:this.category_options,
+                
+
+            }).then(res=>{
+                console.log(res.data);
+                this.optionDialog = false;
+            }).catch(error=>{
+                console.log(error.response.data.errors);
+            });
+        },
+
         ...mapActions(["getCategories"])
+    },
+    mounted(){
+        this.getOptions();
     },
 
     created() {

@@ -7,10 +7,11 @@ export const ProductMixins = {
             collections: [],
             product_collection: [],
             meta_tags: [],
+            selected_category:{},
             product_tags: [],
             category_options: [],
             categories: [],
-            subcategories: [],
+            
             buttonLoading: false,
             brands: [],
             sizes: [],
@@ -53,6 +54,7 @@ export const ProductMixins = {
                     console.log(error.response.data.errors);
                 });
         },
+        
         getCollection() {
             axios
                 .get("/api/v1/collection")
@@ -63,23 +65,14 @@ export const ProductMixins = {
                     console.log(error.response.data.errors);
                 });
         },
-        getSubcategory() {
-            this.categories.find(category => {
-                if (category.id === this.formData.parent_id) {
-                    this.subcategories = category.children;
-                }
-            });
-        },
+        
         checkColorAndSizeIfAvailable() {
-            this.subcategories.find(scat => {
-                if (scat.id === this.formData.category_id) {
-                    this.formData.has_color = scat.has_color;
-                    this.formData.has_size = scat.has_size;
-                }
-            });
+            this.formData.category_id = this.selected_category.id;
+            this.formData.has_color = this.selected_category.has_color;
+            this.formData.has_size = this.selected_category.has_size
+            this.getOptions();
         },
         getOptions() {
-            this.checkColorAndSizeIfAvailable();
             axios
                 .get(`/api/v1/category/options/${this.formData.category_id}`)
                 .then(res => {
@@ -102,9 +95,10 @@ export const ProductMixins = {
         },
         getCategory() {
             axios
-                .get("/api/category")
+                .get("/api/select/category")
                 .then(res => {
                     this.categories = res.data;
+                    console.log(res.data);
                 })
                 .catch(error => {
                     console.log(error);

@@ -240,8 +240,8 @@ class ProductController extends Controller
         ],200);
     }
 
-    public function updateOptions(){
-        //
+    public function updateProductOptions(Request $request){
+        return response()->json($request->all(),500);
     }
 
     /**

@@ -320,6 +320,11 @@
                 </v-tab-item>
                 <v-tab-item>
                     <v-card flat class="p-5 auto">
+                        <v-form
+                            ref="update_options"
+                            v-model="option_valid"
+                            lazy-validation
+                        >
                         <div v-if="category_options.length > 0" class="row">
                             <v-col
                                 v-for="(cat_opts, index) in category_options"
@@ -343,6 +348,23 @@
                                 </v-autocomplete>
                             </v-col>
                         </div>
+                        <v-spacer></v-spacer>
+                            <div class="text-right mt-5 mb-5">
+                                <v-btn
+                                    color="primary"
+                                    @click="updateProductOptions"
+                                    :loading="buttonLoading"
+                                >
+                                    <v-icon left dark>
+                                        mdi-cloud-upload
+                                    </v-icon>
+                                    Update product options
+                                    <template v-slot:loader>
+                                        <span>Loading...</span>
+                                    </template>
+                                </v-btn>
+                            </div>
+                        </v-form>
                     </v-card>
                 </v-tab-item>
                 <v-tab-item>
@@ -570,6 +592,7 @@ export default {
             single_attribute: {},
             product: [],
             attribute_valid: true,
+            option_valid: true,
             confirm: false,
             formData: {},
             tab: "web",
@@ -701,6 +724,33 @@ export default {
                 this.buttonLoading = false;
             }
         },
+        updateProductOptions() {
+            //this.$refs.attributes.resetValidation();
+            if (this.$refs.update_options.validate()) {
+                this.buttonLoading = true;
+
+                axios
+                    .post(`/api/update/product/options `, this.option_values)
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                        
+                        //this.$router.push({ name: "Product" });
+                        this.buttonLoading = false;
+                        this.getProduct();
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
+                        this.buttonLoading = false;
+                    });
+                this.buttonLoading = false;
+            }
+        },
         getProduct() {
             axios
                 .get(`/api/product/${this.$route.params.id}`)
@@ -708,7 +758,7 @@ export default {
                     this.product = result.data.data;
                     this.formData = this.product;
                     this.meta_tags = this.product.meta_tags;
-                    this.getSubcategory();
+                    console.log(this.formData);
                     this.getOptions();
                     this.getCollectionIds(this.formData.collection);
 

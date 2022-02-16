@@ -26,7 +26,7 @@ class LoginController extends Controller
         $request['password']=Hash::make($request['password']);
         $request['remember_token'] = Str::random(10);
         $user = User::create($request->toArray());
-        $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+        $token = $user->createToken('authToken')->accessToken;
         $response = ['token' => $token];
         return response($response, 200);
     }

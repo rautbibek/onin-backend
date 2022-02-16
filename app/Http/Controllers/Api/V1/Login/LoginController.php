@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Login;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;

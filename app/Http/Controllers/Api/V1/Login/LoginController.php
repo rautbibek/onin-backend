@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
+use App\Http\Resources\User\MeResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -60,7 +61,8 @@ class LoginController extends Controller
     }
 
     public function getLoggedInUser(){
-        return auth()->user();
+        return new MeResource(auth()->user());
+        
     }
     public function logOut(){
         $token = Auth::user()->token();

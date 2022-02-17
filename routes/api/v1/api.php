@@ -17,7 +17,7 @@ Route::get('/category/options/{id}',[CommonDataController::class,'categoryOption
 Route::get('/category/brand/{id}',[CommonDataController::class,'getCategoryBrand']);
 Route::get('/colors',[CommonDataController::class,'getColors']);
 Route::get('/collection',[CommonDataController::class,'getCollection']);
-Route::middleware(['auth:api'])->group(function(){
+Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/me', [LoginController::class,'getLoggedInUser']);
     Route::post('/logout', [LoginController::class,'logOut']);
 });

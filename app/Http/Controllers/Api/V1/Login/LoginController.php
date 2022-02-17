@@ -44,7 +44,7 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('authToken')->accessToken;
+                $token = $user->createToken('authToken')->plainTextToken;
                 Auth::login($user);
                 $response = [
                     'user' => Auth::user(),
@@ -66,8 +66,8 @@ class LoginController extends Controller
         
     }
     public function logOut(){
-        $token = Auth::user()->token();
-        $token->revoke();
+        $token = Auth::user()->tokens();
+        $token->delete();
         $response = ['message' => 'You have been successfully logged out!'];
         return response($response, 200);
     }

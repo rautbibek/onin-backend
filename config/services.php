@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'sms' =>[
+        'sms_api_key' => env('SMS_API_KEY', 'Laravel'),
+        'sms_api_url' => env('SMS_API_URL', 'Laravel')
+    ]
+
 ];

@@ -3,31 +3,67 @@
 namespace App\Http\Controllers\Api\V1\Login;
 use App\Models\User;
 use Illuminate\Support\Str;
+use App\Models\SmsLog;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Http\Resources\User\MeResource;
 use Illuminate\Support\Facades\Auth;
+use App\Services\SendSmsService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
     public function register (Request $request) {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request,[
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'mobile' => 'required|numeric|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
-        if ($validator->fails())
-        {
-            return response(['errors'=>$validator->errors()->all()], 422);
+        DB::beginTransaction();
+        try{
+            $request['password']=Hash::make($request['password']);
+            $request['remember_token'] = Str::random(10);
+            $user = User::create($request->toArray());
+            $token = $user->createToken('authToken')->plainTextToken;
+            $code = rand(10000,99999);
+            $message = config('app.name').' Mobile verification code is - '.$code;
+            $sms =  SendSmsService::sendSms($request->mobile,$message);
+            
+            $sms_log = SmsLog::create([
+                'sms_type' => 'verification',
+                'user_id'  => $user->id,
+                'mobile'   => $request->mobile,
+                'title'    => 'user registration',
+                'description' => $message,
+                'ip_address' => request()->ip()
+            ]);
+            if($sms->error){
+                $sms_log->update([
+                    'status' =>false
+                ]);
+            }
+            DB::commit();
+
+
+        }catch(\Exception $e){
+            Log::channel('slack')->error($exception);
+            DB::rollBack();
+            
+            return response()->json(array(
+                'code' => 500,
+                'error'=> $exception,
+                'message' => 'something went wrong'
+            ), 500);
         }
-        $request['password']=Hash::make($request['password']);
-        $request['remember_token'] = Str::random(10);
-        $user = User::create($request->toArray());
-        $token = $user->createToken('authToken')->plainTextToken;
-        $response = ['token' => $token];
+        
+        $response = [
+            'user'=> $user,
+            'token' => $token
+        ];
         return response($response, 200);
     }
 
@@ -70,5 +106,21 @@ class LoginController extends Controller
         $token->delete();
         $response = ['message' => 'You have been successfully logged out!'];
         return response($response, 200);
+    }
+
+    public function mobileVerification(){
+        $otp = rand(10000,99999);
+        $sms_log = SmsLog::where('mobile'); 
+        $message = config('app.name').' mobile verification code '.$otp;
+        $sms =  SendSmsService::sendSms(986375627,$message);
+        
+        if($sms->error){
+            return response()->json([
+                'message' => 'Invalid contact number'
+            ],422);
+        }
+        return response()->json([
+            'message' => 'Otp token sent to provided contact number'
+        ]);
     }
 }

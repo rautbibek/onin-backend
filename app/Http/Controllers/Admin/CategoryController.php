@@ -76,6 +76,7 @@ class CategoryController extends Controller
                 
             }
             DB::commit();
+            cache()->forget('public-category');
             return response()->json([
                 'message'=>$message,
             ]);
@@ -134,6 +135,7 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+        cache()->forget('public-category');
         return response()->json([
             'message'=>'Category deleted succefully',
         ],200);

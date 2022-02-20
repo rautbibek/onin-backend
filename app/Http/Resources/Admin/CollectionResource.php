@@ -19,6 +19,8 @@ class CollectionResource extends JsonResource
             'name'=>$this->name,
             'discount_type' => $this->discount_type?$this->discount_type:'-',
             'discount' => $this->discount?$this->discount:'-',
+            'expire_at'=> $this->expire_at?$this->expire_at:'lifetime',
+            'status' => $this->status, 
             'created_at'=>$this->created_at->diffForHumans(),
         ];
     }

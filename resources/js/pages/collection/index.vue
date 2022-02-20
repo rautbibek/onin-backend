@@ -52,6 +52,16 @@
                 <template v-slot:item.id="{ index }">
                     <span>{{ index + meta.from }}</span>
                 </template>
+                <template v-slot:item.status="{ item }">
+                    <v-switch
+                        class="text-right"
+                        :input-value="item.status"
+                        value
+                        color="green"
+                        inset
+                        @click="updateStatus(item)"
+                    ></v-switch>
+                </template>
                 <template v-slot:item.created_at="{ item }">
                     <span>{{ item.created_at }}</span>
                 </template>
@@ -223,6 +233,8 @@ export default {
             { text: "Name", value: "name", sortable: true },
             { text: "Discount Type", value: "discount_type" },
             { text: "Discount", value: "discount" },
+            { text: "Status", value: "status" },
+            { text: "Expire At", value: "expire_at" },
             { text: "Created At", value: "created_at" },
             { text: "Action", value: "action" }
         ]
@@ -319,7 +331,17 @@ export default {
                     });
                     this.confirm = false;
                 });
-        }
+        },
+        updateStatus(item) {
+            axios
+                .put(`/api/collection/${item.id}`)
+                .then(res => {
+                    this.$toast.success(res.data.message, {
+                            timeout: 2000
+                    });
+                })
+                .catch();
+        },
     }
 };
 </script>

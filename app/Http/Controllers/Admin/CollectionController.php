@@ -40,7 +40,8 @@ class CollectionController extends Controller
             $collection->update([
                 'name' => $request->get('name'),
                 'discount_type' => $request->get('discount_type'),
-                'discount' => $request->get('discount')
+                'discount' => $request->get('discount'),
+                'expire_at' => $request->expire_at,
             ]);
             $message = 'Collection Updated Successfully';
         }else{
@@ -78,7 +79,16 @@ class CollectionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $collection = Collection::findOrFail($id);
+        $status = !$collection->status;
+        
+        $collection->update([
+                'status' => $status
+        ]);
+
+        return response()->json([
+            'message' => "Status Updated succefully"
+        ]);
     }
 
     /**
@@ -96,4 +106,5 @@ class CollectionController extends Controller
             'message'=>'Collection Deleted successfully'
         ]);
     }
+
 }

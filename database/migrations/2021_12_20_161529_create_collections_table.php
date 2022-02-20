@@ -20,6 +20,7 @@ class CreateCollectionsTable extends Migration
             $table->string('slug');
             $table->enum('discount_type', ['per', 'rs'])->nullable();
             $table->integer('discount')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

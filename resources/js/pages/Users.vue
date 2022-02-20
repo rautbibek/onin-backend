@@ -130,6 +130,8 @@ export default {
             { text: "id", align: "start", value: "id", sortable: false },
             { text: "Name", value: "name", sortable: true },
             { text: "Email", value: "email" },
+            { text: "Contact Number", value: "phone" },
+            
             { text: "Created At", value: "created_at" },
             { text: "Action", value: "action" }
         ]

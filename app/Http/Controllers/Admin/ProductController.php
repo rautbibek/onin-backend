@@ -145,9 +145,9 @@ class ProductController extends Controller
                     $p_variant->save();
                     $qty += $attribute->stock;
                 }
-                $product->update([
-                    'inventory_track'=> $qty
-                ]);
+                // $product->update([
+                //     'inventory_track'=> $qty
+                // ]);
             }
 
 

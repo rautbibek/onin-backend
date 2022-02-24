@@ -14,7 +14,7 @@ class AddLastClildToCategoriesTable extends Migration
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->boolean('last_clild')->default(true)->after('slug');
+            $table->boolean('last_child')->default(true)->after('slug');
         });
     }
 

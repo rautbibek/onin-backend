@@ -40,6 +40,7 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::get('/category/parent',[CategoryController::class,'getParentData']);
         Route::get('/select/category',[CategoryController::class,'getSelectableCategory']);
         Route::post('update/product/options',[ProductController::class,'updateProductOptions']);
+        Route::post('category/option/{id}',[CategoryController::class,'getCategoryOptions']);
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,

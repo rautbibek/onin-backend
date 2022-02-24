@@ -45,7 +45,6 @@
 </template>
 <script>
 import apexchart from "vue-apexcharts";
-
 export default {
     components: {
         apexchart

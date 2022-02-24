@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\Category;
 use App\Helper\Datatable;
+use App\Models\CategoryOption;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
@@ -19,11 +20,16 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('last_child',true)->with('parent.parent','categoryOptions')->orderBy('id','desc');
-        $categories = Datatable::filter($categories,['name']);
+        $categories = Category::where('parent_id',null)
+        ->with('children.children','categoryOptions')
+        ->orderBy('id','desc')->get();
+        // return $categories;
+        // $categories = Datatable::filter($categories,['name']);
         return  CategoryResource::collection($categories)->response()
         ->setStatusCode(200);
     }
+
+   
 
     /**
      * Store a newly created resource in storage.
@@ -103,7 +109,12 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = CategoryOption::where('category_id',$id)
+        ->select('category_id','option_id')
+        ->get();
+        return $category->map(function($item){
+            return $item->option_id;
+        });
     }
 
     /**

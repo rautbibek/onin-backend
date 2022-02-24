@@ -22,11 +22,11 @@ class CategoryResource extends JsonResource
             'has_color' => $this->has_color,
             'has_size' => $this->has_size,
             'icon' => $this->icon,
-            'parent'=> $this->parent,
+            'children'=> $this->children,
             'created_at' => $this->created_at->diffForHumans(),
-            'cat_options' => $this->categoryOptions->map(function($item){
-                return $item->option_id;
-            }),
+            // 'cat_options' => $this->categoryOptions->map(function($item){
+            //     return $item->option_id;
+            // }),
         ];
     }
 }

@@ -23,6 +23,8 @@ class MediaHelper{
                 }
                 $image = Image::make($file)->stream();
                  Storage::disk('public')->put($path.'/'.$fileName, $image);
+                 echo('first');
+                 
                  return $fileName;
             }else{
                 Storage::disk('public')->put($path.'/'.$fileName, $file);

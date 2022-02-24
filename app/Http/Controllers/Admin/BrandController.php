@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\Brand;
 use App\Helper\Datatable;
+use App\Http\Helper\MediaHelper;
 use App\Http\Resources\Admin\BrandResource;
 use App\Http\Requests\BrandRequest;
 use App\Http\Controllers\Controller;
@@ -35,8 +36,18 @@ class BrandController extends Controller
     {
         //return response()->json($request->all(),500);
         $brand = new Brand();
+        $logo = null;
+        
+        if(isset($request->logo)){
+            $this->validate($request,[
+                'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+            ]);    
+            $mediaHelper = new MediaHelper;
+            $logo =  $mediaHelper->storeMedia($request->logo,'brand',true,false,true);
+        }
         $brand->create([
             'name'=>$request->get('name'),
+            'logo' => $logo,
             'category_id' => $request->get('category_id'),
            // 'logo' => $request->get('logo'),
            // 'description' => $request->get('description'),

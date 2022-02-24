@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Category;
 use App\Helper\Datatable;
 use App\Models\CategoryOption;
+use App\Http\Helper\MediaHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -40,9 +42,20 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         
-        $parent_id = $request->has('parent_id')?$request->get('parent_id'):null;
-        $level = 1;
+        $parent_id = $request->has('parent_id')?(int) $request->get('parent_id'):null;
+        //$image = $request->has('image')?$request->get('image'):'';
+        //return $image;
+        $category_image = null;
         
+        if(isset($request->image)){
+            $this->validate($request,[
+                'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+            ]);    
+            $mediaHelper = new MediaHelper;
+            $category_image =  $mediaHelper->storeMedia($request->image,'category',true,false,true);
+        }
+        
+        $level = 1;
         try{
             DB::beginTransaction();
             if(isset($parent_id) && $parent_id != 'undefined'){
@@ -53,16 +66,19 @@ class CategoryController extends Controller
                     $cat->update();
                 }
             }
+            
+            
             $message = "New category Added successfully !";
             
             $id = $request->get('id');
             if (isset($id) && $id != 'undefined') {
                 $category = Category::findorfail($id);
                 $category->update([
-                    'parent_id'=> request()->get('parent_id'),
+                    'parent_id'=> $parent_id,
                     'name'=> request()->get('name'),
                     'icon'=>request()->get('icon'),
-                    'lvl' => $level
+                    'cover'=> $category_image,
+                    'lvl' => (int) $level
                 ]);
 
             
@@ -72,11 +88,11 @@ class CategoryController extends Controller
                 $category = new Category();
                 
                 $category->create([
-                    'parent_id'=> request()->get('parent_id'),
+                    'parent_id'=> $parent_id,
                     'name'=> request()->get('name'),
                     'icon'=>request()->get('icon'),
-                    'lvl' => $level
-                    //'is_featured' => false
+                    'lvl' => $level,
+                    'cover'=> $category_image,
                 ]);
                 
                 
@@ -87,18 +103,16 @@ class CategoryController extends Controller
                 'message'=>$message,
             ]);
         }catch(\Exception $exception){
+
             Log::channel('slack')->error($exception);
             DB::rollBack();
-            
+            return $exception;
             return response()->json(array(
                 'code' => 500,
                 'error'=> $exception,
                 'message' => 'something went wrong'
             ), 500);
         }
-
-
-
     }
 
     /**

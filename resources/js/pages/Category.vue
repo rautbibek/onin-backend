@@ -395,8 +395,18 @@ export default {
         submit() {
             if (this.$refs.form.validate()) {
                 this.buttonLoading = true;
+                var formData = new FormData();
+                const config = {
+                    headers: {
+                        "content-type": "multipart/form-data"
+                    }
+                };
+                _.each(this.formData, (value, key) => {
+                    formData.append(key, value);
+                });
+
                 axios
-                    .post("api/category", this.formData)
+                    .post("api/category", formData)
                     .then(res => {
                         this.$toast.success(res.data.message, {
                             timeout: 2000

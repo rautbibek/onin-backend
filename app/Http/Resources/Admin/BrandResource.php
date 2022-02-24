@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Resources\Admin;
-
+use App\Http\Helper\MediaHelper;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BrandResource extends JsonResource
@@ -18,7 +18,7 @@ class BrandResource extends JsonResource
             'id'=>$this->id,
             'name'=>$this->name,
             'category' => $this->category,
-            'logo' => $this->logo,
+            'attacment' => $this->logo?MediaHelper::getThumbnailUrl($this->logo,'thumb'):asset('/images/no-image.png'),
             'created_at'=>$this->created_at->diffForHumans(),
         ];
     }

@@ -55,7 +55,7 @@
                 <template v-slot:item.id="{ index }">
                     <span>{{ index + meta.from }}</span>
                 </template>
-                
+
                 <template v-slot:item.created_at="{ item }">
                     <span>{{ item.created_at }}</span>
                 </template>
@@ -70,9 +70,14 @@
                         </v-chip></span
                     >
                 </template>
-                <template v-slot:item.logo="{ item }">
-                    
-                    <span v-if="item.logo">{{item.logo}}</span>
+                <template v-slot:item.attacment="{ item }">
+                    <span v-if="item.attacment">
+                        <img
+                            height="100px"
+                            :src="item.attacment"
+                            alt="item.name"
+                        />
+                    </span>
                     <span v-else>N/A</span>
                 </template>
 
@@ -129,39 +134,59 @@
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <v-autocomplete
-                                    v-model="formData.category_id"
-                                    :items="categories"
-                                    item-text="name"
-                                    item-value="id"
-                                    label="Choose Categorie *"
-                                    
-                                    :rules="[required('Category')]"
-                                    outlined
-                                    
-                                >
-                                <template v-slot:selection="data">
-                                    <v-chip
+                            v-model="formData.category_id"
+                            :items="categories"
+                            item-text="name"
+                            item-value="id"
+                            label="Choose Categorie *"
+                            :rules="[required('Category')]"
+                            outlined
+                        >
+                            <template v-slot:selection="data">
+                                <v-chip
                                     v-bind="data.attrs"
                                     :input-value="data.selected"
-                                    
                                     @click="data.select"
-                                    
-                                    >
-                                    <span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span>{{ data.item.name }} 
-                                    </v-chip>
-                                </template>
-                                <template v-slot:item="data">
-                                    
-                                    <template>
+                                >
+                                    <span v-if="data.item.parent"
+                                        ><span v-if="data.item.parent.parent"
+                                            >{{
+                                                data.item.parent.parent.name
+                                            }}
+                                            -></span
+                                        >{{ data.item.parent.name }} -></span
+                                    >{{ data.item.name }}
+                                </v-chip>
+                            </template>
+                            <template v-slot:item="data">
+                                <template>
                                     <v-list-item-content>
-                                        <v-list-item-title ><span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span> {{data.item.name}}</v-list-item-title>
-                                        <v-list-item-subtitle ></v-list-item-subtitle>
+                                        <v-list-item-title
+                                            ><span v-if="data.item.parent"
+                                                ><span
+                                                    v-if="
+                                                        data.item.parent.parent
+                                                    "
+                                                    >{{
+                                                        data.item.parent.parent
+                                                            .name
+                                                    }}
+                                                    -></span
+                                                >{{
+                                                    data.item.parent.name
+                                                }}
+                                                -></span
+                                            >
+                                            {{
+                                                data.item.name
+                                            }}</v-list-item-title
+                                        >
+                                        <v-list-item-subtitle></v-list-item-subtitle>
                                     </v-list-item-content>
-                                    </template>
                                 </template>
-                                </v-autocomplete>
+                            </template>
+                        </v-autocomplete>
 
-                        
                         <v-text-field
                             v-model="formData.name"
                             :rules="[required('Brand name')]"
@@ -271,7 +296,7 @@ export default {
         brands: [],
         formData: {},
         categories: [],
-        
+
         formTitle: "Users",
         breadcrumb: [
             {
@@ -294,7 +319,7 @@ export default {
                 value: "category",
                 sortable: false
             },
-            { text: "Logo", value: "logo" },
+            { text: "Logo", value: "attacment" },
             { text: "Created At", value: "created_at" },
             { text: "Action", value: "action" }
         ]
@@ -346,7 +371,6 @@ export default {
                 });
         },
 
-        
         cancel() {
             this.confirm = false;
             this.brand_id = "";

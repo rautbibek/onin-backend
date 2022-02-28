@@ -25,8 +25,8 @@ class CreateCategoriesTable extends Migration
             $table->string('cover')->nullable();
             $table->string('has_color')->default(false);
             $table->string('has_size')->default(false);
-            $table->integer('lvl')->default(1)->after('slug');
-            $table->boolean('status')->default(true)->after('slug');
+            $table->integer('lvl')->default(1);
+            $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });

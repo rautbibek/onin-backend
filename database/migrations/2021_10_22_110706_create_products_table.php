@@ -23,7 +23,7 @@ class CreateProductsTable extends Migration
             $table->foreignId('category_id')->nullable()->constrained("categories")->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('brand_id')->nullable()->constrained("brands")->cascadeOnUpdate()->nullOnDelete();
             $table->integer('discount')->dafault(0);
-            $table->enum('discount_type',['flat', 'percent'])->nullable()->after('brand_id');
+            $table->enum('discount_type',['flat', 'percent'])->nullable();
             $table->text('short_description');
             $table->text('description');
             $table->boolean('inventory_track')->default(false);

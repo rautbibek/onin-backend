@@ -14,6 +14,7 @@ import ColorFamily from "../pages/attributes/ColorFamily.vue";
 import CategoryOption from "../pages/attributes/CategoryOptions.vue";
 import Collection from "../pages/collection";
 import Brand from "../pages/brand";
+import Banner from "../pages/banner";
 const routes = [
     {
         path: "*",
@@ -70,6 +71,11 @@ const routes = [
                 path: "brand",
                 name: "Brand",
                 component: Brand
+            },
+            {
+                path: "banner",
+                name: "Banner",
+                component: Banner
             },
             {
                 path: "collection",

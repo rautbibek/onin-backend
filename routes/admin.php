@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VariantController;
+use App\Http\Controllers\Admin\BannerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/category/children',[CategoryController::class,'getChildrenData']);
@@ -48,7 +49,9 @@ Route::middleware(['auth:admin'])->group(function(){
             'product' => ProductController::class,
             'brand' => BrandController::class,
             'colors' => ColorFamilyController::class,
-            'collection' => CollectionController::class
+            'collection' => CollectionController::class,
+            'banner' => BannerController::class
+
         ]);
         
         Route::post('product/variant',[VariantController::class,'save']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\Brand;
 use App\Helper\Datatable;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Helper\MediaHelper;
 use App\Http\Resources\Admin\BrandResource;
 use App\Http\Requests\BrandRequest;
@@ -19,7 +20,7 @@ class BrandController extends Controller
     public function index()
     {
 
-        $brand = Brand::with('category');
+        $brand = Brand::with('category')->latest();
         $brand = Datatable::filter($brand,['name']);
 
         return  BrandResource::collection($brand)->response()
@@ -35,23 +36,48 @@ class BrandController extends Controller
     public function store(BrandRequest $request)
     {
         //return response()->json($request->all(),500);
-        $brand = new Brand();
-        $logo = null;
         
-        if(isset($request->logo)){
-            $this->validate($request,[
-                'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-            ]);    
-            $mediaHelper = new MediaHelper;
-            $logo =  $mediaHelper->storeMedia($request->logo,'brand',true,false,true);
+        $logo = null;
+        $id = $request->get('id');
+        
+        
+        if(isset($id)){
+            $brand = Brand::findOrFail($id);
+            if(isset($request->logo)){
+                Storage::delete('/brand/'.$brand->logo);
+                Storage::delete('/thumb/'.$brand->logo);
+                $this->validate($request,[
+                    'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+                ]);    
+                $mediaHelper = new MediaHelper;
+                $logo =  $mediaHelper->storeMedia($request->logo,'brand',true,false,true);
+            }else{
+                $logo = $brand->logo;
+            }
+            
+
+            $brand->update([
+                'name'=>$request->get('name'),
+                'logo' => $logo,
+                'category_id' => $request->get('category_id'),
+            ]);
+        }else{
+            $brand = new Brand();
+            if(isset($request->logo)){
+                $this->validate($request,[
+                    'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+                ]);    
+                $mediaHelper = new MediaHelper;
+                $logo =  $mediaHelper->storeMedia($request->logo,'brand',true,false,true);
+            }
+            $brand->create([
+                'name'=>$request->get('name'),
+                'logo' => $logo,
+                'category_id' => $request->get('category_id'),
+
+            ]);
         }
-        $brand->create([
-            'name'=>$request->get('name'),
-            'logo' => $logo,
-            'category_id' => $request->get('category_id'),
-           // 'logo' => $request->get('logo'),
-           // 'description' => $request->get('description'),
-        ]);
+        
         return response()->json([
             'message'=>'New brand added succefully.'
         ]);

@@ -320,7 +320,8 @@ export default {
             },
             {
                 icon: "mdi-content-copy",
-                text: "Duplicates"
+                text: "Banner",
+                url: "/banner"
             },
             {
                 icon: "mdi-account-circle",
@@ -336,8 +337,7 @@ export default {
                         icon: "remove",
                         text: "Color Family",
                         url: "/color-family"
-                    },
-                    
+                    }
                 ]
             },
             // {

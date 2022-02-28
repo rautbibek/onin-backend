@@ -13,7 +13,7 @@
                 show-current-page="true"
                 :footer-props="{
                     'items-per-page-options': [5, 10, 20, 25, 50, 100],
-                    'items-per-page-text': 'users per page',
+                    'items-per-page-text': 'Brand per page',
                     'show-current-page': true,
                     'show-first-last-page': true
                 }"
@@ -74,6 +74,7 @@
                     <span v-if="item.attacment">
                         <img
                             height="100px"
+                            width="100px"
                             :src="item.attacment"
                             alt="item.name"
                         />
@@ -197,9 +198,9 @@
                         <v-row>
                             <v-col>
                                 <v-file-input
-                                    v-model="formData.logo"
                                     color="deep-purple accent-4"
                                     counter
+                                    clearable
                                     @change="filePreview"
                                     label="Logo"
                                     placeholder="Select your files"
@@ -299,7 +300,7 @@ export default {
         brand_id: "",
         confirm: false,
         search_keyword: "",
-        title: "Users",
+        title: "Brands",
         dialog: false,
         loading: false,
         errors: [],
@@ -308,7 +309,7 @@ export default {
         formData: {},
         categories: [],
 
-        formTitle: "Users",
+        formTitle: "Brand",
         breadcrumb: [
             {
                 text: "Dashboard",
@@ -316,9 +317,9 @@ export default {
                 to: "/dashboard"
             },
             {
-                text: "Category",
+                text: "Brand",
                 disabled: true,
-                to: "/category"
+                to: "/brand"
             }
         ],
 
@@ -344,7 +345,12 @@ export default {
 
     methods: {
         filePreview(e) {
-            this.url = URL.createObjectURL(e);
+            this.url = "";
+            this.formData.logo = "";
+            if (e) {
+                this.formData.logo = e;
+                this.url = URL.createObjectURL(e);
+            }
         },
         addBrand() {
             this.dialog = true;

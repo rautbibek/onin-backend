@@ -7,11 +7,11 @@ export const ProductMixins = {
             collections: [],
             product_collection: [],
             meta_tags: [],
-            selected_category:{},
+            selected_category: {},
             product_tags: [],
             category_options: [],
             categories: [],
-            
+
             buttonLoading: false,
             brands: [],
             sizes: [],
@@ -54,7 +54,7 @@ export const ProductMixins = {
                     console.log(error.response.data.errors);
                 });
         },
-        
+
         getCollection() {
             axios
                 .get("/api/v1/collection")
@@ -65,11 +65,11 @@ export const ProductMixins = {
                     console.log(error.response.data.errors);
                 });
         },
-        
+
         checkColorAndSizeIfAvailable() {
             this.formData.category_id = this.selected_category.id;
             this.formData.has_color = this.selected_category.has_color;
-            this.formData.has_size = this.selected_category.has_size
+            this.formData.has_size = this.selected_category.has_size;
             this.getOptions();
         },
         getOptions() {
@@ -98,7 +98,6 @@ export const ProductMixins = {
                 .get("/api/select/category")
                 .then(res => {
                     this.categories = res.data;
-                    console.log(res.data);
                 })
                 .catch(error => {
                     console.log(error);

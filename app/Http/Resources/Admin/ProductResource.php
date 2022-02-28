@@ -27,7 +27,7 @@ class ProductResource extends JsonResource
             //'total_variant'=> $this->variant_count,
             'variant'=>$this->variant,
             'inventory_track' => $this->inventory_track,
-            'image' => $this->image?$this->image?MediaHelper::getThumbnailUrl($this->image[0],'thumb'):'':asset('/images/no-image.png'),
+            'image' => $this->cover?MediaHelper::getThumbnailUrl($this->cover,'thumb'):asset('/images/no-image.png'),
             'created_at'=>$this->created_at,
             'short_desc'=>$this->short_description,
             'description'=>$this->description,

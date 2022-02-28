@@ -22,6 +22,8 @@ class CreateVariantsTable extends Migration
             $table->integer('sold')->default(0);
             $table->string('sku')->nullable();
             $table->integer('price');
+            $table->jsonb('sizes')->nullable();
+            $table->string('image')->nullable();
             $table->double('discounted_price')->nullable();
             $table->jsonb('extra')->nullable();
             $table->timestamps();

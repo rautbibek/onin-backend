@@ -21,6 +21,7 @@ class CreateCollectionsTable extends Migration
             $table->enum('discount_type', ['per', 'rs'])->nullable();
             $table->integer('discount')->nullable();
             $table->boolean('status')->default(true);
+            $table->dateTime('expire_at')->nullable();
             $table->timestamps();
         });
     }

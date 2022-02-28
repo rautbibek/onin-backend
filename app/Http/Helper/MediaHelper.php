@@ -23,7 +23,7 @@ class MediaHelper{
                 }
                 $image = Image::make($file)->stream();
                  Storage::disk('public')->put($path.'/'.$fileName, $image);
-                 echo('first');
+                 
                  
                  return $fileName;
             }else{
@@ -32,6 +32,20 @@ class MediaHelper{
             }
 
         }
+    }
+
+    public static function saveProductImage($file,$path,$name){        
+            $currentDate = Carbon::now()->toDateString();
+            $fileName = $name.'-'.$currentDate.'-'.uniqid().'.'.$file->getClientOriginalExtension();
+            
+            $file->storeAs($path,$fileName);
+            $thumb = Image::make($file)->resize(200,150,function($constrain){
+                $constrain->aspectRatio();
+            })
+            ->resizeCanvas(200,null,'center', false, '#e0e0e0')
+            ->stream();
+            Storage::put('thumb/'.$fileName,$thumb);                 
+            return $fileName;
     }
 
     public static function getLink($image, $valid_till = 5)
@@ -46,7 +60,8 @@ class MediaHelper{
 
     public static function getThumbnailUrl($image,$path){
         $file = $path.'/'.$image;
-        return Storage::disk('public')->url($file);
+        
+        return Storage::url($file);
 
     }
 }

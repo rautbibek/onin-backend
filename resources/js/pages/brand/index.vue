@@ -200,10 +200,13 @@
                                     v-model="formData.logo"
                                     color="deep-purple accent-4"
                                     counter
+                                    @change="filePreview"
                                     label="Logo"
                                     placeholder="Select your files"
-                                    prepend-icon="mdi-camera"
+                                    append-icon="mdi-camera"
                                     outlined
+                                    hide-spin-buttons
+                                    prepend-icon
                                     show-size
                                     accept="image/*"
                                 >
@@ -229,6 +232,13 @@
                                     </template>
                                 </v-file-input>
                             </v-col>
+                            <img
+                                v-if="url"
+                                :src="url"
+                                height="100px"
+                                width="100px"
+                                alt="logo"
+                            />
                         </v-row>
                     </v-form>
                 </v-card-text>
@@ -285,6 +295,7 @@ export default {
         ConfirmationBox
     },
     data: () => ({
+        url: "",
         brand_id: "",
         confirm: false,
         search_keyword: "",
@@ -332,6 +343,9 @@ export default {
     },
 
     methods: {
+        filePreview(e) {
+            this.url = URL.createObjectURL(e);
+        },
         addBrand() {
             this.dialog = true;
         },
@@ -364,7 +378,6 @@ export default {
                 .get("/api/select/category")
                 .then(res => {
                     this.categories = res.data;
-                    console.log(res.data);
                 })
                 .catch(error => {
                     console.log(error);

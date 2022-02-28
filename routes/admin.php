@@ -41,6 +41,8 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::get('/select/category',[CategoryController::class,'getSelectableCategory']);
         Route::post('update/product/options',[ProductController::class,'updateProductOptions']);
         Route::post('category/option/{id}',[CategoryController::class,'getCategoryOptions']);
+        Route::post('/update/product/image',[ProductController::class,'updateProductImage']);
+        Route::post('/update/cover/{id}',[ProductController::class,'updateCover']);
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,
@@ -54,6 +56,7 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::get('all/category/options',[OptionController::class,'index']);
         Route::post('store/options',[OptionController::class,'save']);
         Route::post('update/category/options',[OptionController::class,'updateCategoryOption']);
+        
         
     });
 

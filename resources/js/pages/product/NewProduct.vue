@@ -6,53 +6,90 @@
                 <v-card flat>
                     <v-card-title>Basic Information</v-card-title>
                     <v-card-subtitle v-if="errors">
-                        <v-alert v-for="(error,index) in errors" :key="index"
-                            
+                        <v-alert
+                            v-for="(error, index) in errors"
+                            :key="index"
                             border="left"
                             close-text="Close Alert"
                             color="red lighten-2"
                             dark
-                            
-                            >
-                            {{error[0]}}
+                        >
+                            {{ error[0] }}
                         </v-alert>
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row class="pa-1">
                             <v-col cols="12">
                                 <!-- @change="getSubcategory" -->
-                                {{selected_category.length}}
+                                {{ selected_category.length }}
                                 <v-autocomplete
                                     v-model="selected_category"
                                     :items="categories"
                                     item-text="name"
                                     return-object
-                                    label="Choose Categorie *"
+                                    label="Choose Category *"
                                     @change="checkColorAndSizeIfAvailable"
-                                    :rules="[v => (v && v.id ) || 'Category field is mandatory.',]"
+                                    :rules="[
+                                        v =>
+                                            (v && v.id) ||
+                                            'Category field is mandatory.'
+                                    ]"
                                     outlined
                                     dense
                                 >
-                                <template v-slot:selection="data">
-                                    <v-chip
-                                    v-bind="data.attrs"
-                                    :input-value="data.selected"
-                                    
-                                    @click="data.select"
-                                    
-                                    >
-                                    <span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span>{{ data.item.name }} 
-                                    </v-chip>
-                                </template>
-                                <template v-slot:item="data">
-                                    
-                                    <template>
-                                    <v-list-item-content>
-                                        <v-list-item-title ><span v-if="data.item.parent"><span v-if="data.item.parent.parent">{{data.item.parent.parent.name}} -></span>{{data.item.parent.name}} -></span> {{data.item.name}}</v-list-item-title>
-                                        <v-list-item-subtitle ></v-list-item-subtitle>
-                                    </v-list-item-content>
+                                    <template v-slot:selection="data">
+                                        <v-chip
+                                            v-bind="data.attrs"
+                                            :input-value="data.selected"
+                                            @click="data.select"
+                                        >
+                                            <span v-if="data.item.parent"
+                                                ><span
+                                                    v-if="
+                                                        data.item.parent.parent
+                                                    "
+                                                    >{{
+                                                        data.item.parent.parent
+                                                            .name
+                                                    }}
+                                                    -></span
+                                                >{{
+                                                    data.item.parent.name
+                                                }}
+                                                -></span
+                                            >{{ data.item.name }}
+                                        </v-chip>
                                     </template>
-                                </template>
+                                    <template v-slot:item="data">
+                                        <template>
+                                            <v-list-item-content>
+                                                <v-list-item-title
+                                                    ><span
+                                                        v-if="data.item.parent"
+                                                        ><span
+                                                            v-if="
+                                                                data.item.parent
+                                                                    .parent
+                                                            "
+                                                            >{{
+                                                                data.item.parent
+                                                                    .parent.name
+                                                            }}
+                                                            -></span
+                                                        >{{
+                                                            data.item.parent
+                                                                .name
+                                                        }}
+                                                        -></span
+                                                    >
+                                                    {{
+                                                        data.item.name
+                                                    }}</v-list-item-title
+                                                >
+                                                <v-list-item-subtitle></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </template>
+                                    </template>
                                 </v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6" lg="6" sm="12" xs="12">
@@ -85,8 +122,6 @@
                                 ></v-text-field>
                             </v-col>
 
-                            
-                            
                             <v-col cols="12" md="4" lg="4" sm="6" xs="12">
                                 <v-autocomplete
                                     v-model="formData.brand_id"
@@ -94,7 +129,6 @@
                                     :item-text="'name'"
                                     :item-value="'id'"
                                     label="Brand"
-                                    
                                     outlined
                                     dense
                                 ></v-autocomplete>
@@ -277,9 +311,7 @@
                                         x-small-chips
                                         close
                                         multiple
-                                        :rules="[
-                                            combo('Sizes')
-                                        ]"
+                                        :rules="[combo('Sizes')]"
                                         dense
                                         hint="Hit enter after putting each size"
                                         outlined
@@ -419,6 +451,55 @@
                 <v-card flat class="mt-3">
                     <v-card-title>Product Image</v-card-title>
                     <v-card-text>
+                        <v-col class="text-center">
+                            <img
+                                v-if="url"
+                                :src="url"
+                                height="100px"
+                                width="100px"
+                                alt="logo"
+                            />
+                        </v-col>
+                        <v-row class="pa-3">
+                            <v-col>
+                                <v-file-input
+                                    v-model="formData.cover"
+                                    color="deep-purple accent-4"
+                                    counter
+                                    @change="filePreview"
+                                    label="Cover Image"
+                                    :rules="[required('cover')]"
+                                    placeholder="Select your files"
+                                    append-icon="mdi-camera"
+                                    outlined
+                                    hide-spin-buttons
+                                    prepend-icon
+                                    show-size
+                                    accept="image/jpg, image/png, image/png, image/webp "
+                                >
+                                    <template
+                                        v-slot:selection="{ index, text }"
+                                    >
+                                        <v-chip
+                                            v-if="index < 2"
+                                            color="deep-purple accent-4"
+                                            dark
+                                            label
+                                            small
+                                        >
+                                            {{ text }}
+                                        </v-chip>
+
+                                        <span
+                                            v-else-if="index === 2"
+                                            class="text-overline grey--text text--darken-3 mx-2"
+                                        >
+                                            +{{ files.length - 2 }} File(s)
+                                        </span>
+                                    </template>
+                                </v-file-input>
+                            </v-col>
+                        </v-row>
                         <UploadImages @changed="handleImages"
                     /></v-card-text>
                 </v-card>
@@ -514,6 +595,7 @@ export default {
     data() {
         return {
             e6: 1,
+            url: "",
             images: [],
             items: [
                 {
@@ -559,6 +641,10 @@ export default {
 
         removerProductTags(item) {
             this.product_tags.splice(this.product_tags.indexOf(item), 1);
+        },
+
+        filePreview(e) {
+            this.url = URL.createObjectURL(e);
         },
 
         saveProduct() {

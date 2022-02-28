@@ -30,9 +30,7 @@ class Product extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function getCoverAttribute(){
-        //
-    }
+    
 
     public function variant(){
         return $this->hasMany(Variant::class);
@@ -57,5 +55,9 @@ class Product extends Model
 
     public function optionValues(){
         return $this->hasMany(OptionValue::class);
+    }
+
+    public function images(){
+        return $this->hasMany(ProductImage::class);
     }
 }

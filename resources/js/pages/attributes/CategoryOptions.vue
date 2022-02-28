@@ -60,15 +60,16 @@
                     <span>{{ item.created_at }}</span>
                 </template>
                 <template v-slot:item.values="{ item }">
-                    
-                    <v-chip v-for="(value,index) in item.values" :key="index"
+                    <v-chip
+                        v-for="(value, index) in item.values"
+                        :key="index"
                         class="ma-2"
                         label
                         small
                         color="info"
                         dark
-                        >
-                        {{value}}
+                    >
+                        {{ value }}
                     </v-chip>
                 </template>
                 <template v-slot:item.action="{ item }">
@@ -111,10 +112,10 @@
                 </template>
             </v-data-table>
         </v-card>
-         <v-dialog v-model="dialog" persistent max-width="600px">
+        <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="text-h5">{{title}}</span>
+                    <span class="text-h5">{{ title }}</span>
                     <v-spacer></v-spacer>
                     <v-icon left @click="closeModel">close</v-icon>
                 </v-card-title>
@@ -123,18 +124,15 @@
                     <ValidationErrors :errors="errors"></ValidationErrors>
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
-                        
-
-                        
                         <v-text-field
                             v-model="formData.name"
-                            :rules="[required('Color Name')]"
-                            label="Color Name"
+                            :rules="[required('Option Name')]"
+                            label="Option Name"
                             required
                             outlined
                         ></v-text-field>
-                        
-                            <v-combobox
+
+                        <v-combobox
                             outlined
                             v-model="formData.values"
                             :items="formData.values"
@@ -142,8 +140,7 @@
                             :rules="[combo('Values')]"
                             multiple
                             chips
-                            ></v-combobox>
-                        
+                        ></v-combobox>
                     </v-form>
                 </v-card-text>
 
@@ -202,17 +199,16 @@ export default {
         search_keyword: "",
         title: "Category Options",
         dialog: false,
-        option_id:null,
-        formData:{
-            name:'',
-            values:[],
+        option_id: null,
+        formData: {
+            name: "",
+            values: []
         },
         loading: false,
         confirm: false,
-        category_options:[],
+        category_options: [],
         meta: [],
-       
-        
+
         formTitle: "ColorFamilies",
         // breadcrumb: [
         //     {
@@ -230,10 +226,10 @@ export default {
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },
             { text: "Name", value: "name", sortable: true },
-            { text: "Code", value: "code" ,sortable: true},
-            { text: "Option Values", value: "values" ,sortable: false },
-            { text: "Created At", value: "created_at" ,sortable: false},
-            { text: "Action", value: "action", sortable: false}
+            { text: "Code", value: "code", sortable: true },
+            { text: "Option Values", value: "values", sortable: false },
+            { text: "Created At", value: "created_at", sortable: false },
+            { text: "Action", value: "action", sortable: false }
         ]
     }),
 
@@ -260,44 +256,45 @@ export default {
                     this.loading = false;
                 });
         },
-        addOption(){
+        addOption() {
             this.formData = {
-                        name:'',
-                        values:[],
-                    };
+                name: "",
+                values: []
+            };
             this.dialog = true;
-
         },
-         cancel() {
-            this.confirm = false; 
+        cancel() {
+            this.confirm = false;
         },
 
         closeModel() {
             this.dialog = false;
             this.$refs.form.reset();
         },
-        saveOptions(){
+        saveOptions() {
             if (this.$refs.form.validate()) {
-                axios.post('/api/store/options',this.formData).then(res=>{
-                    this.$toast.success(res.data.message, {
+                axios
+                    .post("/api/store/options", this.formData)
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
                             timeout: 2000
                         });
-                    this.dialog = false;
-                    this.paginate(this.$options);
-                    this.formData = {
-                        name:'',
-                        values:[],
-                    };
-                    
-                }).catch(error=>{
-                    this.errors = error.response.data.errors;
+                        this.dialog = false;
+                        this.paginate(this.$options);
+                        this.formData = {
+                            name: "",
+                            values: []
+                        };
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
 
                         this.$toast.error(error.response.data.message, {
                             timeout: 2000
                         });
-                        
+
                         this.buttonLoading = false;
-                })
+                    });
             }
         },
         confirmation(item) {
@@ -305,7 +302,7 @@ export default {
             this.option_id = item.id;
             //this.deleteItem(item);
         },
-        editOption(item){
+        editOption(item) {
             this.formData.id = item.id;
             this.formData.name = item.name;
             this.formData.values = item.values;
@@ -331,7 +328,6 @@ export default {
                     this.confirm = false;
                 });
         }
-
     }
 };
 </script>

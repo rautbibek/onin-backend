@@ -18,6 +18,31 @@
             <v-tabs-items v-model="tab">
                 <v-tab-item>
                     <v-card class="p-5 auto" flat>
+                        <div style="text-align:center">
+                            <label for="cover" class="cover-input">
+                                <img
+                                    class="cover-img"
+                                    v-if="url"
+                                    :src="url"
+                                    alt="cover"
+                                />
+                                <v-icon class="icon" color="black" large>
+                                    mdi-camera
+                                </v-icon>
+                            </label>
+                            <input
+                                class="cover"
+                                @change="filePreview"
+                                id="cover"
+                                type="file"
+                                accept="image/jpg,image/jpeg,image/png,image/webp"
+                            />
+                        </div>
+                        <p v-if="cover_error" class="text-center text-danger">
+                            <small v-if="cover_error.cover" style="color:red">{{
+                                cover_error.cover[0]
+                            }}</small>
+                        </p>
                         <v-form
                             ref="basic_information"
                             v-model="valid"
@@ -64,6 +89,7 @@
                                 </v-chip>
                             </template>
                         </v-combobox> -->
+
                             <v-text-field
                                 v-model="formData.search_text"
                                 label="Search Text"
@@ -82,7 +108,6 @@
                                 :item-text="'name'"
                                 :item-value="'id'"
                                 label="Brand"
-                                
                                 outlined
                                 dense
                             ></v-autocomplete>
@@ -325,30 +350,31 @@
                             v-model="option_valid"
                             lazy-validation
                         >
-                        <div v-if="category_options.length > 0" class="row">
-                            <v-col
-                                v-for="(cat_opts, index) in category_options"
-                                :key="index"
-                                cols="12"
-                            >
-                                <v-autocomplete
-                                    v-model="option_values[cat_opts.key]"
-                                    outlined
-                                    :id="cat_opts.kay"
-                                    :name="cat_opts.kay"
-                                    :items="cat_opts.values"
-                                    chips
-                                    small-chips
-                                    :rules="[select('category')]"
-                                    Basic
-                                    dense
-                                    Information
-                                    :label="cat_opts.code"
+                            <div v-if="category_options.length > 0" class="row">
+                                <v-col
+                                    v-for="(cat_opts,
+                                    index) in category_options"
+                                    :key="index"
+                                    cols="12"
                                 >
-                                </v-autocomplete>
-                            </v-col>
-                        </div>
-                        <v-spacer></v-spacer>
+                                    <v-autocomplete
+                                        v-model="option_values[cat_opts.key]"
+                                        outlined
+                                        :id="cat_opts.kay"
+                                        :name="cat_opts.kay"
+                                        :items="cat_opts.values"
+                                        chips
+                                        small-chips
+                                        :rules="[select('category')]"
+                                        Basic
+                                        dense
+                                        Information
+                                        :label="cat_opts.code"
+                                    >
+                                    </v-autocomplete>
+                                </v-col>
+                            </div>
+                            <v-spacer></v-spacer>
                             <div class="text-right mt-5 mb-5">
                                 <v-btn
                                     color="primary"
@@ -369,9 +395,43 @@
                 </v-tab-item>
                 <v-tab-item>
                     <v-card flat class="p-5 auto">
+                        <v-card-subtitle v-if="errors">
+                            <v-alert
+                                v-for="(error, index) in image_errors"
+                                :key="index"
+                                border="left"
+                                close-text="Close Alert"
+                                color="red lighten-2"
+                                dark
+                            >
+                                {{ error[0] }}
+                            </v-alert>
+                        </v-card-subtitle>
                         <v-card-text>
-                            <UploadImages @changed="handleImages"
-                        /></v-card-text>
+                            <UploadImages
+                                accept="image/png, image/gif, image/jpeg"
+                                :max="6"
+                                maxError="Max files exceed"
+                                @changed="handleImages"
+                                uploadMsg="upload product images"
+                            />
+                            <v-spacer></v-spacer>
+                            <div class="text-right mt-5 mb-5">
+                                <v-btn
+                                    color="primary"
+                                    @click="addNewImage"
+                                    :loading="buttonLoading"
+                                >
+                                    <v-icon left dark>
+                                        mdi-cloud-upload
+                                    </v-icon>
+                                    Update image
+                                    <template v-slot:loader>
+                                        <span>Loading...</span>
+                                    </template>
+                                </v-btn>
+                            </div>
+                        </v-card-text>
                     </v-card>
                 </v-tab-item>
                 <v-tab-item>
@@ -483,6 +543,7 @@
                     >
                         <v-container>
                             <v-select
+                                v-if="formData.has_color"
                                 label="Color *"
                                 :items="colors"
                                 :item-text="'name'"
@@ -518,6 +579,7 @@
                                 dense
                             ></v-text-field>
                             <v-combobox
+                                v-if="formData.has_size"
                                 v-model="single_attribute.sizes"
                                 label="Available Sizes"
                                 x-small-chips
@@ -588,6 +650,8 @@ export default {
     },
     data() {
         return {
+            url: "",
+            cover_error: [],
             editAttributeDialog: false,
             single_attribute: {},
             product: [],
@@ -606,6 +670,7 @@ export default {
             errors: [],
             product_status: true,
             cat: "",
+            image_errors: [],
 
             breadcrumb: [
                 {
@@ -735,7 +800,7 @@ export default {
                         this.$toast.success(res.data.message, {
                             timeout: 2000
                         });
-                        
+
                         //this.$router.push({ name: "Product" });
                         this.buttonLoading = false;
                         this.getProduct();
@@ -757,8 +822,9 @@ export default {
                 .then(result => {
                     this.product = result.data.data;
                     this.formData = this.product;
+                    this.url = this.formData.cover;
                     this.meta_tags = this.product.meta_tags;
-                    console.log(this.formData);
+
                     this.getOptions();
                     this.getCollectionIds(this.formData.collection);
 
@@ -775,6 +841,82 @@ export default {
         },
         getCollectionIds(collection) {
             this.product_collection = collection;
+        },
+
+        filePreview(e) {
+            var file = e.target.files[0];
+            this.url = URL.createObjectURL(file);
+            var formData = new FormData();
+            const config = {
+                headers: {
+                    "content-type": "multipart/form-data"
+                }
+            };
+            formData.append("cover", file);
+            this.buttonLoading = true;
+            axios
+                .post(
+                    `/api/update/cover/${this.$route.params.id}`,
+                    formData,
+                    config
+                )
+                .then(res => {
+                    this.$toast.success(res.data.message, {
+                        timeout: 2000
+                    });
+                    this.cover_error = [];
+
+                    // this.$router.push({ name: "Product" });
+                    // this.image_errors = [];
+                    this.buttonLoading = false;
+                })
+                .catch(error => {
+                    this.cover_error = error.response.data.errors;
+
+                    this.$toast.error(error.response.data.message, {
+                        timeout: 2000
+                    });
+
+                    window.scrollTo(0, 0, { behavior: "smooth" });
+                    this.buttonLoading = false;
+                });
+        },
+        addNewImage() {
+            var formData = new FormData();
+            const config = {
+                headers: {
+                    "content-type": "multipart/form-data"
+                }
+            };
+            if (this.images) {
+                this.images.forEach(image => {
+                    formData.append("product_images[]", image, image.name);
+                });
+            }
+
+            formData.append("id", this.$route.params.id);
+
+            axios
+                .post("/api/update/product/image", formData, config)
+                .then(res => {
+                    this.$toast.success(res.data.message, {
+                        timeout: 2000
+                    });
+                    this.images = [];
+                    this.handleImages();
+                    // this.$router.push({ name: "Product" });
+                    this.image_errors = [];
+                    this.buttonLoading = false;
+                })
+                .catch(error => {
+                    this.image_errors = error.response.data.errors;
+
+                    this.$toast.error(error.response.data.message, {
+                        timeout: 2000
+                    });
+                    window.scrollTo(0, 0, { behavior: "smooth" });
+                    this.buttonLoading = false;
+                });
         }
     },
     mounted() {
@@ -785,3 +927,33 @@ export default {
     }
 };
 </script>
+<style scoped>
+.cover {
+    display: none;
+    visibility: none;
+}
+.cover-input {
+    position: relative;
+    text-align: center;
+    border: 2px solid rgb(158, 135, 135);
+    height: 150px;
+    width: 150px;
+    margin: auto;
+    cursor: pointer;
+    margin-top: 50px;
+    background: rgb(172, 166, 166);
+}
+.cover-img {
+    height: 150px;
+    width: 150px;
+    position: relative;
+    object-fit: cover;
+}
+.icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+</style>

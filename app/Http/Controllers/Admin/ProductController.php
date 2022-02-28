@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductTag;
 use App\Http\Controllers\Controller;
@@ -51,35 +53,30 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         //return response()->json($request->all(),500);
+        $slug = Str::slug($request->title);
         $discount_type = $request->has('discount_value')?$request->get('discount_value'):null;
         $discount = $request->has('discount')?$request->get('discount'):null;
         $brand_id = $request->has('brand_id')?$request->get('brand_id'):null;
-
-        $images=[];
-            if($request->hasFile('product_images')){
-                foreach($request->product_images as $image){
-                    $mediaHelper = new MediaHelper;
-                    $images_data = $mediaHelper->storeMedia($image,'product',true,false);
-                    array_push($images,$images_data);
-                }
-            }
+        
         try{
             DB::beginTransaction();
             $search_text = $request->get('search_text');
             $status = $request->get('status');
+            $cover = MediaHelper::saveProductImage($request->cover,'product', $slug);
             $product = new product();
             $product->title = $request->title;
             $product->category_id = $request->category_id;
+            $product->cover = $cover;
             if(isset($discount_type) && isset($discount)){
                 $product->discount_type = $discount_type;
                 $product->discount = (int) $discount;
             }
-            if($request->has_color == "true" || $request->has_color == true){
+            if($request->has_color == "true"){
                 $product->has_color = true;
             }else{
                 $product->has_color = false;
             }
-            if($request->has_size == "true" || $request->has_size == true){
+            if($request->has_size == "true"){
                 $product->has_size = true;
             }else{
                 $product->has_size = false;
@@ -100,15 +97,25 @@ class ProductController extends Controller
             $product->meta_keyword = $request->get('meta_tags');
             $product->meta_title = $request->get('meta_title');
             $product->meta_description = $request->get('meta_description');
-            if(!empty($images)){
-                $product->image = $images;
-            }
+            // if(!empty($images)){
+            //     $product->image = $images;
+            // }
             $product->save();
 
             $product_option_values = json_decode($request->option_values);
 
             $product_attribute = json_decode($request->product_atributes);
-            //return response()->json($product_attribute,500);
+            if($request->hasFile('product_images')){
+                
+                foreach($request->product_images as $image){
+                    $file = MediaHelper::saveProductImage($image,'test', $product->slug);
+                    $product->images()->create([
+                        'file'=> $file,
+                        'size'=> $image->getSize(),
+                    ]);
+                    
+                }
+            }
 
             if(!empty($product_option_values)){
                 foreach($product_option_values as $key=>$options){
@@ -174,8 +181,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with(['category:id,name','variant','optionValues','collection:id'])->where('id',$id)->first();
-        //return $product;
+        $product = Product::with(['category:id,name,has_color,has_size','variant','optionValues','collection:id','images'])->where('id',$id)->firstOrFail();
+        
         return new EditProductResource($product);
         //return response()->json($product,200);
     }
@@ -243,6 +250,71 @@ class ProductController extends Controller
 
     public function updateProductOptions(Request $request){
         return response()->json($request->all(),500);
+    }
+
+    public function updateProductImage(Request $request){
+        $this->validate($request,[
+            'product_images' => 'required',
+            'product_images.*' => 'mimes:jpeg,jpg,png,webp|max:5048'
+        ]);
+        try{
+            $product = Product::findOrFail($request->id);
+            DB::beginTransaction();
+            if($request->hasFile('product_images')){
+                
+                foreach($request->product_images as $image){
+                    $file = MediaHelper::saveProductImage($image,'product', $product->slug);
+                    $product->images()->create([
+                        'file'=> $file,
+                        'size'=> $image->getSize(),
+                    ]);
+                    
+                }
+                DB::commit();
+                return response()->json([
+                    'message' => 'Image updated succefully'
+                ]);
+
+            }
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Something went wrong',
+                'error' =>$e->getMessage()
+            ], 500);
+        }
+       
+    }
+
+    public function updateCover(Request $request,$id){
+        $this->validate($request,[
+            'cover' => 'required|mimes:jpeg,jpg,png,webp|max:5048'
+        ]);
+        try{
+            $product = Product::findOrFail($id);
+             Storage::delete('/product/'.$product->cover);
+             Storage::delete('/thumb/'.$product->cover);
+            //  return $file;
+
+            DB::beginTransaction();
+            $file = MediaHelper::saveProductImage($request->cover,'product', $product->slug);
+            $product->update([
+                'cover'=> $file,
+            ]);
+            DB::commit();
+            return response()->json([
+                'message' => 'Cover updated succefully'
+            ]);
+
+            
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Something went wrong',
+                'error' =>$e->getMessage()
+            ], 500);
+        }
+       
     }
 
     /**

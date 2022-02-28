@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Resources\Admin;
-
+use App\Http\Helper\MediaHelper;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EditProductResource extends JsonResource
@@ -31,13 +31,15 @@ class EditProductResource extends JsonResource
             'discount_value'=> $this->discount_type,
             'discount'=>$this->discount,
             'brand_id'=> $this->brand_id,
+            'category' => $this->category,
             'collection' => $this->collection->map(function($item){
                 return $item->id;
             }),
             'option_value'=> $this->optionValues->map(function($data){
                 return $data;
             }),
-            'images'=>$this->images,
+            'cover' => $this->cover?MediaHelper::getThumbnailUrl($this->cover,'thumb'):asset('/images/no-image.png'),
+            'images'=> $this->images,
             'variant'=>$this->variant
         ];
     }

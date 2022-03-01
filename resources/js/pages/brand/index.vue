@@ -73,8 +73,10 @@
                 <template v-slot:item.attacment="{ item }">
                     <span v-if="item.attacment">
                         <img
-                            height="100px"
-                            width="100px"
+                            class="pa-3"
+                            style="object-fit:cover"
+                            height="60px"
+                            width="60px"
                             :src="item.attacment"
                             alt="item.name"
                         />

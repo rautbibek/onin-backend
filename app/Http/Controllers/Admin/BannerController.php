@@ -39,13 +39,16 @@ class BannerController extends Controller
             'type' =>'required',
             'title'=>'max:220',
             'subtitle'=>'max:220',
-            'link'=>'sometimes|url',
+            'link'=>'max:220',
         ]);
+        
         $id = $request->get('id');
         if($id){
-            $this->validate($request,[
-                'image'=>'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-            ]);
+            if(isset($request->image)){
+                $this->validate($request,[
+                    'image'=>'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+                ]);
+            }
         }else{
             $this->validate($request,[
                 'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
@@ -62,13 +65,15 @@ class BannerController extends Controller
                     Storage::delete('/banner/'.$banner->image);
                     Storage::delete('/thumb/'.$banner->image);
                     $file = MediaHelper::saveProductImage($request->image,'banner', 'banner');
+                }else{
+                    $file = $banner->image;
                 }
                 
                 $banner->update([
                     'type'=> $request->get('type'),
-                    'title' => $request->get('title'),
-                    'subtitle' => $request->get('subtitle'),
-                    'link' => $request->get('link'),
+                    'title' => $request->get('title')=='null'?null:$request->get('title'),
+                    'subtitle' => $request->get('subtitle')=='null'?null:$request->get('subtitle'),
+                    'link' => $request->get('link')=='null'?null:$request->get('link'),
                     'image' => $file
 
                 ]);

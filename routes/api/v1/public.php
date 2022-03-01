@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\CommonDataController;
 use App\Http\Controllers\Api\V1\CollectionController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\BannerController;
 
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/register',[LoginController::class,'register']);
@@ -18,3 +19,4 @@ Route::get('/collection',[CommonDataController::class,'getCollection']);
 Route::get('all/collection',[CollectionController::class,'index']);
 Route::get('/category',[CategoryController::class,'index']);
 Route::get('/category/{slug}',[ProductController::class,'categoryProduct']);
+Route::get('/banner',[BannerController::class,'banner']);

@@ -56,6 +56,20 @@
                     <span>{{ index + meta.from }}</span>
                 </template>
 
+                <template v-slot:item.title="{ item }">
+                    <span v-if="item.title">{{ item.title }}</span>
+                    <span v-else>N/A</span>
+                </template>
+                <template v-slot:item.subtitle="{ item }">
+                    <span v-if="item.subtitle">{{ item.subtitle }}</span>
+                    <span v-else>N/A</span>
+                </template>
+
+                <template v-slot:item.link="{ item }">
+                    <a v-if="item.link" :href="item.link">{{ item.link }}</a>
+                    <span v-else>N/A</span>
+                </template>
+
                 <template v-slot:item.created_at="{ item }">
                     <span>{{ item.created_at }}</span>
                 </template>
@@ -73,10 +87,12 @@
                 <template v-slot:item.attachment="{ item }">
                     <span v-if="item.attachment">
                         <img
-                            height="100px"
-                            width="100px"
+                            class="pa-3"
+                            style="object-fit:cover"
+                            height="60px"
+                            width="60px"
                             :src="item.attachment"
-                            :alt="item.title"
+                            alt="item.name"
                         />
                     </span>
                     <span v-else>N/A</span>
@@ -312,7 +328,7 @@ export default {
             { text: "Banner Type", value: "type", sortable: true },
             { text: "Title", value: "title", sortable: true },
             { text: "Subtitle", value: "subtitle", sortable: true },
-
+            { text: "Redirect Url", value: "link", sortable: true },
             { text: "Image", value: "attachment", sortable: false },
             { text: "Created At", value: "created_at" },
             { text: "Action", value: "action" }

@@ -82,7 +82,6 @@
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <treeselect
-                            :maxHeight="400"
                             class="mb-10 selectbox"
                             style="height:35px"
                             v-model="formData.parent_id"
@@ -528,7 +527,7 @@ export default {
     }
 };
 </script>
-<style scoped>
+<style>
 .vue-treeselect__input {
     height: 50px !important;
     align-items: flex-start;

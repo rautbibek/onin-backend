@@ -19,26 +19,6 @@
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row class="pa-1">
-                            <treeselect
-                                class="mb-10 selectbox"
-                                style="height:35px"
-                                v-model="formData.parent_id"
-                                :options="categories"
-                                :disable-branch-nodes="true"
-                                :show-count="true"
-                                :limit="1"
-                                :rules="[required('category name')]"
-                            >
-                                <div slot="value-label" slot-scope="{ node }">
-                                    {{ node.raw.name }}
-                                </div>
-                                <label
-                                    slot="option-label"
-                                    slot-scope="{ node }"
-                                >
-                                    {{ node.raw.name }}
-                                </label>
-                            </treeselect>
                             <v-col cols="12">
                                 <!-- @change="getSubcategory" -->
                                 {{ selected_category.length }}

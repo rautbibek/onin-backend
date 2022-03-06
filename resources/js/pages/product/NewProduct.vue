@@ -622,9 +622,6 @@ export default {
             cat: ""
         };
     },
-    mounted() {
-        console.log("log from add product");
-    },
 
     methods: {
         removeMetaTags(item) {
@@ -644,16 +641,6 @@ export default {
 
         removerProductTags(item) {
             this.product_tags.splice(this.product_tags.indexOf(item), 1);
-        },
-        getCategory() {
-            axios
-                .get("/api/select/category")
-                .then(res => {
-                    this.categories = res.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
         },
 
         filePreview(e) {

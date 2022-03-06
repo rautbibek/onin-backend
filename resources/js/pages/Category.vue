@@ -88,7 +88,6 @@
                             :options="fetAllCategories"
                             :disable-branch-nodes="true"
                             :show-count="true"
-                            :limit="1"
                             :rules="[required('category name')]"
                         >
                             <div slot="value-label" slot-scope="{ node }">
@@ -272,6 +271,7 @@ export default {
     components: {
         Treeselect
     },
+
     data: () => ({
         tree: [],
         search_keyword: "",
@@ -541,6 +541,7 @@ export default {
 }
 .vue-treeselect__control:focus {
     border: 4px solid blue;
+    font-size: 20px;
 }
 .vue-treeselect__control {
     border: 1px solid #897272;

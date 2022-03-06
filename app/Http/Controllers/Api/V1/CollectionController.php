@@ -15,7 +15,7 @@ class CollectionController extends Controller
         //     ->select('collections.*', 'collection_product.product_id','product.*')
         //     ->get();
         $collection = Collection::where('status',true)->with('product',function($q){
-            $q->with('firstVariant')->limit(12);
+            $q->where('status',true)->with('firstVariant')->limit(12);
         })->get();
         return response()->json($collection);
     }

@@ -170,7 +170,17 @@ class CategoryController extends Controller
 
 
     public function getParentData(){
-        
+        // select option in create category table
+        $category = Category::where('parent_id',null)
+        ->select('id','parent_id','name','last_child')
+        ->with('children:id,parent_id,name')->orderBy('name','asc')->get();
+        //return $category;
+        return  CategorySelectResource::collection($category)->response()
+        ->setStatusCode(200);
+        //return response()->json($category,200);
+    }
+    public function getSelectableCategory(){
+        // select option in create category table
         $category = Category::where('parent_id',null)
         ->select('id','parent_id','name','last_child')
         ->with(['children'=>function($query){
@@ -179,16 +189,13 @@ class CategoryController extends Controller
         }])->orderBy('name','asc')->get();
         return  CategorySelectResource::collection($category)->response()
         ->setStatusCode(200);
-        //return response()->json($category,200);
-    }
-    public function getSelectableCategory(){
-        $category = Category::where('last_child',true)
-        ->select('id','parent_id','has_color','has_size','name','last_child','lvl')
-        ->with(['parent'=>function($query){
+        // $category = Category::where('last_child',true)
+        // ->select('id','parent_id','has_color','has_size','name','last_child','lvl')
+        // ->with(['parent'=>function($query){
             
-            $query->select('id','parent_id','name')->with(['parent:id,parent_id,name']);
-        }])->orderBy('parent_id','asc')->get();
-        // $category = Category::where('id',9)->with('parent.parent')->first();
-        return response()->json($category,200);
+        //     $query->select('id','parent_id','name')->with(['parent:id,parent_id,name']);
+        // }])->orderBy('parent_id','asc')->get();
+        // // $category = Category::where('id',9)->with('parent.parent')->first();
+        // return response()->json($category,200);
     }
 }

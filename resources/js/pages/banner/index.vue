@@ -378,16 +378,16 @@ export default {
                     this.loading = false;
                 });
         },
-        getCategory() {
-            axios
-                .get("/api/select/category")
-                .then(res => {
-                    this.categories = res.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
+        // getCategory() {
+        //     axios
+        //         .get("/api/select/category")
+        //         .then(res => {
+        //             this.categories = res.data;
+        //         })
+        //         .catch(error => {
+        //             console.log(error);
+        //         });
+        // },
 
         cancel() {
             this.confirm = false;
@@ -416,6 +416,8 @@ export default {
 
                         this.closeModel();
                         this.$refs.form.reset();
+                        this.formData = {};
+                        this.errors = [];
                         this.getBanners(this.$options);
                     })
                     .catch(error => {

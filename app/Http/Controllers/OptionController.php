@@ -89,4 +89,25 @@ class OptionController extends Controller
         ],200);
 
     }
+
+    public function delete($id){
+        
+        try{
+            $option = Option::findOrFail($id);
+            $option->delete();
+            return response()->json([
+                'message'=> 'Category option deleted successfully'
+            ]);
+        }catch(\Exception $e){
+            return response()->json(array(
+                'code' => 500,
+                'message' => 'Cannot delet the option  option used by various categories'
+            ), 500);
+        }
+        $option->delete();
+
+        
+    }
+
+    
 }

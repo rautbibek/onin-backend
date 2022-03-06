@@ -298,6 +298,7 @@ export default {
             }
         },
         confirmation(item) {
+            console.log(item);
             this.confirm = true;
             this.option_id = item.id;
             //this.deleteItem(item);
@@ -310,7 +311,7 @@ export default {
         },
         deleteItem() {
             axios
-                .delete(`/api/delete/options/${this.optin_id} `)
+                .delete(`/api/delete/options/${this.option_id} `)
                 .then(res => {
                     this.$toast.success(res.data.message, {
                         timeout: 2000

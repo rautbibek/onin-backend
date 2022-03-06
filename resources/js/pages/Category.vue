@@ -82,11 +82,14 @@
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <treeselect
-                            class="mb-3 selectbox"
+                            :maxHeight="400"
+                            class="mb-10 selectbox"
+                            style="height:35px"
                             v-model="formData.parent_id"
                             :options="fetAllCategories"
                             :disable-branch-nodes="true"
                             :show-count="true"
+                            :limit="1"
                             :rules="[required('category name')]"
                         >
                             <div slot="value-label" slot-scope="{ node }">
@@ -525,3 +528,22 @@ export default {
     }
 };
 </script>
+<style scoped>
+.vue-treeselect__input {
+    height: 50px !important;
+    align-items: flex-start;
+    display: flex;
+    flex: 1 1 auto;
+    font-size: 16px;
+    letter-spacing: normal;
+}
+.vue-treeselect__control:hover {
+    border: 1px solid black;
+}
+.vue-treeselect__control:focus {
+    border: 4px solid blue;
+}
+.vue-treeselect__control {
+    border: 1px solid #897272;
+}
+</style>

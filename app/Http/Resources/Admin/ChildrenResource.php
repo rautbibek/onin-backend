@@ -19,9 +19,9 @@ class ChildrenResource extends JsonResource
             'parent_id' => $this->parent_id,
             'name' => $this->name,
         ];
-        if(!$this->children->isEmpty()){
-            $data['children'] = ChildrenResource::collection($this->children);
-        }
+        // if(!$this->children->isEmpty()){
+        //     $data['children'] = ChildrenResource::collection($this->children);
+        // }
         return $data;
     }
 }

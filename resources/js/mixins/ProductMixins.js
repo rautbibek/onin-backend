@@ -1,6 +1,10 @@
 import axios from "axios";
-
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export const ProductMixins = {
+    components: {
+        Treeselect
+    },
     data() {
         return {
             colors: [],
@@ -97,7 +101,7 @@ export const ProductMixins = {
             axios
                 .get("/api/select/category")
                 .then(res => {
-                    this.categories = res.data;
+                    this.categories = res.data.data;
                 })
                 .catch(error => {
                     console.log(error);

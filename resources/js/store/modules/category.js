@@ -10,18 +10,17 @@ const actions = {
         axios
             .get(`/api/category/parent`)
             .then(response => {
-                // if (response.data.length > 0) {
-                //     var ct = response.data;
-                //     ct.data.forEach(category => {
-                //         if (category.children.length > 0) {
-                //             return ct;
-                //         } else {
-                //             category.children = null;
-                //         }
-                //     });
-
-                // }
-
+                commit("setCategories", response.data.data);
+                //console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error.response.data.errors);
+            });
+    },
+    getCategories({ commit }) {
+        axios
+            .get(`/api/category/parent`)
+            .then(response => {
                 commit("setCategories", response.data.data);
                 //console.log(response.data);
             })

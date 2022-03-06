@@ -81,7 +81,7 @@
                     <ValidationErrors :errors="errors"></ValidationErrors>
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
-                        <treeselect
+                        <!-- <treeselect
                             class="mb-10 selectbox"
                             style="height:35px"
                             v-model="formData.parent_id"
@@ -97,7 +97,7 @@
                             <label slot="option-label" slot-scope="{ node }">
                                 {{ node.raw.name }}
                             </label>
-                        </treeselect>
+                        </treeselect> -->
 
                         <v-text-field
                             v-model="formData.name"
@@ -262,15 +262,15 @@
     </div>
 </template>
 <script>
-import Treeselect from "@riophae/vue-treeselect";
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+// import Treeselect from "@riophae/vue-treeselect";
+// import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { mapGetters, mapActions } from "vuex";
 import { commonMixin } from "../mixins/commonMixin";
 import { validation } from "../mixins/validationMixin";
 export default {
     mixins: [commonMixin, validation],
     components: {
-        Treeselect
+        // Treeselect
     },
     data: () => ({
         tree: [],

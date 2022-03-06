@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export const ProductMixins = {
     data() {
         return {
@@ -92,16 +93,7 @@ export const ProductMixins = {
                     console.log(error.response.data);
                 });
         },
-        getCategory() {
-            axios
-                .get("/api/select/category")
-                .then(res => {
-                    this.categories = res.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
+
         getSingleProductType() {
             this.product_types.find(product_type => {
                 if (product_type.id === this.product_type_id) {
@@ -147,6 +139,7 @@ export const ProductMixins = {
         this.getColors();
         this.getCollection();
         this.getCategory();
+        console.log("log from product mixins");
     },
 
     mounted() {

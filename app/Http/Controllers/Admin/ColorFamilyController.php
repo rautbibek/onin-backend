@@ -99,6 +99,10 @@ class ColorFamilyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $color = ColorFamily::findOrFail($id);
+        $color->delete();
+        return response()->json([
+            'message' => 'Color deleted succssefully'
+        ]);
     }
 }

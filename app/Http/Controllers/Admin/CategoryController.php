@@ -8,6 +8,7 @@ use App\Http\Helper\MediaHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
+use App\Http\Resources\Admin\CategorySelectResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -43,8 +44,9 @@ class CategoryController extends Controller
     {
         
         $parent_id = $request->has('parent_id')?(int) $request->get('parent_id'):null;
-        //$image = $request->has('image')?$request->get('image'):'';
-        //return $image;
+        if($parent_id == 0){
+            $parent_id = null;
+        }
         $category_image = null;
         
         if(isset($request->image)){
@@ -168,14 +170,16 @@ class CategoryController extends Controller
 
 
     public function getParentData(){
-        $category = Category::whereIn('lvl',[1,2])
-        ->select('id','parent_id','name','last_child','lvl')
-        ->with(['parent'=>function($query){
+        
+        $category = Category::where('parent_id',null)
+        ->select('id','parent_id','name','last_child')
+        ->with(['children'=>function($query){
             
-            $query->select('id','parent_id','name')->with(['parent:id,parent_id,name']);
-        }])->orderBy('parent_id','asc')->get();
-        // $category = Category::where('id',9)->with('parent.parent')->first();
-        return response()->json($category,200);
+            $query->select('id','parent_id','name')->with(['children:id,parent_id,name']);
+        }])->orderBy('name','asc')->get();
+        return  CategorySelectResource::collection($category)->response()
+        ->setStatusCode(200);
+        //return response()->json($category,200);
     }
     public function getSelectableCategory(){
         $category = Category::where('last_child',true)

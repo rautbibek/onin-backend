@@ -75,7 +75,6 @@
                                 dark
                                 v-bind="attrs"
                                 @click="editColor(item)"
-                                v-on="on"
                             >
                                 <v-icon dark>
                                     mdi-pencil
@@ -105,10 +104,10 @@
                 </template>
             </v-data-table>
         </v-card>
-         <v-dialog v-model="dialog" persistent max-width="600px">
+        <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="text-h5">{{title}}</span>
+                    <span class="text-h5">{{ title }}</span>
                     <v-spacer></v-spacer>
                     <v-icon left @click="closeModel">close</v-icon>
                 </v-card-title>
@@ -117,24 +116,18 @@
                     <ValidationErrors :errors="errors"></ValidationErrors>
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
-                        
-
-                        
                         <v-text-field
                             v-model="formData.name"
                             :rules="[required('Color Name')]"
                             label="Color Name"
-                            required
                             outlined
                         ></v-text-field>
                         <v-text-field
                             v-model="formData.code"
                             :rules="[required('Color Code')]"
                             label="Color Code"
-                            required
                             outlined
                         ></v-text-field>
-                        
                     </v-form>
                 </v-card-text>
 
@@ -193,12 +186,13 @@ export default {
         search_keyword: "",
         title: "Color Families",
         dialog: false,
-        color_id:null,
+        color_id: null,
         loading: false,
+        valid: true,
         confirm: false,
         meta: [],
         colors: [],
-        
+
         formTitle: "ColorFamilies",
         // breadcrumb: [
         //     {
@@ -216,10 +210,10 @@ export default {
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },
             { text: "Name", value: "name", sortable: true },
-            { text: "Code", value: "code" ,sortable: true},
-            { text: "Smple", value: "sample" ,sortable: false },
-            { text: "Created At", value: "created_at" ,sortable: false},
-            { text: "Action", value: "action", sortable: false}
+            { text: "Code", value: "code", sortable: true },
+            { text: "Smple", value: "sample", sortable: false },
+            { text: "Created At", value: "created_at", sortable: false },
+            { text: "Action", value: "action", sortable: false }
         ]
     }),
 
@@ -246,37 +240,37 @@ export default {
                     this.loading = false;
                 });
         },
-        addColorFamily(){
+        addColorFamily() {
             this.dialog = true;
         },
-         cancel() {
+        cancel() {
             this.confirm = false;
-            
         },
 
         closeModel() {
-            this.dialog = false;
             this.$refs.form.reset();
+            this.dialog = false;
         },
-        saveColor(){
+        saveColor() {
             if (this.$refs.form.validate()) {
-                axios.post('/api/colors',this.formData).then(res=>{
-                    this.$toast.success(res.data.message, {
+                axios
+                    .post("/api/colors", this.formData)
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
                             timeout: 2000
                         });
-                    this.dialog = false;
-                    this.paginate(this.$options);
-                    this.formData = {};
-                    
-                }).catch(error=>{
-                    this.errors = error.response.data.errors;
+                        this.closeModel();
+                        this.paginate(this.$options);
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
 
                         this.$toast.error(error.response.data.message, {
                             timeout: 2000
                         });
-                        
+
                         this.buttonLoading = false;
-                })
+                    });
             }
         },
         confirmation(item) {
@@ -284,9 +278,11 @@ export default {
             this.color_id = item.id;
             //this.deleteItem(item);
         },
-        editColor(item){
-            //this.color_id = item.id;
-            this.formData = item;
+        editColor(item) {
+            //console.log(item);
+            this.formData.id = item.id;
+            this.formData.name = item.name;
+            this.formData.code = item.code;
             this.dialog = true;
         },
         deleteItem() {
@@ -296,20 +292,18 @@ export default {
                     this.$toast.success(res.data.message, {
                         timeout: 2000
                     });
-                    this.getBrands(this.$options);
-                    this.brand_id = "";
+                    this.paginate(this.$options);
+                    this.color_id = "";
                     this.confirm = false;
                 })
                 .catch(error => {
                     this.errors = error.response.data.errors;
-
                     this.$toast.error(error.response.data.message, {
                         timeout: 2000
                     });
                     this.confirm = false;
                 });
         }
-
     }
 };
 </script>

@@ -81,44 +81,21 @@
                     <ValidationErrors :errors="errors"></ValidationErrors>
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-autocomplete
+                        <treeselect
+                            class="mb-3 selectbox"
                             v-model="formData.parent_id"
-                            :items="fetAllCategories"
-                            item-text="name"
-                            item-value="id"
-                            outlined
-                            label="Root category"
+                            :options="fetAllCategories"
+                            :disable-branch-nodes="true"
+                            :show-count="true"
+                            :rules="[required('category name')]"
                         >
-                            <template v-slot:selection="data">
-                                <v-chip
-                                    v-bind="data.attrs"
-                                    :input-value="data.selected"
-                                    @click="data.select"
-                                >
-                                    <span v-if="data.item.parent"
-                                        >{{ data.item.parent.name }} -></span
-                                    >{{ data.item.name }}
-                                </v-chip>
-                            </template>
-                            <template v-slot:item="data">
-                                <template>
-                                    <v-list-item-content>
-                                        <v-list-item-title
-                                            ><span v-if="data.item.parent"
-                                                >{{
-                                                    data.item.parent.name
-                                                }}
-                                                -></span
-                                            >
-                                            {{
-                                                data.item.name
-                                            }}</v-list-item-title
-                                        >
-                                        <v-list-item-subtitle></v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </template>
-                            </template>
-                        </v-autocomplete>
+                            <div slot="value-label" slot-scope="{ node }">
+                                {{ node.raw.name }}
+                            </div>
+                            <label slot="option-label" slot-scope="{ node }">
+                                {{ node.raw.name }}
+                            </label>
+                        </treeselect>
 
                         <v-text-field
                             v-model="formData.name"
@@ -283,11 +260,16 @@
     </div>
 </template>
 <script>
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { mapGetters, mapActions } from "vuex";
 import { commonMixin } from "../mixins/commonMixin";
 import { validation } from "../mixins/validationMixin";
 export default {
     mixins: [commonMixin, validation],
+    components: {
+        Treeselect
+    },
     data: () => ({
         tree: [],
         search_keyword: "",
@@ -332,6 +314,46 @@ export default {
     computed: mapGetters(["fetAllCategories"]),
 
     methods: {
+        loadOptions({ action, parentNode, callback }) {
+            // Typically, do the AJAX stuff here.
+            // Once the server has responded,
+            // assign children options to the parent node & call the callback.
+
+            if (action === LOAD_CHILDREN_OPTIONS) {
+                switch (parentNode.id) {
+                    case "success": {
+                        simulateAsyncOperation(() => {
+                            parentNode.children = [
+                                {
+                                    id: "child",
+                                    label: "Child option"
+                                }
+                            ];
+                            callback();
+                        });
+                        break;
+                    }
+                    case "no-children": {
+                        simulateAsyncOperation(() => {
+                            parentNode.children = [];
+                            callback();
+                        });
+                        break;
+                    }
+                    case "failure": {
+                        simulateAsyncOperation(() => {
+                            callback(
+                                new Error(
+                                    "Failed to load options: network error."
+                                )
+                            );
+                        });
+                        break;
+                    }
+                    default: /* empty */
+                }
+            }
+        },
         getMenu() {
             this.loading = true;
             axios
@@ -358,7 +380,6 @@ export default {
                 .get("all/options")
                 .then(res => {
                     this.options = res.data;
-                    console.log(this.options);
                 })
                 .catch(error => {
                     console.log(error.response.data.errors);

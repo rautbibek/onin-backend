@@ -23,6 +23,7 @@ class CategoryResource extends JsonResource
             'has_size' => $this->has_size,
             'icon' => $this->icon,
             'children'=> $this->children,
+            // 'cover'=> $this->cover_image,
             'created_at' => $this->created_at->diffForHumans(),
             // 'cat_options' => $this->categoryOptions->map(function($item){
             //     return $item->option_id;

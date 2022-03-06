@@ -4,6 +4,8 @@ namespace App\Models;
 use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Helper\MediaHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -31,6 +33,9 @@ class Category extends Model
         'status'    => 'boolean',
         'last_child'=> 'boolean'
     ];
+    // protected $appends =[
+    //     'cover_image'
+    // ];
 
     public function getSlugOptions() : SlugOptions
     {
@@ -61,4 +66,18 @@ class Category extends Model
     public function brand(){
         return $this->hasMany(Brand::class);
     }
+
+    // public function getCoverImageAttribute(){
+    //     if($this->cover){
+    //         if (Storage::disk('public')->exists('thumb/'.$this->cover)) {
+    //             return Storage::disk('public')->url('/thumb/'.$this->cover);
+    //         }else{
+    //             return asset('images/no-image.png');
+    //         }
+    //     }else{
+    //         return asset('images/no-image.png');
+    //     }
+    //     //return Storage::disk('public')->url('/category/'.$this->cover);
+    //     //return MediaHelper::getThumbnailUrl($this->cover,'thumb');
+    // }
 }

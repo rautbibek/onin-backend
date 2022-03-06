@@ -418,6 +418,7 @@ export default {
                         this.buttonLoading = false;
 
                         this.closeModel();
+                        this.formData = {};
                         this.$refs.form.reset();
                         this.getBrands(this.$options);
                     })

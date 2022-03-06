@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -16,6 +17,11 @@ class Handler extends ExceptionHandler
         //
     ];
 
+    // public function report(Exception $exception)
+    // {
+    //     parent::report($exception);
+    // }
+
     /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
@@ -27,6 +33,17 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
+    public function render($request, Throwable $exception)
+{
+    if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+        return response()->json([
+           'message'=>'No record found',
+        ],404);
+    }
+
+    //return parent::render($request, $exception);
+}
+
     /**
      * Register the exception handling callbacks for the application.
      *
@@ -37,5 +54,8 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+        
+
+        
     }
 }

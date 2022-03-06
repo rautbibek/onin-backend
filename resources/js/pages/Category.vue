@@ -31,6 +31,13 @@
             >
                 <template v-slot:append="{ item }">
                     <template>
+                        <!-- <img
+                            height="70px"
+                            width="70px"
+                            :src="item.cover"
+                            :alt="item.cover"
+                            style="padding:10px"
+                        /> -->
                         <v-btn
                             x-small
                             fab

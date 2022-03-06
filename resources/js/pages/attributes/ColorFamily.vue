@@ -293,6 +293,7 @@ export default {
                         timeout: 2000
                     });
                     this.paginate(this.$options);
+                    this.formData = {};
                     this.color_id = "";
                     this.confirm = false;
                 })

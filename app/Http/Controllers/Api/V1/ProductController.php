@@ -19,4 +19,9 @@ class ProductController extends Controller
             'product'  => ProductResource::collection($product)
         ]);
     }
+
+    public function productDetail($id){
+        $product = Product::with(['images','optionValues','variant'])->findOrFail($id);
+        return $product;
+    }
 }

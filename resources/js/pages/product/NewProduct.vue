@@ -21,7 +21,7 @@
                         <v-row class="pa-1">
                             <v-col cols="12">
                                 <!-- @change="getSubcategory" -->
-                                {{ selected_category.length }}
+
                                 <v-autocomplete
                                     v-model="selected_category"
                                     :items="categories"

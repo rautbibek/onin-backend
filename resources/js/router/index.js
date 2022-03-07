@@ -12,6 +12,7 @@ import Dashboard from "../pages/Dashboard";
 import AdminLayout from "../layouts/AdminLayout.vue";
 import ColorFamily from "../pages/attributes/ColorFamily.vue";
 import CategoryOption from "../pages/attributes/CategoryOptions.vue";
+import Setting from "../pages/setting/Setting.vue";
 import Collection from "../pages/collection";
 import Brand from "../pages/brand";
 import Banner from "../pages/banner";
@@ -86,6 +87,11 @@ const routes = [
                 path: "/product/edit/:id",
                 name: "EditProduct",
                 component: EditProduct
+            },
+            {
+                path: "/setting",
+                name: "Setting",
+                component: Setting
             }
         ]
     }

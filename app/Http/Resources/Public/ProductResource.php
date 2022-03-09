@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Public;
 use App\Http\Helper\MediaHelper;
+use App\Http\Resources\Public\product\ProductVariant;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -14,6 +15,7 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
+        
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -22,7 +24,7 @@ class ProductResource extends JsonResource
             'discount' => $this->discount,
             'price' => $this->firstVariant->price,
             'cover_image' => $this->image?$this->image?MediaHelper::getThumbnailUrl($this->image[0],'thumb'):'':asset('/images/no-image.png'),
-            'stock' => $this->firstVariant->quantity
+            'variant' => $this->variant?ProductVariant::collection($this->variant):[],
         ];
     }
 }

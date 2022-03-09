@@ -10,15 +10,19 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function categoryProduct($slug){
-        $category = Category::where('slug',$slug)->select('id','name','slug')->with('options')->first();
-        $product = Product::where('category_id',$category->id)->with('firstVariant','collection')->paginate(10);
-        ;
+    public function categoryProduct($id){
+        $category = Category::select('id','name','slug')->with('options')->findOrFail($id);
         
+        $product = Product::where('category_id',$category->id)
+                 ->with('variant','collection')->paginate(20);
+                 
+        //$product =  ProductResource::collection($product);
+       
         return response()->json([
             'category' => $category,
             'product'  => ProductResource::collection($product)
-        ]);
+
+        ],200);
     }
 
     public function productDetail($id){
@@ -31,5 +35,11 @@ class ProductController extends Controller
         
         return new ProductDetailResource($product);
         
+    }
+
+    public function allProduct(){
+        $product = Product::with('variant')->simplePaginate(20);
+        return ProductResource::collection($product);
+        //return response()->json($product,200);
     }
 }

@@ -17,7 +17,7 @@ class ProductVariant extends JsonResource
         return [
             'id'   => $this->id,
             'color'=>$this->color,
-            'size' => $this->sizes,
+            
             'sku' => $this->sku,
             'price' => $this->price,
             'stock' => $this->quantity

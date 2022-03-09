@@ -19,10 +19,10 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'short_desc' => $this->short_description,
             'slug' => $this->slug,
             'discount_type' => $this->discount_type,
             'discount' => $this->discount,
-            'price' => $this->firstVariant->price,
             'cover_image' => $this->image?$this->image?MediaHelper::getThumbnailUrl($this->image[0],'thumb'):'':asset('/images/no-image.png'),
             'variant' => $this->variant?ProductVariant::collection($this->variant):[],
         ];

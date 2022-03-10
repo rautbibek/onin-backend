@@ -26,7 +26,7 @@
                         </ul>
                     </div>
                 @endif
-                <img src="https://w7.pngwing.com/pngs/219/256/png-transparent-phoenix-logo-flame-football-s-daquan-leaf-flower-symbol.png" class="logo" alt="logo">
+                <img src="/images/logo.jpeg" class="logo" alt="logo">
                 <form action="{{route('admin.login')}}" method="POST">
                 @csrf
                 <div class="seperator">

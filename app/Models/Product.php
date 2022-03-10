@@ -33,7 +33,7 @@ class Product extends Model
     
 
     public function variant(){
-        return $this->hasMany(Variant::class);
+        return $this->hasMany(Variant::class)->orderBy('quantity','desc');
     }
 
     public function firstVariant(){

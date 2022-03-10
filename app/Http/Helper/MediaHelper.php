@@ -60,13 +60,10 @@ class MediaHelper{
 
     public static function getThumbnailUrl($image,$path){
         $file = $path.'/'.$image;
-        
         return Storage::disk('public')->url($file);
-
     }
     public static function getImageUrl($image,$path){
         $file = $path.'/'.$image;
-        
         return Storage::disk('public')->url($file);
     }
 }

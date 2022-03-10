@@ -408,6 +408,41 @@
                             </v-alert>
                         </v-card-subtitle>
                         <v-card-text>
+                            <div class="pb-3 row mb-3">
+                                <v-col
+                                    cols="2"
+                                    v-for="image in product.images"
+                                    :key="image.id"
+                                >
+                                    <v-card>
+                                        <v-img
+                                            :src="
+                                                `/storage/thumb/${image.file}`
+                                            "
+                                            class="white--text align-end"
+                                            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                                            height="120px"
+                                        >
+                                            <v-card-title>
+                                                {{ image.size / 1000 }}
+                                                KB</v-card-title
+                                            >
+                                        </v-img>
+
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+
+                                            <v-btn
+                                                @click="deleteImage(image)"
+                                                icon
+                                                color="red"
+                                            >
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-col>
+                            </div>
                             <UploadImages
                                 accept="image/png, image/gif, image/jpeg"
                                 :max="6"
@@ -881,6 +916,21 @@ export default {
                     this.buttonLoading = false;
                 });
         },
+        deleteImage(data) {
+            axios
+                .delete(`/api/product/image/${data.id}`)
+                .then(res => {
+                    this.$toast.success(res.data.message, {
+                        timeout: 2000
+                    });
+                    this.getProduct();
+                })
+                .catch(error => {
+                    this.$toast.error(error.response.data.message, {
+                        timeout: 2000
+                    });
+                });
+        },
         addNewImage() {
             var formData = new FormData();
             const config = {
@@ -906,6 +956,7 @@ export default {
                     this.handleImages();
                     // this.$router.push({ name: "Product" });
                     this.image_errors = [];
+                    this.getProduct();
                     this.buttonLoading = false;
                 })
                 .catch(error => {

@@ -12,7 +12,9 @@ class CollectionController extends Controller
     public function index(){
         
         $collection = Collection::where('status',true)->with('product',function($q){
-            $q->where('status',true)->with('variant')->limit(12);
+            $q->where('status',true)->with('variant',function($q){
+                $q->leftJoin('color_families','color_families.name','variants.color')->select('variants.*','color_families.code');
+            })->limit(12);
         })->get();
         return CollectionResource::collection($collection);
     }

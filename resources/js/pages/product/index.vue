@@ -32,6 +32,7 @@
                                 label="search"
                                 outlined
                                 dense
+                                clearable
                                 append-icon="search"
                                 placeholder="Start typing..."
                                 @click:append="paginate"
@@ -196,6 +197,7 @@ export default {
 
     methods: {
         paginate(e) {
+            console.log(e);
             this.loading = true;
             axios
                 .get(`/api/product?page=${e.page}`, {

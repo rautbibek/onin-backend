@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,7 @@ class ProductController extends Controller
         //return $product->withCount('variant')->get();
 
         //return response()->json($product);
-        $product = Datatable::filter($product,['name','email']);
+        $product = Datatable::filter($product,['title','search_text','discount','discount_type']);
         return  ProductResource::collection($product)->response()
         ->setStatusCode(200);
     }
@@ -181,8 +182,11 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with(['category:id,name,has_color,has_size','variant','optionValues','collection:id','images'])->where('id',$id)->firstOrFail();
-        
+        $product = Product::with(['category:id,name,has_color,has_size','images'=>function($q){
+            $q->select('id','product_id','file','size');
+        },'variant','optionValues','collection:id'])
+                           ->where('id',$id)
+                           ->firstOrFail();
         return new EditProductResource($product);
         //return response()->json($product,200);
     }
@@ -284,6 +288,31 @@ class ProductController extends Controller
             ], 500);
         }
        
+    }
+
+    public function removeProductImage($id){
+        try{
+            $image = ProductImage::findOrFail($id);
+        
+            if (Storage::disk('public')->exists('product/'.$image->file)) {
+                Storage::delete('product/'.$image->file);
+            }
+
+            if (Storage::disk('public')->exists('thumb/'.$image->file)) {
+                Storage::delete('thumb/'.$image->file);
+            }
+            $image->delete();
+            
+            return response()->json([
+                'message'=> 'Image deleted successfully.'
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Something went wrong',
+                'error' =>$e->getMessage()
+            ], 500);
+        }
+        
     }
 
     public function updateCover(Request $request,$id){

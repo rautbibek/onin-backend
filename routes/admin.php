@@ -43,6 +43,8 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::post('update/product/options',[ProductController::class,'updateProductOptions']);
         Route::post('category/option/{id}',[CategoryController::class,'getCategoryOptions']);
         Route::post('/update/product/image',[ProductController::class,'updateProductImage']);
+        Route::delete('/product/image/{id}',[ProductController::class,'removeProductImage']);
+        
         Route::post('/update/cover/{id}',[ProductController::class,'updateCover']);
         Route::resources([
             'category' => CategoryController::class,

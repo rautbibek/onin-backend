@@ -109,7 +109,7 @@ class ProductController extends Controller
             if($request->hasFile('product_images')){
                 
                 foreach($request->product_images as $image){
-                    $file = MediaHelper::saveProductImage($image,'test', $product->slug);
+                    $file = MediaHelper::saveProductImage($image,'product', $product->slug);
                     $product->images()->create([
                         'file'=> $file,
                         'size'=> $image->getSize(),

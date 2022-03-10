@@ -27,9 +27,6 @@ class ProductController extends Controller
     public function index()
     {
         $product = Product::with(['category:id,name','brand:id,name','variant','optionValues'])->latest();
-        //return $product->withCount('variant')->get();
-
-        //return response()->json($product);
         $product = Datatable::filter($product,['title','search_text','discount','discount_type']);
         return  ProductResource::collection($product)->response()
         ->setStatusCode(200);

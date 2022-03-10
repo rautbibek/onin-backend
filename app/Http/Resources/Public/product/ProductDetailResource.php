@@ -30,6 +30,7 @@ class ProductDetailResource extends JsonResource
             'meta_keyword' => $this->meta_keyword,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
+            'brand' => $this->brand_name,
             'cover' =>  MediaHelper::getImageUrl($this->cover,'product'),
             'cover_thumb' =>  MediaHelper::getImageUrl($this->cover,'thumb'),
             'options' => $this->optionValues?ProductOptions::collection($this->optionValues):[],

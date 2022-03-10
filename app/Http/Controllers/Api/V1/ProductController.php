@@ -37,6 +37,8 @@ class ProductController extends Controller
         }])
         ->findOrFail($id);
         
+
+        
         
         return new ProductDetailResource($product);
         

@@ -17,7 +17,7 @@
 
 
 
-                @if ($errors->any())
+                <!-- @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
                             @foreach ($errors->all() as $error)
@@ -25,7 +25,7 @@
                             @endforeach
                         </ul>
                     </div>
-                @endif
+                @endif -->
                 <img src="/images/logo.jpeg" class="logo" alt="logo">
                 <form action="{{route('admin.login')}}" method="POST">
                 @csrf
@@ -46,8 +46,9 @@
                     </div>
                 </div>
                 <div class="seperator button-container">
-                    <button class="btn"  type="submit">Login</button>
+                    <button class="btn"  type="submit">SIGN IN</button>
                 </div>
+                <p style="text-align: center;"><a style=" color:white" href="https://onininternational.com">Goto Homepage</a></p>
                 </form>
             </div>
         </div>

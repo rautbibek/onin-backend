@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'short_desc' => $this->short_description,
             'slug' => $this->slug,
             'discount_type' => $this->discount_type,
+            'has_color'=> $this->has_color,
             'discount' => $this->discount,
             'cover_image' => $this->cover?MediaHelper::getThumbnailUrl($this->cover,'thumb'):asset('/images/no-image.png'),
             'variant' => $this->variant?ProductVariant::collection($this->variant):[],

@@ -88,7 +88,7 @@
                     <ValidationErrors :errors="errors"></ValidationErrors>
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
-                        <treeselect
+                        <Treeselect
                             class="mb-10 selectbox"
                             style="height:35px"
                             v-model="formData.parent_id"
@@ -103,7 +103,7 @@
                             <label slot="option-label" slot-scope="{ node }">
                                 {{ node.raw.name }}
                             </label>
-                        </treeselect>
+                        </Treeselect>
 
                         <v-text-field
                             v-model="formData.name"
@@ -280,6 +280,7 @@ export default {
     },
 
     data: () => ({
+        test: [],
         tree: [],
         search_keyword: "",
         title: "Categories",
@@ -323,45 +324,17 @@ export default {
     computed: mapGetters(["fetAllCategories"]),
 
     methods: {
-        loadOptions({ action, parentNode, callback }) {
-            // Typically, do the AJAX stuff here.
-            // Once the server has responded,
-            // assign children options to the parent node & call the callback.
-
-            if (action === LOAD_CHILDREN_OPTIONS) {
-                switch (parentNode.id) {
-                    case "success": {
-                        simulateAsyncOperation(() => {
-                            parentNode.children = [
-                                {
-                                    id: "child",
-                                    label: "Child option"
-                                }
-                            ];
-                            callback();
-                        });
-                        break;
-                    }
-                    case "no-children": {
-                        simulateAsyncOperation(() => {
-                            parentNode.children = [];
-                            callback();
-                        });
-                        break;
-                    }
-                    case "failure": {
-                        simulateAsyncOperation(() => {
-                            callback(
-                                new Error(
-                                    "Failed to load options: network error."
-                                )
-                            );
-                        });
-                        break;
-                    }
-                    default: /* empty */
-                }
+        onOpen(e) {
+            // ignore initial open
+            if (!this.__initial) {
+                this.__initial = true;
+                return;
             }
+
+            //console.log("toggle arrow clicked", e);
+        },
+        onSelected(e) {
+            console.log("checkbox clicked", e);
         },
         getMenu() {
             this.loading = true;

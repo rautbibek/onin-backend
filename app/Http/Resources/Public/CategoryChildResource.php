@@ -3,9 +3,10 @@
 namespace App\Http\Resources\Public;
 use App\Http\Helper\MediaHelper;
 use App\Http\Resources\Public\CategoryChildResource;
+
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class CategoryChildResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

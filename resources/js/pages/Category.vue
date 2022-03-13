@@ -112,6 +112,18 @@
                             required
                             outlined
                         ></v-text-field>
+                        <div
+                            v-if="formData.cover_url"
+                            style="justify-content: center; display: flex; "
+                            class="ma-4"
+                        >
+                            <v-img
+                                lazy-src="https://picsum.photos/id/11/10/6"
+                                max-height="130"
+                                max-width="130"
+                                :src="formData.cover_url"
+                            ></v-img>
+                        </div>
                         <v-row>
                             <!-- <v-col>
                                 <v-text-field
@@ -122,6 +134,7 @@
                                     outlined
                                 ></v-text-field>
                             </v-col> -->
+
                             <v-col>
                                 <v-file-input
                                     v-model="formData.image"
@@ -391,7 +404,12 @@ export default {
             }
         },
         editItem(item) {
-            this.formData = item;
+            console.log(item);
+            this.formData.id = item.id;
+            this.formData.parent_id = item.parent_id;
+            this.formData.cover = item.cover;
+            this.formData.cover_url = item.cover_url;
+            this.formData.name = item.name;
             this.openDialog();
         },
 
@@ -416,7 +434,7 @@ export default {
                         });
                         this.buttonLoading = false;
                         this.closeModel();
-
+                        this.formData = {};
                         this.getCategories();
                         this.getMenu(this.$options);
                     })
@@ -443,7 +461,7 @@ export default {
             this.category_name = item.name;
             this.has_color = item.has_color;
             this.has_size = item.has_size;
-            // this.category_options = item.cat_options;
+
             this.optionDialog = true;
         },
 
@@ -456,8 +474,9 @@ export default {
                     category_options: this.category_options
                 })
                 .then(res => {
-                    console.log(res.data);
+                    this.getMenu();
                     this.optionDialog = false;
+
                     this.$toast.success(res.data.message, {
                         timeout: 2000
                     });

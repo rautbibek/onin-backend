@@ -5,7 +5,7 @@ use App\Http\Helper\MediaHelper;
 use App\Http\Resources\Admin\CategoryChildrenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class CategoryChildrenResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -27,9 +27,6 @@ class CategoryResource extends JsonResource
             'cover'=> $this->cover,
             'cover_url'=> $this->cover?MediaHelper::getThumbnailUrl($this->cover,'thumb'):null,
             'created_at' => $this->created_at->diffForHumans(),
-            // 'cat_options' => $this->categoryOptions->map(function($item){
-            //     return $item->option_id;
-            // }),
         ];
     }
 }

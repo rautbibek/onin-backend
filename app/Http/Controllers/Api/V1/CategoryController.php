@@ -12,8 +12,8 @@ class CategoryController extends Controller
         
         $categories = cache()->remember('public-category',60*60*24,function(){
             return Category::where('status',true)->whereNull('parent_id')->with('children',function($q){
-                $q->select('id','name','slug','parent_id','status')
-                ->with('children:id,name,slug,status,parent_id');
+                $q->select('id','name','slug','parent_id','status','cover')
+                ->with('children:id,name,slug,status,parent_id,cover');
             })->orderBy('name','asc')->get();
         });
         return  CategoryResource::collection($categories)->response()

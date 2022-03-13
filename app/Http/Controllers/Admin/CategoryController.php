@@ -44,15 +44,26 @@ class CategoryController extends Controller
     {
         
         $parent_id = $request->has('parent_id')?(int) $request->get('parent_id'):null;
+        $category_image = $request->file('image')?$request->get('image'):null;
+        
         if($parent_id == 0){
             $parent_id = null;
         }
         $category_image = null;
         
-        if(isset($request->image)){
+        if($request->file('image')){
+            $cat_id= $request->get('id');
+            $cover = $request->get('cover')?$request->get('cover'):null;
+            
             $this->validate($request,[
-                'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-            ]);    
+                'image' => 'image|mimes:jpeg,png,jpg|max:5048',
+            ]); 
+            if(isset($cat_id) && $request->get('id') != 'undefined'){
+                if(isset($cover) && $request->cover != null && $request->cover != 'null'){
+                    Storage::delete('/category/',$request->cover);
+                    Storage::delete('/thumb/'.$request->cover);
+                }
+            }   
             $mediaHelper = new MediaHelper;
             $category_image =  $mediaHelper->storeMedia($request->image,'category',true,false,true);
         }
@@ -160,6 +171,11 @@ class CategoryController extends Controller
                 'error'=>'Please delete subcategory before deleting parent category'
             ],422);
         }
+        if($category->cover){
+            Storage::delete('/category/'.$category->cover);
+            Storage::delete('/thumb/'.$category->cover);
+        }
+        
 
         $category->delete();
         cache()->forget('public-category');

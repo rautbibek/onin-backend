@@ -42,7 +42,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        
+        //return $request->all();
         $parent_id = $request->has('parent_id')?(int) $request->get('parent_id'):null;
         $category_image = $request->file('image')?$request->get('image'):null;
         
@@ -59,11 +59,15 @@ class CategoryController extends Controller
                 'image' => 'image|mimes:jpeg,png,jpg|max:5048',
             ]); 
             if(isset($cat_id) && $request->get('id') != 'undefined'){
+                
                 if(isset($cover) && $request->cover != null && $request->cover != 'null'){
-                    Storage::delete('/category/',$request->cover);
+                    //return "found cover";
+                    Storage::delete('/category/'.$request->cover);
                     Storage::delete('/thumb/'.$request->cover);
                 }
-            }   
+                //return "found id";
+            }  
+            //return "nothing"; 
             $mediaHelper = new MediaHelper;
             $category_image =  $mediaHelper->storeMedia($request->image,'category',true,false,true);
         }
@@ -86,13 +90,17 @@ class CategoryController extends Controller
             $id = $request->get('id');
             if (isset($id) && $id != 'undefined') {
                 $category = Category::findorfail($id);
-                $category->update([
+                $data = [
                     'parent_id'=> $parent_id,
                     'name'=> request()->get('name'),
                     'icon'=>request()->get('icon'),
-                    'cover'=> $category_image,
+                    
                     'lvl' => (int) $level
-                ]);
+                ];
+                if($request->file('image')){
+                    $data['cover']= $category_image;
+                }
+                $category->update($data);
 
             
             

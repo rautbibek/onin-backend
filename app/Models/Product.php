@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ class Product extends Model
     use HasFactory,HasSlug;
 
     protected $guarded =[];
-
+    // protected $appends =['is_favorite'];
 
     protected $casts = [
         'meta_keyword' => 'array',
@@ -60,4 +61,13 @@ class Product extends Model
     public function images(){
         return $this->hasMany(ProductImage::class);
     }
+
+    public function favorites(){
+        return $this->belongsToMany(User::class,'favorite','product_id','user_id')->withTimestamps();
+    }
+
+    // public function getIsFavoriteAttribute(){
+        
+    //     return $this->favorites->where('user_id',Auth::id())->count() > 0;
+    // }
 }

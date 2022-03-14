@@ -27,6 +27,7 @@ class ProductDetailResource extends JsonResource
             'description' => $this->description,
             'has_size' => $this->has_size,
             'has_color'=> $this->has_color,
+            'is_favorite' => count($this->favorites)>0?true:false,
             'meta_keyword' => $this->meta_keyword,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Public\ProductResource;
 use App\Http\Resources\Public\product\ProductDetailResource;
+use App\Http\Resources\Public\product\FavoriteProductResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -40,19 +42,14 @@ class ProductController extends Controller
             $q->where('user_id',Auth::guard('sanctum')->id());
         },'images','optionValues','variant'=>function($q){
             $q->leftJoin('color_families','color_families.name','variants.color')->select('variants.*','color_families.code');
-        }])
+        }])->where('products.status',true)
         ->findOrFail($id);
-        
-
-        
-        
         return new ProductDetailResource($product);
-        
     }
 
     public function allProduct(){
         
-        $product = Product::with(['favorites'=>function($q){
+        $product = Product::where('status',true)->with(['favorites'=>function($q){
             $q->where('user_id',Auth::guard('sanctum')->id());
         },'variant'=>function($q){
             $q->leftJoin('color_families','color_families.name','variants.color')
@@ -66,10 +63,11 @@ class ProductController extends Controller
     }
 
     public function favoriteProduct(){
-        $product  = product::where('id',21)->with('favorites',function($q){
-            $q->where('user_id',1001)->count();
-        })->get();
+        //  $product = Auth::guard('sanctum')->user()->favorites;
+        $product  = User::where('id',Auth::guard('sanctum')->id())->with('favorites',function($q){
+            $q->with(['variant']);
+        })->first();
         
-        return response()->json($product);
+        return FavoriteProductResource::collection($product->favorites);
     }
 }

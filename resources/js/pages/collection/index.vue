@@ -124,7 +124,7 @@
                             required
                             outlined
                         ></v-text-field>
-                        <v-select
+                        <!-- <v-select
                             :items="discount_types"
                             :item-text="'name'"
                             :item-value="'value'"
@@ -132,14 +132,14 @@
                             outlined
                             clearable
                             label="Discount Type"
-                        ></v-select>
-                        <v-text-field
+                        ></v-select> -->
+                        <!-- <v-text-field
                             type="number"
                             v-model="formData.discount"
                             label="Discount"
                             outlined
                             clearable
-                        ></v-text-field>
+                        ></v-text-field> -->
                     </v-form>
                 </v-card-text>
 
@@ -231,10 +231,10 @@ export default {
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },
             { text: "Name", value: "name", sortable: true },
-            { text: "Discount Type", value: "discount_type" },
-            { text: "Discount", value: "discount" },
+            // { text: "Discount Type", value: "discount_type" },
+            // { text: "Discount", value: "discount" },
             { text: "Status", value: "status" },
-            { text: "Expire At", value: "expire_at" },
+            // { text: "Expire At", value: "expire_at" },
             { text: "Created At", value: "created_at" },
             { text: "Action", value: "action" }
         ]
@@ -337,11 +337,11 @@ export default {
                 .put(`/api/collection/${item.id}`)
                 .then(res => {
                     this.$toast.success(res.data.message, {
-                            timeout: 2000
+                        timeout: 2000
                     });
                 })
                 .catch();
-        },
+        }
     }
 };
 </script>

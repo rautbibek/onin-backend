@@ -66,6 +66,10 @@ class Product extends Model
         return $this->belongsToMany(User::class,'favorite','product_id','user_id')->withTimestamps();
     }
 
+    public function review(){
+        return $this->hasMany(Review::class);
+    }
+
     // public function getIsFavoriteAttribute(){
         
     //     return $this->favorites->where('user_id',Auth::id())->count() > 0;

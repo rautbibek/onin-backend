@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\CommonDataController;
 use App\Http\Controllers\Api\V1\CollectionController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\BannerController;
+use App\Http\Controllers\Api\V1\ReviewController;
 
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/register',[LoginController::class,'register']);
@@ -22,3 +23,4 @@ Route::get('/category/product/{id}',[ProductController::class,'categoryProduct']
 Route::get('/products',[ProductController::class,'allProduct']);
 Route::get('/product/{id}',[ProductController::class,'productDetail']);
 Route::get('/banner',[BannerController::class,'banner']);
+Route::get('/product/review/{id}',[ReviewController::class,'review']);

@@ -39,8 +39,8 @@ class CollectionController extends Controller
             $collection = Collection::findOrFail($id);
             $collection->update([
                 'name' => $request->get('name'),
-                'discount_type' => $request->get('discount_type'),
-                'discount' => $request->get('discount'),
+                // 'discount_type' => $request->get('discount_type'),
+                // 'discount' => $request->get('discount'),
                 'expire_at' => $request->expire_at,
             ]);
             $message = 'Collection Updated Successfully';
@@ -48,7 +48,7 @@ class CollectionController extends Controller
             $collection = new Collection();
             $collection->create([
                 'name' => $request->get('name'),
-                'discount_type' => $request->get('discount_type'),
+                // 'discount_type' => $request->get('discount_type'),
                 'discount' => $request->get('discount')
             ]);
             $message = 'New Collection Successfully';

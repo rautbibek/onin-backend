@@ -99,10 +99,17 @@ class ColorFamilyController extends Controller
      */
     public function destroy($id)
     {
-        $color = ColorFamily::findOrFail($id);
-        $color->delete();
-        return response()->json([
-            'message' => 'Color deleted succssefully'
-        ]);
+        $color = ColorFamily::leftJoin('variants','variants.color','color_families.name')->select('variants.id as variant_id','color_families.name','color_families.id')->findOrFail($id);
+        if($color->variant_id){
+            return response()->json([
+                'message'=> 'Request Forbidden :Color used by different product'
+            ],403);
+        }else{
+            $color->delete();
+            return response()->json([
+                'message' => 'Color deleted succssefully'
+            ]);
+        }
+        
     }
 }

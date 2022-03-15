@@ -18,7 +18,9 @@ class MediaHelper{
                         $constrain->aspectRatio();
                       })
                     //   ->resizeCanvas(200,null,'center', false, '#e0e0e0')
-                      ->resize(200,null,'center', false)
+                    //   ->resize(200,null,'center',function ($constraint) {
+                    //     $constraint->aspectRatio();
+                    // })
                       ->stream();
                       Storage::disk('public')->put('thumb/'.$fileName,$thumb);
                 }
@@ -43,7 +45,7 @@ class MediaHelper{
             $thumb = Image::make($file)->resize(200,150,function($constrain){
                 $constrain->aspectRatio();
             })
-            ->resize(200,null,'center', false)
+            
             ->stream();
             Storage::put('thumb/'.$fileName,$thumb);                 
             return $fileName;

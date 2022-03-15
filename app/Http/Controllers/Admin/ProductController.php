@@ -154,8 +154,6 @@ class ProductController extends Controller
                 //     'inventory_track'=> $qty
                 // ]);
             }
-
-
             DB::commit();
             return response()->json([
                 'message' => 'New product added successfully !'

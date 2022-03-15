@@ -26,6 +26,7 @@ class FavoriteProductResource extends JsonResource
             'discount' => $this->discount,
             'cover_image' => $this->cover?MediaHelper::getThumbnailUrl($this->cover,'thumb'):asset('/images/no-image.png'),
             'variant' => $this->variant?ProductVariant::collection($this->variant):[],
+            'created_at'=>$this->created_at,
         ];
     }
 }

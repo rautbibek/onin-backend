@@ -17,4 +17,8 @@ class Cart extends Model
         'price',
         'extra'
     ];
+
+    public function product(){
+        return $this->belongsTo(Product::class);
+    }
 }

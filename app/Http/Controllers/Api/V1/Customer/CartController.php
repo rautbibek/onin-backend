@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Customer;
 use App\Models\Cart;
+use App\Http\Resources\Public\CartResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class CartController extends Controller
      */
     public function index()
     {
-        //return auth()->id();
+        
         $cart = Cart::
         leftJoin('products','products.id','carts.product_id')
         ->leftJoin('variants','variants.id','carts.variant_id')
@@ -26,12 +27,17 @@ class CartController extends Controller
             'carts.product_id',
             'carts.quantity',
             'products.title',
+            'products.discount_type',
+            'products.discount',
             'products.cover',
             'variants.id as varaint_id',
-            'carts.created_at'
+            'variants.quantity as stock',
+            'variants.price',
+            'carts.updated_at'
         )->where('carts.user_id',auth()->id())
         ->get();
-        return $cart;
+        //return $cart;
+        return CartResource::collection($cart);
     }
 
     /**
@@ -71,7 +77,7 @@ class CartController extends Controller
                 ],200);
             }else{
                 
-                $cart = Cart::where('user_id',auth()->id())->where('product_id',$request->product_id)->first();
+                $cart = Cart::where('user_id',auth()->id())->where('variant_id',$request->variant_id)->first();
                 //return $cart;
                 if($cart){
                     $cart->update([

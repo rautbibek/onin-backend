@@ -349,7 +349,13 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        
         $product = Product::findOrFail($id);
+        foreach ($product->images as $image) {
+            $image->delete();
+        }
+        Storage::delete('/product/'.$product->cover);
+        Storage::delete('/thumb/'.$product->cover);
         $product->delete();
         return response()->json([
             'message'=>'Product deleted succefully'

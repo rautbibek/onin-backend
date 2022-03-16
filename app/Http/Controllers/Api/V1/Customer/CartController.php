@@ -128,7 +128,23 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'cart_id'=>'required',
+            'quantity' => 'required|gt:0'
+        ]);
+        $cart = Cart::findOrFail($id);
+        if($cart->user_id == auth()->id()){
+            
+            $cart->quantity = $request->quantity;
+            $cart->update();
+            return response()->json([
+                'message'=> 'Cart updated successfully.'
+            ],200);
+        }
+        return response()->json([
+            'message'=>'Cart doesn`t belons to your.'
+        ],422);
+        
     }
 
     /**

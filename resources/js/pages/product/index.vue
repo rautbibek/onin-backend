@@ -126,7 +126,13 @@
                         </v-icon>
                     </v-btn>
 
-                    <v-btn x-small fab color="error" dark>
+                    <v-btn
+                        @click="confirmation(item)"
+                        x-small
+                        fab
+                        color="error"
+                        dark
+                    >
                         <v-icon dark>
                             mdi-delete
                         </v-icon>
@@ -151,20 +157,44 @@
                 </v-toolbar>
             </div>
         </ProductDetail>
+        <ConfirmationBox :confirm="confirm">
+            <template v-slot:cancel>
+                <v-btn small color="error" dark @click="cancel">
+                    <v-icon left>mdi-cancel</v-icon>
+                    no
+                </v-btn>
+            </template>
+            <template v-slot:ok>
+                <div>
+                    <v-btn
+                        small
+                        color="green darken-1"
+                        dark
+                        @click="deleteItem"
+                    >
+                        <v-icon left>mdi-check-circle</v-icon>
+                        yes
+                    </v-btn>
+                </div>
+            </template>
+        </ConfirmationBox>
     </div>
 </template>
 <script>
 import axios from "axios";
+import ConfirmationBox from "../../components/ConfirmationBox.vue";
 import ProductDetail from "./ProductDetail.vue";
 export default {
-    components: { ProductDetail },
+    components: { ProductDetail, ConfirmationBox },
     data: () => ({
         search_keyword: "",
         title: "Products",
         dialog: false,
         loading: false,
+        confirm: false,
         meta: [],
         product: [],
+        product_id: "",
         view_detail: false,
         current_product: [],
         formTitle: "Products",
@@ -217,6 +247,31 @@ export default {
                     this.loading = false;
                 });
         },
+        confirmation(item) {
+            this.confirm = true;
+            this.product_id = item.id;
+            //this.deleteItem(item);
+        },
+        deleteItem() {
+            axios
+                .delete(`api/product/${this.product_id} `)
+                .then(res => {
+                    this.$toast.success(res.data.message, {
+                        timeout: 2000
+                    });
+                    this.paginate(this.$options);
+                    this.product_id = "";
+                    this.confirm = false;
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors;
+
+                    this.$toast.error(error.response.data.message, {
+                        timeout: 2000
+                    });
+                    this.confirm = false;
+                });
+        },
         updateStatus(item) {
             axios
                 .post(`/api/product/status/${item.id}`)
@@ -226,6 +281,10 @@ export default {
         detail(item) {
             this.view_detail = true;
             this.current_product = item;
+        },
+        cancel() {
+            this.confirm = false;
+            this.product_id = "";
         }
     }
 };

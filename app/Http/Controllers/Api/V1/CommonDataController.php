@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProductType;
 use App\Models\Brand;
+use App\Models\State;
 use App\Models\ColorFamily;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\CategoryResource;
@@ -54,6 +56,43 @@ class CommonDataController extends Controller
     public function getCollection(){
         $collection = Collection::select('id','name')->get();
         return response()->json($collection,200);
+    }
+
+    public function states(){
+        $state = DB::table('states')->select('id','name')->get();
+        return response()->json($state);
+    }
+
+    public function districts(){
+        $district = DB::table('districts')->select('id','name')->get();
+        return response()->json($district);
+    }
+
+    public function cities(){
+        $cities = DB::table('cities')->select('id','name')->get();
+        return response()->json($cities);
+    }
+
+    public function getDistrictByState($state_id){
+        $district = DB::table('districts')
+                       ->where('state_id',$state_id)
+                       ->select('id','name')
+                       ->get();
+        return response()->json($district);
+    }
+
+    public function getCityByDistrict($district_id){
+        $city = DB::table('cities')->where('district_id',$district_id)
+                   ->select('id','name','price')
+                   ->get();
+        return response()->json($city);
+    }
+
+    public function getLocalareaByCity($city_id){
+        $localarea = DB::table('local_areas')->where('city_id',$city_id)
+                   ->select('id','name','price')
+                   ->get();
+        return response()->json($localarea);
     }
 
 }

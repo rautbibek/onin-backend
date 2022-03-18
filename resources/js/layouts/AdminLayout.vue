@@ -340,6 +340,33 @@ export default {
                     }
                 ]
             },
+            {
+                icon: "mdi-map",
+                text: "Addresses",
+                model: false,
+                children: [
+                    {
+                        icon: "remove",
+                        text: "State",
+                        url: "/state"
+                    },
+                    {
+                        icon: "remove",
+                        text: "District",
+                        url: "/district"
+                    },
+                    {
+                        icon: "remove",
+                        text: "Cities",
+                        url: "/city"
+                    },
+                    {
+                        icon: "remove",
+                        text: "LocalArea",
+                        url: "/local-area"
+                    }
+                ]
+            },
             // {
             //     icon: "mdi-home",
             //     text: "More",

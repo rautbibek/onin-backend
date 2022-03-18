@@ -14,6 +14,10 @@ import ColorFamily from "../pages/attributes/ColorFamily.vue";
 import CategoryOption from "../pages/attributes/CategoryOptions.vue";
 import Setting from "../pages/setting/Setting.vue";
 import Collection from "../pages/collection";
+import District from "../pages/address/District.vue";
+import State from "../pages/address/State.vue";
+import City from "../pages/address/City.vue";
+import LocalArea from "../pages/address/LocalArea.vue";
 import Brand from "../pages/brand";
 import Banner from "../pages/banner";
 const routes = [
@@ -92,6 +96,26 @@ const routes = [
                 path: "/setting",
                 name: "Setting",
                 component: Setting
+            },
+            {
+                path: "/state",
+                name: "State",
+                component: State
+            },
+            {
+                path: "/district",
+                name: "District",
+                component: District
+            },
+            {
+                path: "/city",
+                name: "City",
+                component: City
+            },
+            {
+                path: "/local-area",
+                name: "LocalArea",
+                component: LocalArea
             }
         ]
     }

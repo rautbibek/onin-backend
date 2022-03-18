@@ -12,6 +12,10 @@ use App\Http\Controllers\OptionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\Address\StateController;
+use App\Http\Controllers\Admin\Address\DistrictController;
+use App\Http\Controllers\Admin\Address\CityController;
+use App\Http\Controllers\Admin\Address\LocalAreaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/category/children',[CategoryController::class,'getChildrenData']);
@@ -52,7 +56,11 @@ Route::middleware(['auth:admin'])->group(function(){
             'brand' => BrandController::class,
             'colors' => ColorFamilyController::class,
             'collection' => CollectionController::class,
-            'banner' => BannerController::class
+            'banner' => BannerController::class,
+            'state' => StateController::class,
+            'district' => DistrictController::class,
+            'city' => CityController::class,
+            'localarea' => LocalAreaController::class
 
         ]);
         

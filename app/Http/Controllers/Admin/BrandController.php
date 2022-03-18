@@ -24,7 +24,7 @@ class BrandController extends Controller
         $brand = Datatable::filter($brand,['name']);
 
         return  BrandResource::collection($brand)->response()
-        ->setStatusCode(200);;
+        ->setStatusCode(200);
     }
 
     /**

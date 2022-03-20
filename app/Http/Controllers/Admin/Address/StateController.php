@@ -16,7 +16,7 @@ class StateController extends Controller
     public function index(Request $request)
     {
         
-        $states = new State;
+        $states = State::latest();
         $states = Datatable::filter($states,['name']);
         return response()->json($states);
     }
@@ -93,9 +93,17 @@ class StateController extends Controller
     public function destroy($id)
     {
         $state = State::findOrFail($id);
-        $state->delete();
-        return response()->json([
-            'message'=>'State deleted successfully.'
-        ]);
+        //return $state;
+        if($state->singleDistrict){
+            return response()->json([
+                'message'=> 'Warning, Please delete the district belongs to this state before deleting the state',
+            ],422);
+        }else{
+            $state->delete();
+            return response()->json([
+                'message'=>'State deleted successfully.'
+            ],200);
+        }
+        
     }
 }

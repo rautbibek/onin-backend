@@ -239,7 +239,7 @@ export default {
         addState() {
             this.formData.id = "";
             this.formData.name = "";
-            this.$refs.form.resetValidation();
+
             this.dialog = true;
         },
         cancel() {
@@ -249,6 +249,7 @@ export default {
         closeModel() {
             this.formData.id = "";
             this.formData.name = "";
+            this.$refs.form.resetValidation();
             this.dialog = false;
         },
         confirmation(item) {
@@ -268,6 +269,8 @@ export default {
                     this.getState();
                 })
                 .catch(error => {
+                    this.confirm = false;
+                    this.state_id = "";
                     this.$toast.error(error.response.data.message, {
                         timeout: 2000
                     });

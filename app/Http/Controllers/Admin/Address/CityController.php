@@ -104,9 +104,16 @@ class CityController extends Controller
     public function destroy($id)
     {
         $city= City::findOrFail($id);
-        $city->delete();
-        return response()->json([
-            'message'=> 'City deleted successfully.'
-        ],200);
+        if($city->singleLocalArea){
+            return response()->json([
+                'message'=> 'Warning, Please delete the local area belongs to this city before deleting the district',
+            ],422);
+        }else{
+            $city->delete();
+            return response()->json([
+                'message'=> 'City deleted successfully.'
+            ],200);
+        }
+        
     }
 }

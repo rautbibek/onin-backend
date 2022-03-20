@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class LocalArea extends Model
 {
     use HasFactory;
+
+
+    public function singleAddress(){
+        return $this->hasOne(Address::class);
+    }
 }

@@ -17,7 +17,9 @@ class CreateOrderDetailsTable extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+            $table->integer('quantity');
             $table->integer('variant_id');
+            $table->double('price',8,2);
             $table->jsonb('extra')->nullable();
             $table->timestamps();
         });

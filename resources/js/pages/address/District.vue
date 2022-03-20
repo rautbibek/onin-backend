@@ -288,6 +288,8 @@ export default {
                     this.getDIstricts(this.$options);
                 })
                 .catch(error => {
+                    this.confirm = false;
+                    this.district_id = "";
                     this.$toast.error(error.response.data.message, {
                         timeout: 2000
                     });

@@ -95,9 +95,16 @@ class DistrictController extends Controller
     public function destroy($id)
     {
         $district = District::findOrFail($id);
-        $district->delete();
-        return response()->json([
-            'message' => 'District deleted successfully',
-        ]);
+        if($district->singleCity){
+            return response()->json([
+                'message'=> 'Warning, Please delete the city belongs to this state before deleting the district',
+            ],422);
+        }else{
+            $district->delete();
+            return response()->json([
+                'message' => 'District deleted successfully',
+            ]);
+        }
+        
     }
 }

@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\Customer\HomeController;
 use App\Http\Controllers\Api\V1\Customer\CartController;
+use App\Http\Controllers\Api\V1\Customer\AddressController;
 use App\Http\Controllers\Api\V1\Customer\ReviewController;
+use App\Http\Controllers\Api\V1\Customer\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
 
 
@@ -18,5 +20,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::resources([
         'cart' => CartController::class,
         'review' => ReviewController::class,
+        'address' => AddressController::class,
+        'order' => OrderController::class,
     ]);
 });

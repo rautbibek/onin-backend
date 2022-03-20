@@ -14,4 +14,8 @@ class City extends Model
         'district_id',
         'price'
     ];
+
+    public function singleLocalArea(){
+        return $this->hasOne(LocalArea::class);
+    }
 }

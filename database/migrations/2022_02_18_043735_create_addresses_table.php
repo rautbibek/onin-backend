@@ -16,11 +16,14 @@ class CreateAddressesTable extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->enum('address_type',['home','0ffice','other'])->default('other');
+            $table->enum('address_type',['Home','Office','Other'])->default('Other');
             $table->boolean('default')->default(false);
-            $table->string('state');
-            $table->string('city');
-            $table->string('address');
+            $table->foreignId('state_id')->constrained('states')->cascadeOnDelete();
+            $table->foreignId('district_id')->constrained('districts')->cascadeOnDelete();
+            $table->foreignId('city_id')->constrained('cities')->cascadeOnDelete();
+            $table->foreignId('local_area_id')->constrained('local_areas')->cascadeOnDelete();
+            $table->string('landmark');
+            $table->text('full_address');
             $table->timestamps();
         });
     }

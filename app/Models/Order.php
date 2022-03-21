@@ -22,5 +22,9 @@ class Order extends Model
         'status',
         'comment',
     ];
+
+    public function orderDetail(){
+        return $this->hasMany(OrderDetail::class);
+    }
 }
 

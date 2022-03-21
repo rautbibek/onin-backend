@@ -14,7 +14,10 @@ import "vue-toastification/dist/index.css";
 const options = {
     // You can set your default options here
 };
-
+var numeral = require("numeral");
+Vue.filter("formatNumber", function(value) {
+    return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+});
 Vue.use(Toast, options);
 Vue.use(require("vue-moment"));
 Vue.prototype.$user = window.user.admin;

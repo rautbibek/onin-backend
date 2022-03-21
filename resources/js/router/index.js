@@ -19,6 +19,7 @@ import State from "../pages/address/State.vue";
 import City from "../pages/address/City.vue";
 import LocalArea from "../pages/address/LocalArea.vue";
 import Brand from "../pages/brand";
+import Order from "../pages/order/order.vue";
 import Banner from "../pages/banner";
 const routes = [
     {
@@ -116,6 +117,11 @@ const routes = [
                 path: "/local-area",
                 name: "LocalArea",
                 component: LocalArea
+            },
+            {
+                path: "/order",
+                name: "Order",
+                component: Order
             }
         ]
     }

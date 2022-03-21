@@ -102,75 +102,9 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(121,9,38,0.8043592436
                 <v-btn icon>
                     <v-icon>mdi-apps</v-icon>
                 </v-btn>
-                <v-btn icon>
-                    <v-icon>mdi-bell</v-icon>
-                </v-btn>
+                <notification></notification>
 
-                <v-menu
-                    v-model="menu"
-                    close-on-content-click
-                    :nudge-width="200"
-                    offset-y
-                >
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn icon large dark v-bind="attrs" v-on="on">
-                            <v-avatar size="32px" item>
-                                <v-img src="/src/logo.png" alt="Vuetify"></v-img
-                            ></v-avatar>
-                        </v-btn>
-                    </template>
-
-                    <v-card>
-                        <v-list>
-                            <v-list-item>
-                                <v-list-item-avatar>
-                                    <img src="/src/user.png" alt="John" />
-                                </v-list-item-avatar>
-
-                                <v-list-item-content>
-                                    <v-list-item-title>{{
-                                        $user.name
-                                    }}</v-list-item-title>
-                                    <v-list-item-subtitle
-                                        >Admin</v-list-item-subtitle
-                                    >
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list>
-
-                        <v-divider></v-divider>
-
-                        <v-list>
-                            <v-list-item>
-                                <v-list-item-action>
-                                    <v-switch
-                                        @change="changeMode"
-                                        v-model="mode"
-                                        color="primary"
-                                    ></v-switch>
-                                </v-list-item-action>
-                                <v-list-item-title>Dark Mode</v-list-item-title>
-                            </v-list-item>
-                            <v-list-item link>
-                                <v-list-item-icon
-                                    ><v-icon>mdi-lock</v-icon></v-list-item-icon
-                                >
-                                <v-list-item-title
-                                    >Change Password</v-list-item-title
-                                >
-                            </v-list-item>
-
-                            <v-list-item @click="logout">
-                                <v-list-item-icon
-                                    ><v-icon
-                                        >mdi-logout</v-icon
-                                    ></v-list-item-icon
-                                >
-                                <v-list-item-title>Logout</v-list-item-title>
-                            </v-list-item>
-                        </v-list>
-                    </v-card>
-                </v-menu>
+                <profile-image :mode="mode" @test="test"></profile-image>
             </v-app-bar>
             <v-main :class="mode ? '' : 'container-background'">
                 <v-container fluid>
@@ -276,8 +210,14 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(121,9,38,0.8043592436
     </v-app>
 </template>
 <script>
+import Notification from "../components/Notification.vue";
+import ProfileImage from "../components/ProfileImage.vue";
 export default {
     name: "AdminLayout",
+    components: {
+        Notification,
+        ProfileImage
+    },
     data: () => ({
         title: process.env.MIX_APP_NAME,
         dialog: false,
@@ -317,6 +257,11 @@ export default {
                 icon: "inventory",
                 text: "Product",
                 url: "/product"
+            },
+            {
+                icon: "event",
+                text: "Order",
+                url: "/order"
             },
             {
                 icon: "mdi-content-copy",
@@ -391,16 +336,9 @@ export default {
         changeMode() {
             this.$vuetify.theme.dark = this.mode;
         },
-        logout() {
-            axios
-                .post("/logout")
-                .then(res => {
-                    console.log(res.data);
-                    window.location.href = "/";
-                })
-                .catch(err => {
-                    console.log(err.response.data.errors);
-                });
+        test() {
+            this.mode = !this.mode;
+            this.changeMode();
         }
     }
 };

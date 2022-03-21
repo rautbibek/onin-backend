@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Customer;
 use App\Models\Cart;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Public\CartResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -50,7 +51,7 @@ class CartController extends Controller
     {
         
         $this->validate($request,[
-            'product_id' => 'required',
+            
             'variant_id' => 'required',
             'quantity' => 'required|numeric|gt:0'
         ]);
@@ -63,12 +64,20 @@ class CartController extends Controller
                 'size' => $size
             ];
         }
+
+        $variant = DB::table('variants')->select('id','product_id','quantity')->where('id',$request->variant_id)->first();
+        if(!$variant){
+          return response()->json([
+              'message'=> 'Product variant not found'
+          ],422);  
+        }
+        //$product_id = $variant->product_id;
         
         try{
             if(isset($id)){
                 $cart = Cart::findOrFail($id);
                 $cart->update([
-                    'variant_id' => $request->get('variant_it'),
+                    'variant_id' => $variant->id,
                     'quantity'   => $request->get('quantity'),
                     'extra'       => $extra
                 ]);
@@ -78,10 +87,21 @@ class CartController extends Controller
             }else{
                 
                 $cart = Cart::where('user_id',auth()->id())->where('variant_id',$request->variant_id)->first();
-                //return $cart;
+                
                 if($cart){
+                    if($request->quantity>1){
+                        $qty = $request->quantity;
+                    }else{
+                        $qty = $cart->quantity + $request->quantity;
+                    }
+                    
+                    if($qty > $variant->quantity){
+                        return response()->json([
+                            'message'=> 'Exceded product stock, only '.$variant->quantity.' stocks available',
+                        ],422);
+                    }
                     $cart->update([
-                        'quantity' => $request->get('quantity') + $cart->quantity,
+                        'quantity' => $qty,
                         'variant_id' => $request->get('variant_id'),
                         'extra'       => $extra
                     ]);
@@ -89,9 +109,14 @@ class CartController extends Controller
                         'message' => 'Cart updated successfully.'
                     ],200);
                 }
+                if($request->quantity > $variant->quantity ){
+                    return response()->json([
+                        'message'=> 'Exceded product stock, only '.$variant->quantity.' stocks available',
+                    ],422);
+                }
                 Cart::create([
-                    'product_id' => $request->get('product_id'),
-                    'variant_id' => $request->get('variant_id'),
+                    'product_id' => $variant->product_id,
+                    'variant_id' => $variant->id,
                     'quantity'   => $request->get('quantity'),
                     'user_id'    => auth()->id(),
                     'extra'       => $extra
@@ -133,8 +158,16 @@ class CartController extends Controller
             'quantity' => 'required|gt:0'
         ]);
         $cart = Cart::findOrFail($id);
+        $variant = DB::table('variants')->select('id','product_id','quantity')
+                   ->where('id',$request->variant_id)
+                   ->first();
         if($cart->user_id == auth()->id()){
-            
+            //return $variant;
+            if($request->quantity > $variant->quantity){
+                return response()->json([
+                    'message'=> 'Exceded product stocks, only '.$variant->quantity.' stocks available',
+                ],422);
+            }
             $cart->quantity = $request->quantity;
             $cart->update();
             return response()->json([

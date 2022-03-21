@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api\V1\Customer;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Admin;
+use App\Notifications\NewOrderNotification;
+use Illuminate\Support\Facades\Notification;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -27,6 +30,8 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        
+        
         $this->validate($request,[
             'delivery_address'=> 'required',
             'payment_type' => 'required',
@@ -45,11 +50,12 @@ class OrderController extends Controller
                        'products.discount',
                        'products.status',
                        'variants.quantity as stock',
-                       'variants.price'
+                       'variants.price',
+                       'variants.sold'
                        )
                    ->where('carts.user_id',auth()->id())
                    ->get();
-        //return $cart;
+        
         if($cart->count()>0){
             $rand = mt_rand(1000, 9999);
             
@@ -76,6 +82,7 @@ class OrderController extends Controller
                     $new_price = $c->price;
                 }
                 $price = round($price + ($new_price * $c->quantity)); 
+
                 
                 DB::table('order_details')->insert([
                     'order_id'=> $order->id,
@@ -83,11 +90,19 @@ class OrderController extends Controller
                     'variant_id' => $c->variant_id,
                     'quantity' => $c->quantity,
                     'price' => $new_price
+                ]);
+
+                DB::table('variants')->where('id',$c->variant_id)->update([
+                    'quantity'=> $c->stock - $c->quantity,
+                    'sold'=> $c->sold + $c->quantity
                 ]);  
             }
             $order->update([
                 'total_price'=> $price,
             ]);
+
+            $admin = Admin::all();
+            Notification::send($admin,new NewOrderNotification($order));
             DB::commit();
             Cart::where('user_id',auth()->id())->delete();
             return response()->json([

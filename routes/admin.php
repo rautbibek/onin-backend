@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\Address\StateController;
 use App\Http\Controllers\Admin\Address\DistrictController;
 use App\Http\Controllers\Admin\Address\CityController;
 use App\Http\Controllers\Admin\Address\LocalAreaController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\Order\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/category/children',[CategoryController::class,'getChildrenData']);
@@ -48,8 +50,9 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::post('category/option/{id}',[CategoryController::class,'getCategoryOptions']);
         Route::post('/update/product/image',[ProductController::class,'updateProductImage']);
         Route::delete('/product/image/{id}',[ProductController::class,'removeProductImage']);
-        
+        Route::get('/unread/notification',[NotificationController::class,'unreadNotification']);
         Route::post('/update/cover/{id}',[ProductController::class,'updateCover']);
+        Route::get('/all/order',[OrderController::class,'index']);
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,

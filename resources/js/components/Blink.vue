@@ -20,7 +20,7 @@ export default {
                 return [
                     {
                         text: "Dashboard",
-                        disabled: true,
+                        disabled: false,
                         to: "/dashboard"
                     }
                 ];

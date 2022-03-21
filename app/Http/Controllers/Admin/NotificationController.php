@@ -11,4 +11,12 @@ class NotificationController extends Controller
     public function unreadNotification(){
         return Auth::guard('admin')->user()->unreadNotifications;
     }
+
+    public function readNotification($id){
+        $Notification = Auth::guard('admin')->user()->Notifications->find($id);
+        //return $Notification;
+        if($Notification){
+            $Notification->markAsRead();
+        }
+    }
 }

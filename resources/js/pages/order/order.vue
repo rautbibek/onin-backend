@@ -86,6 +86,7 @@
                                 dark
                                 v-bind="attrs"
                                 v-on="on"
+                                :to="`/order/detail/${item.id}`"
                             >
                                 <v-icon dark>
                                     mdi-eye
@@ -184,3 +185,8 @@ export default {
     }
 };
 </script>
+<style scoped>
+a {
+    text-decoration: none;
+}
+</style>

@@ -51,6 +51,7 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::post('/update/product/image',[ProductController::class,'updateProductImage']);
         Route::delete('/product/image/{id}',[ProductController::class,'removeProductImage']);
         Route::get('/unread/notification',[NotificationController::class,'unreadNotification']);
+        Route::post('/read/notification/{id}',[NotificationController::class,'readNotification']);
         Route::post('/update/cover/{id}',[ProductController::class,'updateCover']);
         Route::get('/all/order',[OrderController::class,'index']);
         Route::resources([

@@ -11,11 +11,11 @@ class ReviewController extends Controller
     public function review($id){
         $rating = Review::where('product_id',$id)
                 ->select(
-                    DB::raw("COUNT(CASE WHEN rating = 1 THEN 1 END) as ONE_RATED"),
-                    DB::raw("COUNT(CASE WHEN rating = 2 THEN 1 END) as TWO_RATED"),
-                    DB::raw("COUNT(CASE WHEN rating = 3 THEN 1 END) as THREE_RATED"),
-                    DB::raw("COUNT(CASE WHEN rating = 4 THEN 1 END) as FOURE_RATED"),
-                    DB::raw("COUNT(CASE WHEN rating = 5 THEN 1 END) as FIVE_RATED"),
+                    DB::raw("COUNT(CASE WHEN rating = 1 THEN 1 END) as 1"),
+                    DB::raw("COUNT(CASE WHEN rating = 2 THEN 1 END) as 2"),
+                    DB::raw("COUNT(CASE WHEN rating = 3 THEN 1 END) as 3"),
+                    DB::raw("COUNT(CASE WHEN rating = 4 THEN 1 END) as 4"),
+                    DB::raw("COUNT(CASE WHEN rating = 5 THEN 1 END) as 5"),
                 )               
                 ->first();
 

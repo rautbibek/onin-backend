@@ -69,16 +69,16 @@ class AddressController extends Controller
                 
                 $address = Address::findOrFail($id);
                 
-                if($address->address_type == $request->address_type){
+                // if($address->address_type == $request->address_type){
 
-                }else{
-                    $add = Address::where('user_id',auth()->id())->where('address_type',$request->get('address_type'))->first();
-                    if($add){
-                        return response()->json([
-                            'message'=>$request->address_type.' type address is already exista',
-                        ],422);
-                    }
-                }
+                // }else{
+                //     $add = Address::where('user_id',auth()->id())->where('address_type',$request->get('address_type'))->first();
+                //     if($add){
+                //         return response()->json([
+                //             'message'=>$request->address_type.' type address is already exista',
+                //         ],422);
+                //     }
+                // }
                 $address->update([
                     
                     'state_id'=> $localarea->state_id,
@@ -91,12 +91,12 @@ class AddressController extends Controller
                 ]);
                 $message = 'Address updated succefully.';
             }else{
-                $add = Address::where('user_id',auth()->id())->where('address_type',$request->get('address_type'))->first();
-                if($add){
-                    return response()->json([
-                        'message'=>$request->address_type.' type address is already exista',
-                    ],422);
-                }
+                // $add = Address::where('user_id',auth()->id())->where('address_type',$request->get('address_type'))->first();
+                // if($add){
+                //     return response()->json([
+                //         'message'=>$request->address_type.' type address is already exista',
+                //     ],422);
+                // }
                 Address::create([
                     'user_id' => auth()->id(),
                     'state_id'=> $localarea->state_id,
@@ -112,7 +112,8 @@ class AddressController extends Controller
             }            
             DB::commit();
             return response()->json([
-                'message'=> $message
+                'message'=> $message,
+                'full_address'=> $full_address
             ],200);
         }catch(\Exception $e){
             DB::rollback();

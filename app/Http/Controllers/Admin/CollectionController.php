@@ -67,7 +67,8 @@ class CollectionController extends Controller
      */
     public function show($id)
     {
-        $collection = Collection::select('id','name')->where('id',$id)->with('product:id,title,cover,status')->first();
+        $collection = Collection::select('id','name')->where('id',$id)
+        ->with('product:id,title,cover,status,discount,discount_type')->first();
         return response()->json($collection);
     }
 
@@ -107,10 +108,13 @@ class CollectionController extends Controller
             'message'=>'Collection Deleted successfully'
         ]);
     }
-    public function removeProductFromCollection($id){
-        return $id;
+    public function removeProductFromCollection(Request $request,$id){
+        
         $cllection = Collection::findOrFail($id);
-        $cllection->product()->detach();
+        $cllection->product()->detach($request->product_id);
+        return response()->json([
+            'message'=> 'Product removed form collection succefully',
+        ],200);
     }
 
 }

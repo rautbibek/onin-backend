@@ -112,6 +112,7 @@ export default {
                 },
                 {
                     text: "Collection product",
+                    to: "/collection",
                     disabled: true
                 }
             ]

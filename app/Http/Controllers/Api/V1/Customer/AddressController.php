@@ -61,7 +61,7 @@ class AddressController extends Controller
                     'message' => 'Local area not found'
                 ],422);
             }
-            $full_address = $request->get('landmark').','.$localarea->local_area_name.','.$localarea->city_name.','.$localarea->district_name.','.$localarea->state_name;
+            $full_address = $request->get('landmark').', '.$localarea->local_area_name.' , '.$localarea->city_name.' , '.$localarea->district_name.' , '.$localarea->state_name;
             
             DB::beginTransaction();
 

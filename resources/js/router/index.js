@@ -20,6 +20,7 @@ import City from "../pages/address/City.vue";
 import LocalArea from "../pages/address/LocalArea.vue";
 import Brand from "../pages/brand";
 import Order from "../pages/order/order.vue";
+import CollectionProduct from "../pages/collection/CollectionProduct.vue";
 import OrderDetail from "../pages/order/OrderDetail.vue";
 import Banner from "../pages/banner";
 const routes = [
@@ -128,6 +129,11 @@ const routes = [
                 path: "/order/detail/:id",
                 name: "OrderDetail",
                 component: OrderDetail
+            },
+            {
+                path: "/collection/product/:id",
+                name: "CollectionProduct",
+                component: CollectionProduct
             }
         ]
     }

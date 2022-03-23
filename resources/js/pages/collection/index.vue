@@ -72,6 +72,24 @@
                                 x-small
                                 fab
                                 color="primary"
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                                :to="`/collection/product/${item.id}`"
+                            >
+                                <v-icon dark>
+                                    mdi-eye
+                                </v-icon>
+                            </v-btn>
+                        </template>
+                        <span>view collection product </span>
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                x-small
+                                fab
+                                color="primary"
                                 @click="edit(item)"
                                 dark
                                 v-bind="attrs"
@@ -345,3 +363,8 @@ export default {
     }
 };
 </script>
+<style scoped>
+a {
+    text-decoration: none;
+}
+</style>

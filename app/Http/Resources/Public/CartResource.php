@@ -23,6 +23,7 @@ class CartResource extends JsonResource
             'discount_type' => $this->discount_type,
             'discount' =>$this->discount,
             'price' =>$this->price,
+            'color' =>$this->color,
             'variant_id' => $this->varaint_id,
             'cover_image' => $this->cover?MediaHelper::getThumbnailUrl($this->cover,'thumb'):asset('/images/no-image.png'),
             'product_stock' => $this->stock,

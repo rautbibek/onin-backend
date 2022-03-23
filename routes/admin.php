@@ -53,6 +53,7 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::get('/unread/notification',[NotificationController::class,'unreadNotification']);
         Route::post('/read/notification/{id}',[NotificationController::class,'readNotification']);
         Route::post('/update/cover/{id}',[ProductController::class,'updateCover']);
+        Route::post('/remove/collection/product/{id}',[CollectionController::class,'removeProductFromCollection']);
         Route::get('/all/order',[OrderController::class,'index']);
         Route::resources([
             'category' => CategoryController::class,
@@ -73,6 +74,9 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::get('all/category/options',[OptionController::class,'index']);
         Route::delete('/delete/options/{id}',[OptionController::class,'delete']);
         Route::post('store/options',[OptionController::class,'save']);
+        Route::get('/order/detail/{id}',[OrderController::class,'orderDetail']);
+        Route::put('/update/order/comment/{id}',[OrderController::class,'updateComment']);
+        Route::post('/order/payment/complete/{id}',[OrderController::class,'changePaymentStatus']);
         Route::post('update/category/options',[OptionController::class,'updateCategoryOption']);
         
         

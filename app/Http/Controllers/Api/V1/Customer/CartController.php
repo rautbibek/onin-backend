@@ -32,8 +32,10 @@ class CartController extends Controller
             'products.discount',
             'products.cover',
             'variants.id as varaint_id',
+            'variants.color',
             'variants.quantity as stock',
             'variants.price',
+            
             'carts.updated_at'
         )->where('carts.user_id',auth()->id())
         ->get();

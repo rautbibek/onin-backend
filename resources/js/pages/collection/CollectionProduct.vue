@@ -1,0 +1,122 @@
+<template>
+    <div>
+        <b-link :items="breadcrumb"></b-link>
+        <v-card>
+            <template>
+                <v-simple-table>
+                    <template v-slot:default>
+                        <thead>
+                            <tr>
+                                <th class="text-left">
+                                    #ID
+                                </th>
+                                <th class="text-left">
+                                    Product Title
+                                </th>
+                                <th class="text-left">
+                                    Product Cover
+                                </th>
+                                <th class="text-left">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(item,
+                                index) in collection_product.product"
+                                :key="index"
+                            >
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.title }}</td>
+                                <td>
+                                    <v-img
+                                        height="80"
+                                        width="80"
+                                        class="ma-5"
+                                        :src="
+                                            item.cover
+                                                ? `/storage/thumb/${item.cover}`
+                                                : '/images/no-image.png'
+                                        "
+                                        :alt="item.title"
+                                    ></v-img>
+                                </td>
+                                <td>
+                                    <v-btn
+                                        @click="
+                                            removeProductFromCollection(item)
+                                        "
+                                        fab
+                                        x-small
+                                        dark
+                                        color="error"
+                                    >
+                                        <v-icon>delete</v-icon>
+                                    </v-btn>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-simple-table>
+            </template>
+        </v-card>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            collection_product: {},
+            breadcrumb: [
+                {
+                    text: "Dashboard",
+                    disabled: false,
+                    to: "/dashboard"
+                },
+                {
+                    text: "Collection",
+                    disabled: false,
+                    to: "/collection"
+                },
+                {
+                    text: "Collection product",
+                    disabled: true
+                }
+            ]
+        };
+    },
+    methods: {
+        getProduct() {
+            axios
+                .get(`/api/collection/${this.$route.params.id}`)
+                .then(res => {
+                    this.collection_product = res.data;
+                })
+                .catch(error => {
+                    console.log(eroor.response.data.errors);
+                });
+        },
+        removeProductFromCollection(id) {
+            if (confirm("are you sure to want to remove form ")) {
+                axios
+                    .post(`/api/remove/collection/product/${id}`, {})
+                    .then(res => {
+                        this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                    })
+                    .catch(error => {
+                        console.log(error.response.data.errors);
+                    });
+            }
+        }
+    },
+    created() {
+        this.getProduct();
+    }
+};
+</script>
+
+<style lang="scss" scoped></style>

@@ -16,7 +16,15 @@ class AddressController extends Controller
      */
     public function index()
     {
-        $address = Address::where('user_id',auth()->id())->get();
+        $address = Address::where('user_id',auth()->id())
+                   ->join('cities','cities.id','addresses.city_id')
+                   ->join('local_areas','local_areas.id','addresses.local_area_id')
+                   ->select(
+                       'addresses.*',
+                       'cities.price as city_delivery_charge',
+                       'local_areas.price as local_area_delivery_charge'
+                       )
+                   ->get();
         return response()->json($address);
     }
 

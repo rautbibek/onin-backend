@@ -31,7 +31,7 @@ class LoginController extends Controller
             $token = $user->createToken('authToken')->plainTextToken;
             $code = rand(10000,99999);
             $message = config('app.name').' Mobile verification code is - '.$code;
-            $sms =  SendSmsService::sendSms($request->mobile,$message);
+            //$sms =  SendSmsService::sendSms($request->mobile,$message);
             
             $sms_log = SmsLog::create([
                 'sms_type' => 'verification',
@@ -41,21 +41,21 @@ class LoginController extends Controller
                 'description' => $message,
                 'ip_address' => request()->ip()
             ]);
-            if($sms->error){
-                $sms_log->update([
-                    'status' =>false
-                ]);
-            }
+            // if($sms->error){
+            //     $sms_log->update([
+            //         'status' =>false
+            //     ]);
+            // }
             DB::commit();
 
 
         }catch(\Exception $e){
-            Log::channel('slack')->error($exception);
+            //Log::channel('slack')->error($exception);
             DB::rollBack();
             
             return response()->json(array(
                 'code' => 500,
-                'error'=> $exception,
+                'error'=> $e,
                 'message' => 'something went wrong'
             ), 500);
         }

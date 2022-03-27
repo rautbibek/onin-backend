@@ -26,5 +26,10 @@ class Order extends Model
     public function orderDetail(){
         return $this->hasMany(OrderDetail::class);
     }
+
+    protected $casts = [
+        
+        'status' => 'integer'
+    ];
 }
 

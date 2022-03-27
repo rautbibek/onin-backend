@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\NewOrderNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User\OrderResource;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -17,9 +19,22 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $status = $request->get('status');
+        $order = Order::where('user_id',Auth::id())
+        ->with('orderDetail',function($q){
+            $q->leftJoin('products','order_details.product_id','products.id')
+              ->leftJoin('variants','order_details.variant_id','variants.id')
+              ->select('order_details.*','products.title','products.slug','products.cover','variants.color');
+        });
+        //$order = $order->where('status',3);
+        if(isset($status)){
+            $order = $order->where('status',$status);
+        }
+        $order = $order->latest()->paginate(20);
+        return OrderResource::collection($order);
+        
     }
 
     /**

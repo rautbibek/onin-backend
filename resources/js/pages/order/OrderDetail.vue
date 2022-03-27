@@ -101,6 +101,66 @@
                                 </template>
                             </v-simple-table>
                         </v-card>
+                        <v-card class="mt-5" flat>
+                            <v-card-title>Order Status</v-card-title>
+                            <v-stepper alt-labels>
+                                <v-stepper-header>
+                                    <v-divider></v-divider>
+                                    <v-stepper-step
+                                        step="1"
+                                        :complete="
+                                            order.status >= 1 &&
+                                                order.status <= 5
+                                        "
+                                    >
+                                        Processing
+                                    </v-stepper-step>
+
+                                    <v-divider></v-divider>
+
+                                    <v-stepper-step
+                                        step="2"
+                                        :complete="
+                                            order.status >= 2 &&
+                                                order.status <= 5
+                                        "
+                                    >
+                                        Packing
+                                    </v-stepper-step>
+
+                                    <v-divider></v-divider>
+                                    <v-stepper-step
+                                        step="3"
+                                        :complete="
+                                            order.status >= 3 &&
+                                                order.status <= 5
+                                        "
+                                    >
+                                        Shipping
+                                    </v-stepper-step>
+
+                                    <v-divider></v-divider>
+                                    <v-stepper-step
+                                        step="4"
+                                        :complete="order.status == 4"
+                                    >
+                                        Completed
+                                    </v-stepper-step>
+
+                                    <v-divider></v-divider>
+                                </v-stepper-header>
+                            </v-stepper>
+                            <div
+                                v-if="order.status <= 3"
+                                class="text-right mt-3"
+                            >
+                                <v-btn
+                                    color="primary"
+                                    @click="nextSteep(order.status, order.id)"
+                                    >next</v-btn
+                                >
+                            </div>
+                        </v-card>
                         <div class="mt-5 text-right">
                             <v-form
                                 @submit.prevent="postComment"
@@ -332,6 +392,25 @@ export default {
                         timeout: 5000
                     });
                 });
+        },
+        nextSteep(status, id) {
+            if (confirm("Are you sure to want to change status")) {
+                axios
+                    .patch(`/api/change/order/status/${id}`, {
+                        status: status + 1
+                    })
+                    .then(res => {
+                        this.getOrderDetail();
+                        this.$toast.success(res.data.message, {
+                            timeout: 2000
+                        });
+                    })
+                    .catch(error => {
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 2000
+                        });
+                    });
+            }
         }
     },
     created() {

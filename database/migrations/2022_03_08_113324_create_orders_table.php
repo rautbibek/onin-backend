@@ -25,7 +25,7 @@ class CreateOrdersTable extends Migration
             $table->boolean('payment_status')->default(false);
             $table->boolean('return_status')->default(false);
             $table->boolean('refund_status')->default(false);
-            $table->enum('status',[1,2,3,4,5,6,7,8,9])
+            $table->enum('status',[1,2,3,4,5,6,7,8,9,10])
             ->default(1)
             ->comment('1 initialize,2 processing,3 ready for delivery,4  on the way','5 order completed,6 cancelled,7 return');
             $table->text('comment')->comment('anything if product returned refund or refund ')->nullable();

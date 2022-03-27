@@ -63,4 +63,21 @@ class OrderController extends Controller
             'message'=> 'Payment status changed to completed succefully'
         ]);
     }
+
+    public function changeStatus(Request $request,$id){
+
+        $this->validate($request,[
+            'status'=>'required|numeric|gt:0'
+        ]);
+
+        $status = $request->get('status');
+        if(isset($status)){
+            $order = Order::findOrFail($id);
+            $order->status = $status;
+            $order->update();
+        }
+        return response()->json([
+            'message'=> 'Status updated succefully',
+        ]);
+    }
 }

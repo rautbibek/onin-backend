@@ -17,7 +17,21 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        // $review = Review::where('user_id',)
+        $review = Review::leftJoin('products','products.id','reviews.product_id')
+                        ->select(
+                            'reviews.id',
+                            'reviews.product_id',
+                            'reviews.rating',
+                            'reviews.message',
+                            'reviews.created_at',
+                            'reviews.updated_at',
+                            'products.title',
+                            'products.slug',
+                            'products.cover'
+                        )
+                        ->where('reviews.user_id',auth()->id())
+                        ->paginate(20);
+        return $review;
     }
 
     /**

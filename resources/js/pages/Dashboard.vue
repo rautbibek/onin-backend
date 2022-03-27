@@ -2,6 +2,71 @@
     <div>
         <b-link></b-link>
 
+        <v-row class="mt-3">
+            <v-col cols="3">
+                <v-alert
+                    color="#385F73"
+                    dark
+                    icon="mdi-account-circle"
+                    border="left"
+                    prominent
+                >
+                    <div class="text-h6">
+                        Total Users
+                    </div>
+                    <div>
+                        {{ counter.total_users | formatNumber }}
+                    </div>
+                </v-alert>
+            </v-col>
+            <v-col cols="3">
+                <v-alert
+                    color="#952175"
+                    dark
+                    icon="inventory"
+                    border="left"
+                    prominent
+                >
+                    <div class="text-h6">
+                        Active Products
+                    </div>
+                    <div>
+                        {{ counter.active_products | formatNumber }}
+                    </div>
+                </v-alert>
+            </v-col>
+            <v-col cols="3">
+                <v-alert
+                    color="green"
+                    dark
+                    icon="mdi-cash"
+                    border="left"
+                    prominent
+                >
+                    <div class="text-h6">
+                        Total Revenue
+                    </div>
+                    <div>NPR. {{ counter.revenue | formatNumber }}</div>
+                </v-alert>
+            </v-col>
+            <v-col cols="3">
+                <v-alert
+                    color="primary"
+                    dark
+                    icon="mdi-vuetify"
+                    border="left"
+                    prominent
+                >
+                    <div class="text-h6">
+                        Active Products
+                    </div>
+                    <div>
+                        {{ counter.active_products | formatNumber }}
+                    </div>
+                </v-alert>
+            </v-col>
+        </v-row>
+
         <v-row>
             <v-col cols="12" md="6" sm="12">
                 <v-card>
@@ -17,14 +82,7 @@
             </v-col>
             <v-col cols="12" md="6" sm="12">
                 <v-card>
-                    <div>
-                        <apexchart
-                            width="73%"
-                            type="donut"
-                            :options="d_options"
-                            :series="d_series"
-                        ></apexchart>
-                    </div>
+                    <PieChart />
                 </v-card>
             </v-col>
             <v-col cols="12">
@@ -45,29 +103,57 @@
 </template>
 <script>
 import apexchart from "vue-apexcharts";
+import PieChart from "./report/PieChart.vue";
 export default {
     components: {
-        apexchart
+        apexchart,
+        PieChart
     },
     data() {
         return {
-            d_options: {},
-            d_series: [44, 55, 41, 17, 15],
+            options: {},
+            series: [44, 55, 41, 17, 15],
+            counter: {},
+            sales: [],
             options: {
-                chart: {
-                    id: "vuechart-example"
-                },
                 xaxis: {
-                    categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+                    categories: []
                 }
             },
             series: [
                 {
-                    name: "series-1",
-                    data: [30, 40, 45, 50, 49, 60, 70, 91]
+                    data: []
                 }
             ]
         };
+    },
+    methods: {
+        getSalesReport() {
+            axios
+                .get(`/api/sales/report`)
+                .then(res => {
+                    this.sales = res.data;
+                    this.sales.forEach(e => {
+                        this.options.xaxis.categories.push(e.date);
+
+                        this.series[0].data.push(e.TOTAL_SALES);
+                        console.log(this.series.data);
+                    });
+                })
+                .catch();
+        },
+        getRecordCounter() {
+            axios
+                .get("/api/record/counter")
+                .then(res => {
+                    this.counter = res.data;
+                })
+                .catch();
+        }
+    },
+    created() {
+        this.getSalesReport();
+        this.getRecordCounter();
     }
 };
 </script>

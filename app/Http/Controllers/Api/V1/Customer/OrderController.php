@@ -149,7 +149,18 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = Order::where('user_id',Auth::id())->where('order_identifier',$id)
+        ->with('orderDetail',function($q){
+            $q->leftJoin('products','order_details.product_id','products.id')
+              ->leftJoin('variants','order_details.variant_id','variants.id')
+              ->select('order_details.*','products.title','products.slug','products.cover','variants.color');
+        })->first();
+        if($order){
+            return new OrderResource($order);
+        }
+        return response()->json([
+            'message'=> 'No match found for '.$id.'.',
+        ]);
     }
 
     /**

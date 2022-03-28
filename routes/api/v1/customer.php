@@ -18,7 +18,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/favorite/{id}',[FavoriteController::class,'favorite']);
     
     
-    Route::resource('order', OrderController::class)->except(['show', 'update', 'destroy','create','edit']);
+    Route::resource('order', OrderController::class)->except(['update', 'destroy','create','edit']);
     Route::resource('address', AddressController::class)->except(['show', 'update','create','edit']);
     Route::resource('review', ReviewController::class)->except(['show','create','edit']);
     Route::resource('cart', CartController::class)->except(['show','create','edit']);

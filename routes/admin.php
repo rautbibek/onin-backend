@@ -43,8 +43,7 @@ Route::middleware(['auth:admin'])->group(function(){
     // Route::post('/logout', [AdminController::class,'logout'])->name('logout');
 
     Route::group(['prefix'=>'api'],function(){
-        Route::get('/sales/report', [DashboardController::class,'salseReport'])->name('dashboard');
-        Route::get('/record/counter', [DashboardController::class,'recordCounter'])->name('dashboard');
+        
         Route::get('/user', [UserController::class,'index'])->name('user');
         Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
         Route::get('/category/parent',[CategoryController::class,'getParentData']);
@@ -82,7 +81,8 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::put('/update/order/comment/{id}',[OrderController::class,'updateComment']);
         Route::post('/order/payment/complete/{id}',[OrderController::class,'changePaymentStatus']);
         Route::post('update/category/options',[OptionController::class,'updateCategoryOption']);
-        
+        Route::get('/sales/report', [DashboardController::class,'salseReport'])->name('sales.report');
+        Route::get('/record/counter', [DashboardController::class,'recordCounter'])->name('record.counter');
         
     });
 

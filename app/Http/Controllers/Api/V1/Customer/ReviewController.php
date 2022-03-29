@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User\ReviewResource;
 use Illuminate\Support\Facades\DB;
+
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -31,7 +33,7 @@ class ReviewController extends Controller
                         )
                         ->where('reviews.user_id',auth()->id())
                         ->paginate(20);
-        return $review;
+        return ReviewResource::collection($review);
     }
 
     /**

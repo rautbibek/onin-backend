@@ -48,7 +48,7 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
         Route::get('/category/parent',[CategoryController::class,'getParentData']);
         Route::get('/select/category',[CategoryController::class,'getSelectableCategory']);
-        Route::post('update/product/options',[ProductController::class,'updateProductOptions']);
+        Route::post('update/product/options/{id}',[ProductController::class,'updateProductOptions']);
         Route::post('category/option/{id}',[CategoryController::class,'getCategoryOptions']);
         Route::post('/update/product/image',[ProductController::class,'updateProductImage']);
         Route::delete('/product/image/{id}',[ProductController::class,'removeProductImage']);

@@ -26,7 +26,7 @@ class OrderController extends Controller
         ->with('orderDetail',function($q){
             $q->leftJoin('products','order_details.product_id','products.id')
               ->leftJoin('variants','order_details.variant_id','variants.id')
-              ->select('order_details.*','products.title','products.slug','products.cover','variants.color');
+              ->select('order_details.*','products.id as product_id','products.title','products.slug','products.cover','variants.color');
         });
         //$order = $order->where('status',3);
         if(isset($status)){

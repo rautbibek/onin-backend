@@ -247,8 +247,23 @@ class ProductController extends Controller
         ],200);
     }
 
-    public function updateProductOptions(Request $request){
-        return response()->json($request->all(),500);
+    public function updateProductOptions(Request $request,$id){
+        $product = Product::findOrFail($id);
+        $product->optionValues()->delete();
+        foreach($request->all() as $key=>$p_option){
+            $product->optionValues()->create([
+                'option'=>$key,
+                'option_value'=> $p_option
+            ]);
+            // $option = new OptionValue();
+            // $option
+            // $option->option = $key;
+            // $option->option_value = $p_option;
+        }
+        
+        return response()->json([
+            'message'=>'Options updated succefully'
+        ],200);
     }
 
     public function updateProductImage(Request $request){

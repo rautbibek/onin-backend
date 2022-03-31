@@ -124,6 +124,14 @@
                     <ValidationErrors :errors="errors"></ValidationErrors>
                     <v-container> </v-container>
                     <v-form ref="form" v-model="valid" lazy-validation>
+                        <v-select
+                            outlined
+                            :items="types"
+                            v-model="formData.type"
+                            :item-text="'name'"
+                            :item-value="'value'"
+                            label="Category Option Type"
+                        ></v-select>
                         <v-text-field
                             v-model="formData.name"
                             :rules="[required('Option Name')]"
@@ -133,6 +141,7 @@
                         ></v-text-field>
 
                         <v-combobox
+                            v-if="formData.type == 'select'"
                             outlined
                             v-model="formData.values"
                             :items="formData.values"
@@ -141,6 +150,11 @@
                             multiple
                             chips
                         ></v-combobox>
+                        <v-checkbox
+                            v-if="formData.type == 'select'"
+                            v-model="formData.is_filterable"
+                            label="Filterable"
+                        ></v-checkbox>
                     </v-form>
                 </v-card-text>
 
@@ -201,9 +215,21 @@ export default {
         dialog: false,
         option_id: null,
         formData: {
+            is_filterable: false,
             name: "",
+            type: "",
             values: []
         },
+        types: [
+            {
+                name: "Input",
+                value: "input"
+            },
+            {
+                name: "Select",
+                value: "select"
+            }
+        ],
         loading: false,
         confirm: false,
         category_options: [],
@@ -225,9 +251,11 @@ export default {
 
         headers: [
             { text: "id", align: "start", value: "id", sortable: false },
+            { text: "Option Type", value: "type", sortable: true },
             { text: "Name", value: "name", sortable: true },
             { text: "Code", value: "code", sortable: true },
             { text: "Option Values", value: "values", sortable: false },
+            { text: "Filterable", value: "is_filterable", sortable: true },
             { text: "Created At", value: "created_at", sortable: false },
             { text: "Action", value: "action", sortable: false }
         ]
@@ -259,7 +287,9 @@ export default {
         addOption() {
             this.formData = {
                 name: "",
-                values: []
+                values: [],
+                is_filterable: false,
+                type: ""
             };
             this.dialog = true;
         },
@@ -283,6 +313,8 @@ export default {
                         this.paginate(this.$options);
                         this.formData = {
                             name: "",
+                            type: "",
+                            is_filterable: false,
                             values: []
                         };
                     })
@@ -304,6 +336,8 @@ export default {
             //this.deleteItem(item);
         },
         editOption(item) {
+            this.formData.type = item.type;
+            this.formData.is_filterable = item.is_filterable;
             this.formData.id = item.id;
             this.formData.name = item.name;
             this.formData.values = item.values;

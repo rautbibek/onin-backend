@@ -23,7 +23,7 @@
                                 <!-- @change="getSubcategory" -->
 
                                 <v-autocomplete
-                                    v-model="selected_category"
+                                    v-model.number="selected_category"
                                     :items="categories"
                                     item-text="name"
                                     return-object
@@ -210,21 +210,33 @@
                                 :key="index"
                                 cols="4"
                             >
+                                {{ cat_opts.name }}
                                 <v-autocomplete
+                                    v-if="cat_opts.type == 'select'"
                                     v-model="option_values[cat_opts.key]"
                                     outlined
-                                    :id="cat_opts.kay"
-                                    :name="cat_opts.kay"
+                                    :id="cat_opts.key"
+                                    :name="cat_opts.key"
                                     :items="cat_opts.values"
                                     chips
                                     small-chips
-                                    :rules="[select('category')]"
+                                    :rules="[select(cat_opts.code)]"
                                     Basic
                                     dense
                                     Information
                                     :label="cat_opts.code + ' *'"
                                 >
                                 </v-autocomplete>
+                                <v-text-field
+                                    v-if="cat_opts.type == 'input'"
+                                    :label="cat_opts.name"
+                                    outlined
+                                    dense
+                                    :rules="[required(cat_opts.code)]"
+                                    clearable
+                                    v-model="option_values[cat_opts.key]"
+                                    :placeholder="cat_opts.code"
+                                ></v-text-field>
                             </v-col>
                         </div>
 

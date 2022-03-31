@@ -17,6 +17,8 @@ class OptionResource extends JsonResource
         return [
             'id' => $this->id,
             'name'=>$this->code,
+            'type'=> $this->type,
+            'is_filterable'=> $this->is_filterable,
             'code'=> $this->key,
             'values' => $this->values,
             'created_at'=> $this->created_at->diffForHumans(),

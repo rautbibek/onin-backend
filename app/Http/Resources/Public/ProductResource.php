@@ -26,7 +26,7 @@ class ProductResource extends JsonResource
             'has_color'=> $this->has_color,
             'discount' => $this->discount,
             'cover_image' => $this->cover?MediaHelper::getThumbnailUrl($this->cover,'thumb'):asset('/images/no-image.png'),
-            'variant' => $this->variant?ProductVariant::collection($this->variant):[],
+            'variant' => $this->whenLoaded('variant')?ProductVariant::collection($this->whenLoaded('variant')):[],
             'created_at' => $this->created_at,
         ];
     }

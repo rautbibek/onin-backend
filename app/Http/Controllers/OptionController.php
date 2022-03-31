@@ -19,19 +19,26 @@ class OptionController extends Controller
     public function index()
     {
         $options = Option::latest();
-        $options = Datatable::filter($options,['key','code']);
-        
+        $options = Datatable::filter($options,['key','code','type']);
         return  OptionResource::collection($options)->response()
         ->setStatusCode(200);
-
     }
 
     public function save(Request $request){
         // return response()->json($request->all(),500);
         $this->validate($request,[
+            'type'=>'required',
             'name' => 'required',
-            'values' => 'required'
+            'values' => 'required_if:type,select'
         ]);
+        
+        $filterable = $request->has('is_filterable')?$request->get('is_filterable'):false;
+        
+        
+        if(!isset($filterable) && $filterable == 'null'){
+            $filterable = false;
+        }
+        
         $id = $request->id;
         $message = "";
         $slug = Str::slug($request->name, '_');
@@ -41,14 +48,31 @@ class OptionController extends Controller
             if(isset($id)){
                 $option = Option::findOrFail($id);
                 $option->code = $request->name;
+                
+                $option->type = $request->type;
                 $option->key = $slug;
-                $option->values = $request->values;
+                if($request->type != 'select'){
+                    $option->values = [];
+                    $option->is_filterable = false;
+                }else{
+                    $option->values = $request->values;
+                    $option->is_filterable = $request->is_filterable;
+                }
                 $option->update();
                 $message = "Category option updated successfully";
             }else{
                 $option = new Option();
                 $option->code = $request->name;
+                //$option->is_filterable = $request->is_filterable;
+                $option->type = $request->type;
                 $option->key = $slug;
+                if($request->type != 'select'){
+                    
+                    $option->is_filterable = false;
+                }else{
+                    
+                    $option->is_filterable = $request->is_filterable;
+                }
                 $option->values = $request->values;
                 $option->save();
                 $message = "New category option created successfully";
@@ -61,7 +85,7 @@ class OptionController extends Controller
         }catch(\Exception $e){
             DB::rollBack();
             return response()->json(array(
-                'code' => 500,
+                'code' => $e,
                 'message' => 'something went wrong'
             ), 500);
         }

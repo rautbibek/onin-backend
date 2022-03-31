@@ -27,7 +27,7 @@ class ProductDetailResource extends JsonResource
             'description' => $this->description,
             'has_size' => $this->has_size,
             'has_color'=> $this->has_color,
-            'is_favorite' => count($this->favorites)>0?true:false,
+            'is_favorite' => count($this->whenLoaded('favorites'))>0?true:false,
             'meta_keyword' => $this->meta_keyword,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
@@ -36,7 +36,7 @@ class ProductDetailResource extends JsonResource
             'cover_thumb' =>  MediaHelper::getImageUrl($this->cover,'thumb'),
             'options' => $this->optionValues?ProductOptions::collection($this->optionValues):[],
             'variant' => $this->variant?ProductVariant::collection($this->variant):[],
-            'images' => $this->images?ProductImagesResource::collection($this->images):[],
+            'images' => $this->whenLoaded('images')?ProductImagesResource::collection($this->whenLoaded('images')):[],
 
         ];
     }

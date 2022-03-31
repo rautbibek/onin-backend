@@ -21,16 +21,13 @@ class ProductController extends Controller
                  ->with(['favorites'=>function($q){
                     $q->where('user_id',Auth::guard('sanctum')->id());
                 },'variant'=>function($q){
-                    $q->leftJoin('color_families','color_families.name','variants.color')->select('variants.*','color_families.code');
-                 },'collection'])->paginate(20);
-                 
-        return ProductResource::collection($product);
-       
-        // return response()->json([
-            
-        //     'product'  => 
-
-        // ],200);
+                    $q->leftJoin('color_families','color_families.name','variants.color')
+                      ->select('variants.*','color_families.code');
+                 },'collection']);
+        
+            ProductResource::collection($product->paginate(20));
+        
+        //return ProductResource::collection($product);
     }
 
     public function productDetail($id){

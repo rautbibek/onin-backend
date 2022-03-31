@@ -358,6 +358,7 @@
                                     cols="12"
                                 >
                                     <v-autocomplete
+                                        v-if="cat_opts.type == 'select'"
                                         v-model="option_values[cat_opts.key]"
                                         outlined
                                         :id="cat_opts.kay"
@@ -372,6 +373,16 @@
                                         :label="cat_opts.code"
                                     >
                                     </v-autocomplete>
+                                    <v-text-field
+                                        v-if="cat_opts.type == 'input'"
+                                        :label="cat_opts.name"
+                                        outlined
+                                        dense
+                                        :rules="[required(cat_opts.code)]"
+                                        clearable
+                                        v-model="option_values[cat_opts.key]"
+                                        :placeholder="cat_opts.code"
+                                    ></v-text-field>
                                 </v-col>
                             </div>
                             <v-spacer></v-spacer>
@@ -379,7 +390,8 @@
                                 <v-btn
                                     color="primary"
                                     @click="updateProductOptions"
-                                    :loading="buttonLoading"
+                                    :loading="optionButtonLoading"
+                                    :disabled="optionButtonLoading"
                                 >
                                     <v-icon left dark>
                                         mdi-cloud-upload
@@ -689,6 +701,8 @@ export default {
             cover_error: [],
             editAttributeDialog: false,
             single_attribute: {},
+            buttonLoading: false,
+            optionButtonLoading: false,
             product: [],
             attribute_valid: true,
             option_valid: true,
@@ -799,6 +813,7 @@ export default {
         },
         updateAttributes() {
             //this.$refs.attributes.resetValidation();
+
             if (this.$refs.attributes.validate()) {
                 this.buttonLoading = true;
 
@@ -825,19 +840,19 @@ export default {
             }
         },
         updateProductOptions() {
-            //this.$refs.attributes.resetValidation();
             if (this.$refs.update_options.validate()) {
-                this.buttonLoading = true;
+                this.optionButtonLoading = true;
 
                 axios
-                    .post(`/api/update/product/options `, this.option_values)
+                    .post(
+                        `/api/update/product/options/${this.$route.params.id}`,
+                        this.option_values
+                    )
                     .then(res => {
                         this.$toast.success(res.data.message, {
                             timeout: 2000
                         });
-
-                        //this.$router.push({ name: "Product" });
-                        this.buttonLoading = false;
+                        this.optionButtonLoading = false;
                         this.getProduct();
                     })
                     .catch(error => {
@@ -846,9 +861,8 @@ export default {
                         this.$toast.error(error.response.data.message, {
                             timeout: 2000
                         });
-                        this.buttonLoading = false;
+                        this.optionButtonLoading = false;
                     });
-                this.buttonLoading = false;
             }
         },
         getProduct() {
@@ -859,10 +873,8 @@ export default {
                     this.formData = this.product;
                     this.url = this.formData.cover;
                     this.meta_tags = this.product.meta_tags;
-
                     this.getOptions();
                     this.getCollectionIds(this.formData.collection);
-
                     var n = {};
                     this.formData.option_value.forEach((element, key) => {
                         n[element.option] = element.option_value;

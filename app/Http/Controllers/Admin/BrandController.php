@@ -20,7 +20,9 @@ class BrandController extends Controller
     public function index()
     {
 
-        $brand = Brand::with('category')->latest();
+        $brand = Brand::whereHas('category', function($q) {
+            $q->where('deleted_at',null);
+         })->with('category')->latest();
         $brand = Datatable::filter($brand,['name']);
 
         return  BrandResource::collection($brand)->response()

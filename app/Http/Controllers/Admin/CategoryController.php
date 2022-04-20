@@ -172,7 +172,14 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::with('children')->findOrFail($id);
+        $category = Category::with('children')->withCount('product')->findOrFail($id);
+        //return $category->product_count;
+        if($category->product_count > 0){
+            return response()->json([
+                'error'=>'Forbidden : this category has '.$category->product_count.' products',
+            ],422);
+        }
+        
         //return $category;
         if($category->children->count()>0){
             return response()->json([

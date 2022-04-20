@@ -67,6 +67,10 @@ class Category extends Model
         return $this->hasMany(Brand::class);
     }
 
+    public function product(){
+        return $this->hasMany(Product::class);
+    }
+
     // public function getCoverImageAttribute(){
     //     if($this->cover){
     //         if (Storage::disk('public')->exists('thumb/'.$this->cover)) {

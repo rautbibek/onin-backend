@@ -10,7 +10,10 @@ use App\Notifications\NewOrderNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User\OrderResource;
+use App\Mail\OrderCompleted;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+
 
 class OrderController extends Controller
 {
@@ -45,8 +48,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        
-        
+
         $this->validate($request,[
             'delivery_address'=> 'required',
             'payment_type' => 'required',
@@ -99,7 +101,7 @@ class OrderController extends Controller
                 $price = round($price + ($new_price * $c->quantity)); 
 
                 
-                DB::table('order_details')->insert([
+                $order_detail = DB::table('order_details')->insert([
                     'order_id'=> $order->id,
                     'product_id' => $c->product_id,
                     'variant_id' => $c->variant_id,
@@ -117,15 +119,13 @@ class OrderController extends Controller
             ]);
 
             $admin = Admin::all();
+            //Mail::to('rautbibek47@gmail.com')->queue(new OrderCompleted());
             Notification::send($admin,new NewOrderNotification($order));
             DB::commit();
             Cart::where('user_id',auth()->id())->delete();
             return response()->json([
-                'message'=> 'Order completed successfully.'
-            ],200);
-
-            
-            
+                'message'=> 'Order completed successfully.',
+            ],200);            
             }else{
                 return response()->json([
                     'message'=> 'Cart is empty',

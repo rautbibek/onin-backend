@@ -8,7 +8,9 @@ use App\Http\Controllers\Api\V1\CollectionController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\ReviewController;
+use App\Http\Controllers\WelcomeController;
 
+Route::post('/send/mail',[WelcomeController::class,'sendEmail']);
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/register',[LoginController::class,'register']);
 

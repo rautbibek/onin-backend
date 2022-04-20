@@ -15,17 +15,23 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function categoryProduct($id){
-        //$category = Category::select('id','name','slug')->with('options')->findOrFail($id);
         
-        $product = Product::where('category_id',$id)
-                 ->with(['favorites'=>function($q){
-                    $q->where('user_id',Auth::guard('sanctum')->id());
-                },'variant'=>function($q){
-                    $q->leftJoin('color_families','color_families.name','variants.color')
-                      ->select('variants.*','color_families.code');
-                 },'collection']);
-        
-            ProductResource::collection($product->paginate(20));
+        $product = Product::where('category_id',$id)->where('status',true);
+                 
+        if(request()->has('brand_id')){
+            $product = $product->where('brand_id',request()->get('brand_id'));
+        }
+        $product = $product->with(['favorites'=>function($q){
+
+            $q->where('user_id',Auth::guard('sanctum')->id());
+        },'variant'=>function($q){
+            
+            $q->leftJoin('color_families','color_families.name','variants.color')
+              ->select('variants.*','color_families.code');
+         },'collection']);
+         
+        $product= $product->paginate(20);
+        return ProductResource::collection($product);
         
         //return ProductResource::collection($product);
     }

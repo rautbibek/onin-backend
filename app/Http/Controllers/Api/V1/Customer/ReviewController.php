@@ -44,6 +44,7 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
+        return $request->all();
         $this->validate($request,[
             'product_id'=> 'required',
             'rating'    => 'required|numeric|lt:6',

@@ -535,6 +535,14 @@ export default {
     font-size: 16px;
     letter-spacing: normal;
 }
+.vue-treeselect__menu-container {
+    font-size: 16px;
+    color: black;
+}
+.vue-treeselect__x-container {
+    color: black;
+    font-size: 20px;
+}
 .vue-treeselect__control:hover {
     border: 1px solid black;
 }

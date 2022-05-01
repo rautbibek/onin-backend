@@ -93,7 +93,7 @@
                             style="height:35px"
                             v-model="formData.parent_id"
                             :options="fetAllCategories"
-                            :disable-branch-nodes="true"
+                            :disable-branch-nodes="false"
                             :show-count="true"
                             :rules="[required('category name')]"
                         >

@@ -57,7 +57,7 @@ class ProductController extends Controller
         },'variant'=>function($q){
             $q->leftJoin('color_families','color_families.name','variants.color')
             ->select('variants.*','color_families.code');
-        }])->simplePaginate(20);
+        }])->simplePaginate(10);
         
         return ProductResource::collection($product);
         // 'favorites'=>function($q){

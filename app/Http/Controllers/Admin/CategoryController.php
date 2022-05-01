@@ -211,11 +211,11 @@ class CategoryController extends Controller
         //return response()->json($category,200);
     }
     public function getSelectableCategory(){
-        $category = Category::where('last_child',true)
+        $category = Category::where('last_child',true)->where('deleted_at',null)
         ->select('id','parent_id','has_color','has_size','name','last_child','lvl')
         ->with(['parent'=>function($query){
             
-            $query->select('id','parent_id','name')->with(['parent:id,parent_id,name']);
+            $query->select('id','parent_id','name')->where('deleted_at',null)->with(['parent:id,parent_id,name']);
         }])->orderBy('parent_id','asc')->get();
         // $category = Category::where('id',9)->with('parent.parent')->first();
         return response()->json($category,200);

@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->boolean('visibility')->default(true);
             $table->double('delivery_charge', 8, 2)->nullable();
-            $table->double('total_price', 8, 2)->nullable();
+            $table->double('total_price', 15, 2)->nullable();
             $table->text('delivery_address')->nullable();
             $table->string('payment_type')->default('COD');
             $table->boolean('payment_status')->default(false);

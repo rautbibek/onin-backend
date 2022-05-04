@@ -1,8 +1,9 @@
 import axios from "axios";
-
+import { mapGetters, mapActions } from "vuex";
 export const ProductMixins = {
     data() {
         return {
+            loading_options: false,
             colors: [],
             collections: [],
             product_collection: [],
@@ -11,7 +12,7 @@ export const ProductMixins = {
             product_tags: [],
             category_options: [],
             categories: [],
-
+            items: ["Basic Information", "Product Attributes", "Images", "SEO"],
             buttonLoading: false,
             brands: [],
             sizes: [],
@@ -44,6 +45,7 @@ export const ProductMixins = {
         handleImages(files) {
             this.images = files;
         },
+        ...mapActions(["getCategories"]),
         getColors() {
             axios
                 .get("/api/v1/colors")
@@ -67,16 +69,49 @@ export const ProductMixins = {
         },
 
         checkColorAndSizeIfAvailable() {
-            this.formData.category_id = this.selected_category.id;
-            this.formData.has_color = this.selected_category.has_color;
-            this.formData.has_size = this.selected_category.has_size;
-            this.getOptions();
+            this.loading_options = true;
+            axios
+                .get(`/api/single/category/${this.formData.category_id}`)
+                .then(res => {
+                    console.log(res.data);
+                    this.formData.has_color = res.data.has_color;
+                    this.formData.has_size = false;
+                    this.brands = res.data.brand;
+                    this.category_options = res.data.options;
+                    if (this.category_options.length > 0) {
+                        this.items = [
+                            "Basic Information",
+                            "Product Attributes",
+                            "Product Options",
+                            "Images",
+                            "SEO"
+                        ];
+                    } else {
+                        this.items = [
+                            "Basic Information",
+                            "Product Attributes",
+
+                            "Images",
+                            "SEO"
+                        ];
+                    }
+                    this.loading_options = false;
+                })
+                .catch(error => {
+                    console.log("error");
+                    this.loading_options = false;
+                });
+            // this.formData.category_id = this.selected_category.id;
+            // this.formData.has_color = this.selected_category.has_color;
+            // this.formData.has_size = this.selected_category.has_size;
+            // this.getOptions();
         },
         getOptions() {
             axios
                 .get(`/api/v1/category/options/${this.formData.category_id}`)
                 .then(res => {
                     this.category_options = res.data;
+                    this.brands = res.data.brands;
                 })
                 .catch(error => {
                     console.log(error.response.data.errors);
@@ -84,14 +119,14 @@ export const ProductMixins = {
             this.getBrand();
         },
         getBrand() {
-            axios
-                .get(`/api/v1/category/brand/${this.formData.category_id}`)
-                .then(res => {
-                    this.brands = res.data;
-                })
-                .catch(error => {
-                    console.log(error.response.data);
-                });
+            // axios
+            //     .get(`/api/v1/category/brand/${this.formData.category_id}`)
+            //     .then(res => {
+            //         this.brands = res.data;
+            //     })
+            //     .catch(error => {
+            //         console.log(error.response.data);
+            //     });
         },
         getCategory() {
             axios
@@ -144,10 +179,11 @@ export const ProductMixins = {
             this.product_attribute_values.splice(index, 1);
         }
     },
+    computed: mapGetters(["fetAllCategories"]),
     created() {
         this.getColors();
         this.getCollection();
-        this.getCategory();
+        this.getCategories();
     },
 
     mounted() {

@@ -95,4 +95,18 @@ class CommonDataController extends Controller
         return response()->json($localarea);
     }
 
+    public function getSingleCategory($id){
+        try{
+            $category = Category::with('brand','options')->findOrFail($id); 
+            return response()->json($category);
+        }catch(\Exception $e){
+            return response()->json(array(
+                'code' => 500,
+                'error'=> $e,
+                'message' => 'something went wrong'
+            ), 500);
+        }
+        
+    }
+
 }

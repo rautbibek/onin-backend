@@ -1,7 +1,18 @@
 <template>
     <div>
         <!-- <b-link :items="breadcrumb"></b-link> -->
-
+        <v-dialog v-model="loading_options" hide-overlay persistent width="300">
+            <v-card color="primary" dark>
+                <v-card-text>
+                    Please stand by
+                    <v-progress-linear
+                        indeterminate
+                        color="white"
+                        class="mb-0"
+                    ></v-progress-linear>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-card>
             <v-toolbar color="primary" dark flat dense>
                 <template v-slot:extension>
@@ -273,7 +284,7 @@
                                 </v-col>
                             </v-row>
                             <v-row>
-                                <v-col v-if="attr.color">
+                                <!-- <v-col v-if="attr.color">
                                     <v-combobox
                                         v-model="attr.sizes"
                                         label="Available Sizes"
@@ -303,7 +314,7 @@
                                             </v-chip>
                                         </template>
                                     </v-combobox>
-                                </v-col>
+                                </v-col> -->
                                 <v-col class="text-right">
                                     <v-btn
                                         v-if="formData.variant.length > 1"
@@ -343,7 +354,7 @@
                         </div>
                     </v-card>
                 </v-tab-item>
-                <v-tab-item>
+                <v-tab-item v-if="category_options.length > 0">
                     <v-card flat class="p-5 auto">
                         <v-form
                             ref="update_options"
@@ -625,7 +636,7 @@
                                 outlined
                                 dense
                             ></v-text-field>
-                            <v-combobox
+                            <!-- <v-combobox
                                 v-if="formData.has_size"
                                 v-model="single_attribute.sizes"
                                 label="Available Sizes"
@@ -654,7 +665,7 @@
                                         >&nbsp;
                                     </v-chip>
                                 </template>
-                            </v-combobox>
+                            </v-combobox> -->
                         </v-container>
                     </v-form>
                     <small>*indicates required field</small>
@@ -709,13 +720,7 @@ export default {
             confirm: false,
             formData: {},
             tab: "web",
-            items: [
-                "Basic Information",
-                "Product Attributes",
-                "Product Options",
-                "Images",
-                "SEO"
-            ],
+
             errors: [],
             product_status: true,
             cat: "",
@@ -740,6 +745,7 @@ export default {
             ]
         };
     },
+
     methods: {
         removeMetaTags(item) {
             this.meta_tags.splice(this.meta_tags.indexOf(item), 1);
@@ -871,9 +877,10 @@ export default {
                 .then(result => {
                     this.product = result.data.data;
                     this.formData = this.product;
+                    this.formData.has_color = this.product.category.has_color;
                     this.url = this.formData.cover;
                     this.meta_tags = this.product.meta_tags;
-                    this.getOptions();
+                    this.checkColorAndSizeIfAvailable();
                     this.getCollectionIds(this.formData.collection);
                     var n = {};
                     this.formData.option_value.forEach((element, key) => {
@@ -883,7 +890,7 @@ export default {
                     this.option_values = n;
                 })
                 .catch(err => {
-                    console.log(error.response.data.errors);
+                    console.log("error occoured");
                 });
         },
         getCollectionIds(collection) {

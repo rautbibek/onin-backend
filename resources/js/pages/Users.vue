@@ -46,6 +46,14 @@
                 <template v-slot:item.created_at="{ item }">
                     <span>{{ item.created_at }}</span>
                 </template>
+                <template v-slot:item.phone="{ item }">
+                    <span v-if="item.phone"
+                        ><a :href="`tel:${item.phone}`">{{
+                            item.phone
+                        }}</a></span
+                    >
+                    <span v-else>-</span>
+                </template>
                 <template v-slot:item.action="{ item }">
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
@@ -131,7 +139,7 @@ export default {
             { text: "Name", value: "name", sortable: true },
             { text: "Email", value: "email" },
             { text: "Contact Number", value: "phone" },
-            
+
             { text: "Created At", value: "created_at" },
             { text: "Action", value: "action" }
         ]

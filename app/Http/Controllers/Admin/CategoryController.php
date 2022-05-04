@@ -127,7 +127,7 @@ class CategoryController extends Controller
 
             Log::channel('slack')->error($exception);
             DB::rollBack();
-            return $exception;
+            //return $exception;
             return response()->json(array(
                 'code' => 500,
                 'error'=> $exception,
@@ -220,4 +220,6 @@ class CategoryController extends Controller
         // $category = Category::where('id',9)->with('parent.parent')->first();
         return response()->json($category,200);
     }
+
+    
 }

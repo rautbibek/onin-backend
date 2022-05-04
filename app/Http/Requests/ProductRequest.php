@@ -29,8 +29,8 @@ class ProductRequest extends FormRequest
             'title'=>'required | max:200',
             'description' => 'required',
             'short_description'=>'required',
-            //'brand_id' =>'required',
-
+            'product_images.*' => 'required|mimes:jpeg,png,jpg| image|max:10048',
+            'cover' => 'required|mimes:jpeg,png,jpg| image|max:10048'
         ];
     }
 }

@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\Address\CityController;
 use App\Http\Controllers\Admin\Address\LocalAreaController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\Order\OrderController;
+use App\Http\Controllers\Api\V1\CommonDataController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/category/children',[CategoryController::class,'getChildrenData']);
@@ -71,10 +72,11 @@ Route::middleware(['auth:admin'])->group(function(){
             'localarea' => LocalAreaController::class
 
         ]);
-        
+        Route::get('/single/category/{id}',[CommonDataController::class,'getSingleCategory']);
         Route::post('product/variant',[VariantController::class,'save']);
         Route::delete('product/variant/{id}',[VariantController::class,'delete']);
         Route::get('all/category/options',[OptionController::class,'index']);
+        
         Route::delete('/delete/options/{id}',[OptionController::class,'delete']);
         Route::post('store/options',[OptionController::class,'save']);
         Route::get('/order/detail/{id}',[OrderController::class,'orderDetail']);
@@ -82,6 +84,7 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::post('/order/payment/complete/{id}',[OrderController::class,'changePaymentStatus']);
         Route::post('update/category/options',[OptionController::class,'updateCategoryOption']);
         Route::get('/sales/report', [DashboardController::class,'salseReport'])->name('sales.report');
+        Route::get('/status/report', [DashboardController::class,'statusWiseReport'])->name('status.report');
         Route::get('/record/counter', [DashboardController::class,'recordCounter'])->name('record.counter');
         
     });

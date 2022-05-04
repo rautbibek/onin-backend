@@ -3,7 +3,7 @@
         <b-link></b-link>
 
         <v-row class="mt-3">
-            <v-col cols="3">
+            <v-col class="py-0" cols="12" md="3" lg="3" sm="6" xs="12">
                 <v-alert
                     color="#385F73"
                     dark
@@ -19,7 +19,7 @@
                     </div>
                 </v-alert>
             </v-col>
-            <v-col cols="3">
+            <v-col class="py-0" cols="12" md="3" lg="3" sm="6" xs="12">
                 <v-alert
                     color="#952175"
                     dark
@@ -35,7 +35,7 @@
                     </div>
                 </v-alert>
             </v-col>
-            <v-col cols="3">
+            <v-col class="py-0" cols="12" md="3" lg="3" sm="6" xs="12">
                 <v-alert
                     color="green"
                     dark
@@ -49,7 +49,7 @@
                     <div>NPR. {{ counter.revenue | formatNumber }}</div>
                 </v-alert>
             </v-col>
-            <v-col cols="3">
+            <v-col class="py-0" cols="12" md="3" lg="3" sm="6" xs="12">
                 <v-alert
                     color="primary"
                     dark
@@ -68,7 +68,7 @@
         </v-row>
 
         <v-row>
-            <v-col cols="12" md="6" sm="12">
+            <v-col cols="12" md="6" sm="12" xs="12">
                 <v-card>
                     <div>
                         <apexchart

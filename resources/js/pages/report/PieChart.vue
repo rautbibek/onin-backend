@@ -2,7 +2,7 @@
     <div>
         <apexchart
             type="pie"
-            width="380"
+            width="560"
             :options="chartOptions"
             :series="series"
         ></apexchart>
@@ -18,13 +18,13 @@ export default {
     },
     data() {
         return {
-            series: [44, 55, 13, 43, 22],
+            series: [],
             chartOptions: {
                 chart: {
-                    width: 380,
+                    width: 480,
                     type: "pie"
                 },
-                labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+                labels: [],
                 responsive: [
                     {
                         breakpoint: 480,
@@ -40,6 +40,22 @@ export default {
                 ]
             }
         };
+    },
+    methods: {
+        getChartData() {
+            axios
+                .get(`/api/status/report`)
+                .then(res => {
+                    Object.keys(res.data).forEach(key => {
+                        this.series.push(res.data[key]);
+                        this.chartOptions.labels.push(key.split("_").join(" "));
+                    });
+                })
+                .catch();
+        }
+    },
+    created() {
+        this.getChartData();
     }
 };
 </script>

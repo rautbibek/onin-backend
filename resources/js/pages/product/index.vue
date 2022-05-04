@@ -150,7 +150,7 @@
                     <v-toolbar-title>Product Detail</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn dark text @click="view_detail = false">
+                        <v-btn fab dark text @click="view_detail = false">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar-items>
@@ -217,7 +217,7 @@ export default {
             { text: "Category", value: "category_id" },
             { text: "Brand", value: "brand_id" },
             { text: "Image", value: "image" },
-            { text: "Available Stock", value: "inventory_track" },
+            // { text: "Available Stock", value: "inventory_track" },
             { text: "Total Variant", value: "variant" },
             { text: "Status", value: "status" },
             // { text: "Date", value: "created_at" },

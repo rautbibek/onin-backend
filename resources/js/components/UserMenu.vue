@@ -64,21 +64,15 @@
                 <hr />
                 <v-card-text>
                     <v-form ref="form" lazy-validation v-model="valid">
-                        <v-text-field
-                            v-model="formData.old_password"
-                            :append-icon="
-                                showOldPassword ? 'mdi-eye' : 'mdi-eye-off'
-                            "
-                            :type="showOldPassword ? 'text' : 'password'"
-                            name="input-10-1"
-                            label="Old Password"
-                            hint="At least 8 characters"
-                            :rules="[rules.required, rules.min]"
-                            counter
-                            dense
-                            outlined
-                            @click:append="showOldPassword = !showOldPassword"
-                        ></v-text-field>
+                        <v-alert
+                            v-for="(error, index) in errors"
+                            :key="index"
+                            border="top"
+                            color="red lighten-2"
+                            dark
+                        >
+                            {{ error[0] }}
+                        </v-alert>
                         <v-text-field
                             v-model="formData.password"
                             :append-icon="
@@ -86,27 +80,31 @@
                             "
                             :type="showPassword ? 'text' : 'password'"
                             name="input-10-1"
-                            :rules="[rules.required, rules.min]"
+                            :rules="[
+                                required('Password'),
+                                minLength('Password', 8)
+                            ]"
                             label="New Password"
                             hint="At least 8 characters"
                             counter
-                            dense
                             outlined
                             @click:append="showPassword = !showPassword"
                         ></v-text-field>
                         <v-text-field
-                            v-model="formData.confirm_password"
+                            v-model="formData.password_confirmation"
                             :append-icon="
                                 showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'
                             "
                             :type="showConfirmPassword ? 'text' : 'password'"
-                            :rules="[rules.required, rules.min]"
+                            :rules="[
+                                required('Password'),
+                                minLength('Password', 8)
+                            ]"
                             name="input-10-1"
-                            label="Old Password"
+                            label="Confirm Password"
                             hint="At least 8 characters"
                             counter
                             outlined
-                            dense
                             @click:append="
                                 showConfirmPassword = !showConfirmPassword
                             "
@@ -117,18 +115,19 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
-                        color="green darken-1"
+                        class="red text-light"
                         text
-                        @click="changePasswordDialog = false"
+                        @click="
+                            (changePasswordDialog = false),
+                                (errors = []),
+                                $refs.form.resetValidation(),
+                                $refs.form.reset()
+                        "
                     >
                         Cancel
                     </v-btn>
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        @click="changePasswordDialog = false"
-                    >
-                        UPDATE PASSWORD
+                    <v-btn class="primary" text @click="changePassword">
+                        UPDATE
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -136,6 +135,7 @@
     </div>
 </template>
 <script>
+import { validation } from "../mixins/validationMixin";
 export default {
     props: {
         mode: {
@@ -143,10 +143,12 @@ export default {
             default: false
         }
     },
+    mixins: [validation],
 
     name: "UserMenu",
     data() {
         return {
+            errors: [],
             valid: false,
             menu: false,
             showPassword: false,
@@ -154,19 +156,33 @@ export default {
             showConfirmPassword: false,
             formData: {},
             changePasswordDialog: false,
-            rules: {
-                required: value => !!value || "Required.",
-                min: v => v.length >= 8 || "Min 8 characters",
-                emailMatch: () =>
-                    `The email and password you entered don't match`
-            }
+            rules: {}
         };
     },
     methods: {
         changeMode(event) {
             this.$emit("changeMode", event.target.value);
         },
-        changePassword() {},
+        changePassword() {
+            if (this.$refs.form.validate()) {
+                axios
+                    .post("/change/password", this.formData)
+                    .then(res => {
+                        console.log(res);
+                        this.changePasswordDialog = false;
+                        this.errors = [];
+                        this.$toast.success(res.data.message, {
+                            timeout: 5000
+                        });
+                    })
+                    .catch(error => {
+                        this.errors = error.response.data.errors;
+                        this.$toast.error(error.response.data.message, {
+                            timeout: 5000
+                        });
+                    });
+            }
+        },
         logout() {
             axios
                 .post("/logout")

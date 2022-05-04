@@ -36,7 +36,7 @@ Auth::routes();
 
 Route::middleware(['auth:admin'])->group(function(){
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
-    
+    Route::post('/change/password', [AdminController::class,'changePassword'])->name('change.password');
     Route::post('/logout', [AdminController::class,'logout'])->name('logout');
 });
 Route::middleware(['auth:admin'])->group(function(){

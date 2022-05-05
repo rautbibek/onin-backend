@@ -381,16 +381,16 @@ export default {
                     this.loading = false;
                 });
         },
-        getCategory() {
-            axios
-                .get("/api/select/category")
-                .then(res => {
-                    this.categories = res.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
+        // getCategory() {
+        //     axios
+        //         .get("/api/select/category")
+        //         .then(res => {
+        //             this.categories = res.data;
+        //         })
+        //         .catch(error => {
+
+        //         });
+        // },
 
         cancel() {
             this.confirm = false;

@@ -358,7 +358,6 @@ export default {
             this.$refs.form.reset();
         },
         getBanners(e) {
-            console.log("loading banner");
             this.loading = true;
             axios
                 .get(`/api/banner?page=${e.page}`, {
@@ -378,16 +377,6 @@ export default {
                     this.loading = false;
                 });
         },
-        // getCategory() {
-        //     axios
-        //         .get("/api/select/category")
-        //         .then(res => {
-        //             this.categories = res.data;
-        //         })
-        //         .catch(error => {
-        //             console.log(error);
-        //         });
-        // },
 
         cancel() {
             this.confirm = false;

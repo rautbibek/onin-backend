@@ -14,9 +14,6 @@
         <div class="container">
 
             <div class="login-container">
-
-
-
                 <!-- @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>

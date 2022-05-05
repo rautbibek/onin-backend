@@ -227,7 +227,6 @@ export default {
 
     methods: {
         paginate(e) {
-            console.log(e);
             this.loading = true;
             axios
                 .get(`/api/product?page=${e.page}`, {

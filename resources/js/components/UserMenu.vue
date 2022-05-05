@@ -9,7 +9,7 @@
             <template v-slot:activator="{ on, attrs }">
                 <v-btn icon large dark v-bind="attrs" v-on="on">
                     <v-avatar size="32px" item>
-                        <v-img src="/src/logo.png" alt="Vuetify"></v-img
+                        <v-img src="/images/logo.jpeg" alt="Vuetify"></v-img
                     ></v-avatar>
                 </v-btn>
             </template>
@@ -17,7 +17,7 @@
                 <v-list>
                     <v-list-item>
                         <v-list-item-avatar>
-                            <img src="/src/user.png" alt="John" />
+                            <img src="/src/user.png" :alt="$user.name" />
                         </v-list-item-avatar>
 
                         <v-list-item-content>
@@ -168,7 +168,6 @@ export default {
                 axios
                     .post("/change/password", this.formData)
                     .then(res => {
-                        console.log(res);
                         this.changePasswordDialog = false;
                         this.errors = [];
                         this.$toast.success(res.data.message, {
@@ -187,11 +186,15 @@ export default {
             axios
                 .post("/logout")
                 .then(res => {
-                    console.log(res.data);
+                    this.$toast.success("Logged out succefully.", {
+                        timeout: 5000
+                    });
                     window.location.href = "/";
                 })
                 .catch(err => {
-                    console.log(err.response.data.errors);
+                    this.$toast.error(err.response.data.errors, {
+                        timeout: 5000
+                    });
                 });
         }
     }

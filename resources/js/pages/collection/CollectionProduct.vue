@@ -74,6 +74,21 @@
                                 </td>
                                 <td>
                                     <v-btn
+                                        style="text-decoration:none"
+                                        x-small
+                                        router
+                                        :to="
+                                            `/product/edit/${item.pivot.product_id}`
+                                        "
+                                        fab
+                                        color="primary"
+                                        dark
+                                    >
+                                        <v-icon dark>
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn
                                         @click="
                                             removeProductFromCollection(item)
                                         "
@@ -126,7 +141,9 @@ export default {
                     this.collection_product = res.data;
                 })
                 .catch(error => {
-                    console.log(eroor.response.data.errors);
+                    this.$toast.error(error.response.data.errors, {
+                        timeout: 2000
+                    });
                 });
         },
         removeProductFromCollection(item) {
@@ -145,7 +162,9 @@ export default {
                         });
                     })
                     .catch(error => {
-                        console.log(error.response.data.errors);
+                        this.$toast.error(error.response.data.errors, {
+                            timeout: 2000
+                        });
                     });
             }
         }

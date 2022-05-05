@@ -11,22 +11,16 @@ const actions = {
             .get(`/api/category/parent`)
             .then(response => {
                 commit("setCategories", response.data.data);
-                //console.log(response.data);
             })
-            .catch(error => {
-                console.log(error.response.data.errors);
-            });
+            .catch(error => {});
     },
     getCategories({ commit }) {
         axios
             .get(`/api/category/parent`)
             .then(response => {
                 commit("setCategories", response.data.data);
-                //console.log(response.data);
             })
-            .catch(error => {
-                console.log(error.response.data.errors);
-            });
+            .catch(error => {});
     },
     addCategories({ commit }) {
         axios
@@ -34,9 +28,7 @@ const actions = {
             .then(response => {
                 commit("setCategories", response.data.data);
             })
-            .catch(error => {
-                console.log(error.response.data.errors);
-            });
+            .catch(error => {});
     }
 };
 const mutations = {

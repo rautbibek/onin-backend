@@ -53,7 +53,9 @@ export const ProductMixins = {
                     this.colors = res.data;
                 })
                 .catch(error => {
-                    console.log(error.response.data.errors);
+                    this.$toast.error(error.response.data.errors, {
+                        timeout: 2000
+                    });
                 });
         },
 
@@ -64,7 +66,9 @@ export const ProductMixins = {
                     this.collections = res.data;
                 })
                 .catch(error => {
-                    console.log(error.response.data.errors);
+                    this.$toast.error(error.response.data.errors, {
+                        timeout: 2000
+                    });
                 });
         },
 
@@ -73,7 +77,6 @@ export const ProductMixins = {
             axios
                 .get(`/api/single/category/${this.formData.category_id}`)
                 .then(res => {
-                    console.log(res.data);
                     this.formData.has_color = res.data.has_color;
                     this.formData.has_size = false;
                     this.brands = res.data.brand;
@@ -98,46 +101,10 @@ export const ProductMixins = {
                     this.loading_options = false;
                 })
                 .catch(error => {
-                    console.log("error");
                     this.loading_options = false;
                 });
-            // this.formData.category_id = this.selected_category.id;
-            // this.formData.has_color = this.selected_category.has_color;
-            // this.formData.has_size = this.selected_category.has_size;
-            // this.getOptions();
         },
-        getOptions() {
-            axios
-                .get(`/api/v1/category/options/${this.formData.category_id}`)
-                .then(res => {
-                    this.category_options = res.data;
-                    this.brands = res.data.brands;
-                })
-                .catch(error => {
-                    console.log(error.response.data.errors);
-                });
-            this.getBrand();
-        },
-        getBrand() {
-            // axios
-            //     .get(`/api/v1/category/brand/${this.formData.category_id}`)
-            //     .then(res => {
-            //         this.brands = res.data;
-            //     })
-            //     .catch(error => {
-            //         console.log(error.response.data);
-            //     });
-        },
-        getCategory() {
-            axios
-                .get("/api/select/category")
-                .then(res => {
-                    this.categories = res.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
+
         getSingleProductType() {
             this.product_types.find(product_type => {
                 if (product_type.id === this.product_type_id) {

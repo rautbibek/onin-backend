@@ -97,10 +97,11 @@ export default {
                 .get("/api/unread/notification")
                 .then(res => {
                     this.notifications = res.data;
-                    //console.log(this.notifications);
                 })
                 .catch(error => {
-                    console.log("errors");
+                    this.$toast.error(error.response.data.errors, {
+                        timeout: 2000
+                    });
                 });
         },
         orderDetail(data) {
@@ -114,7 +115,9 @@ export default {
                     this.getNotification();
                 })
                 .catch(error => {
-                    console.log("error");
+                    this.$toast.error(error.response.data.errors, {
+                        timeout: 2000
+                    });
                 });
         }
     },

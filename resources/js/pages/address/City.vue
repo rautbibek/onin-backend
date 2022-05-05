@@ -251,7 +251,6 @@ export default {
             this.formData.district_id = item.district_id;
             this.formData.name = item.name;
             this.formData.delivery_charge = item.delivery_charge;
-            console.log(this.formData);
             this.dialog = true;
         },
         saveCity() {

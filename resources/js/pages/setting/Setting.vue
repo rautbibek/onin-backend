@@ -55,14 +55,7 @@ export default {
             }
         }
     },
-    created() {
-        // axios
-        //     .get("api/v1/product/2")
-        //     .then(res => {
-        //         console.log(res.data);
-        //     })
-        //     .catch();
-    }
+    created() {}
 };
 </script>
 

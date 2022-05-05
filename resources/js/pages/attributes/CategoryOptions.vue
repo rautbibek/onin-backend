@@ -330,7 +330,6 @@ export default {
             }
         },
         confirmation(item) {
-            console.log(item);
             this.confirm = true;
             this.option_id = item.id;
             //this.deleteItem(item);

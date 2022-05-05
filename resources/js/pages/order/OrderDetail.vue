@@ -11,7 +11,7 @@
 
             <v-card-text>
                 <v-row>
-                    <v-col cols="8">
+                    <v-col cols="12" md="8" lg="8" sm="12" xs="12">
                         <v-card class="mx-auto" min-height="300" outlined>
                             <div class="text-overline mb-4 px-5 mt-4">
                                 Order Items
@@ -184,7 +184,7 @@
                             </v-form>
                         </div>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="12" md="4" lg="4" sm="12" xs="12">
                         <v-card class="mx-auto" outlined>
                             <div class="text-overline mb-4 px-5 mt-4">
                                 Customer Detail
@@ -354,7 +354,9 @@ export default {
                     this.$refs.comment.resetValidation();
                 })
                 .catch(error => {
-                    console.log(error.response.data.message);
+                    this.$toast.error(error.response.data.message, {
+                        timeout: 2000
+                    });
                 });
         },
         postComment() {

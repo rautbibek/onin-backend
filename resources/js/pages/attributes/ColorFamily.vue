@@ -279,7 +279,6 @@ export default {
             //this.deleteItem(item);
         },
         editColor(item) {
-            //console.log(item);
             this.formData.id = item.id;
             this.formData.name = item.name;
             this.formData.code = item.code;

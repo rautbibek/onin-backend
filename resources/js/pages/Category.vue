@@ -343,12 +343,8 @@ export default {
                 this.__initial = true;
                 return;
             }
+        },
 
-            //console.log("toggle arrow clicked", e);
-        },
-        onSelected(e) {
-            console.log("checkbox clicked", e);
-        },
         getMenu() {
             this.loading = true;
             axios
@@ -377,7 +373,9 @@ export default {
                     this.options = res.data;
                 })
                 .catch(error => {
-                    console.log(error.response.data.errors);
+                    this.$toast.error(error.response.data.errors, {
+                        timeout: 2000
+                    });
                 });
         },
 
@@ -404,7 +402,6 @@ export default {
             }
         },
         editItem(item) {
-            console.log(item);
             this.formData.id = item.id;
             this.formData.parent_id = item.parent_id;
             this.formData.cover = item.cover;
@@ -454,7 +451,6 @@ export default {
             await axios
                 .get(`/api/category/${this.id}`)
                 .then(res => {
-                    console.log(res.data);
                     this.category_options = res.data;
                 })
                 .catch(error => {});
@@ -492,28 +488,6 @@ export default {
 
         showButtons(item) {
             return item.children != null && item.children.length > 0;
-        },
-        selectAllChilds(item, shouldSelect) {
-            console.log(item);
-            // Get all children Ids (extract from object)
-            // const childIds = item.children.map((item) => item.id)
-            // console.debug('childs ids: ', childIds)
-            // Set selection to childs + root item Id
-            // const rootAndChilds = [ ...childIds, item.id ]
-            if (shouldSelect) {
-                // Select by keeping existing selection
-                //   console.info('existing sel: ', this.selection)
-                //   console.info('adding: ', rootAndChilds)
-                //   const finalSelection = [ ...this.selection, ...rootAndChilds ]
-                //   console.info('final selection: ', finalSelection)
-                //   this.selection = finalSelection
-            } else {
-                // Remove
-                //   const difference = this.selection.filter(x => !rootAndChilds.includes(x))
-                //   console.info('difference: ', difference)
-                //   this.selection = difference
-                // this.selection.filter(it=> !this.selection.includes(rootAndChilds))
-            }
         }
     },
     mounted() {

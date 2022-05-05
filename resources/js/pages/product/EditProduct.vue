@@ -804,7 +804,7 @@ export default {
                         });
                         this.$router.push({ name: "Product" });
                         this.buttonLoading = false;
-                        this.getProduct();
+                        // this.getProduct();
                     })
                     .catch(error => {
                         this.errors = error.response.data.errors;
@@ -889,8 +889,10 @@ export default {
 
                     this.option_values = n;
                 })
-                .catch(err => {
-                    console.log("error occoured");
+                .catch(error => {
+                    this.$toast.error(error.response.data.message, {
+                        timeout: 2000
+                    });
                 });
         },
         getCollectionIds(collection) {
@@ -990,10 +992,11 @@ export default {
         }
     },
     mounted() {
-        this.getProduct();
+        //this.getProduct();
     },
     created() {
         //this.getCategory();
+        this.getProduct();
     }
 };
 </script>

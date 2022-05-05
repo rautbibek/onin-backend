@@ -126,69 +126,38 @@
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
-                <v-card-title>
-                    <span class="text-h5">Brand</span>
-                    <v-spacer></v-spacer>
-                    <v-icon left @click="closeModel">close</v-icon>
-                </v-card-title>
+                <v-form
+                    ref="form"
+                    @submit.prevent="saveBrand"
+                    v-model="valid"
+                    lazy-validation
+                >
+                    <v-card-title>
+                        <span class="text-h5">Brand</span>
+                        <v-spacer></v-spacer>
+                        <v-icon left @click="closeModel">close</v-icon>
+                    </v-card-title>
 
-                <v-card-text>
-                    <ValidationErrors :errors="errors"></ValidationErrors>
-                    <v-container> </v-container>
-                    <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-autocomplete
-                            v-model="formData.category_id"
-                            :items="categories"
-                            item-text="name"
-                            item-value="id"
-                            label="Choose Categorie *"
-                            :rules="[required('Category')]"
-                            outlined
+                    <v-card-text>
+                        <ValidationErrors :errors="errors"></ValidationErrors>
+                        <v-container> </v-container>
+
+                        <Treeselect
+                            class="mb-10 selectbox error"
+                            style="height:35px"
+                            required
+                            v-model.number="formData.category_id"
+                            :options="fetAllCategories"
+                            :show-count="true"
+                            :rules="[required('category name')]"
                         >
-                            <template v-slot:selection="data">
-                                <v-chip
-                                    v-bind="data.attrs"
-                                    :input-value="data.selected"
-                                    @click="data.select"
-                                >
-                                    <span v-if="data.item.parent"
-                                        ><span v-if="data.item.parent.parent"
-                                            >{{
-                                                data.item.parent.parent.name
-                                            }}
-                                            -></span
-                                        >{{ data.item.parent.name }} -></span
-                                    >{{ data.item.name }}
-                                </v-chip>
-                            </template>
-                            <template v-slot:item="data">
-                                <template>
-                                    <v-list-item-content>
-                                        <v-list-item-title
-                                            ><span v-if="data.item.parent"
-                                                ><span
-                                                    v-if="
-                                                        data.item.parent.parent
-                                                    "
-                                                    >{{
-                                                        data.item.parent.parent
-                                                            .name
-                                                    }}
-                                                    -></span
-                                                >{{
-                                                    data.item.parent.name
-                                                }}
-                                                -></span
-                                            >
-                                            {{
-                                                data.item.name
-                                            }}</v-list-item-title
-                                        >
-                                        <v-list-item-subtitle></v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </template>
-                            </template>
-                        </v-autocomplete>
+                            <div slot="value-label" slot-scope="{ node }">
+                                {{ node.raw.name }}
+                            </div>
+                            <label slot="option-label" slot-scope="{ node }">
+                                {{ node.raw.name }}
+                            </label>
+                        </Treeselect>
 
                         <v-text-field
                             v-model="formData.name"
@@ -243,24 +212,24 @@
                                 alt="logo"
                             />
                         </v-row>
-                    </v-form>
-                </v-card-text>
+                    </v-card-text>
 
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn @click="closeModel" color="error">
-                        <v-icon left>mdi-cancel</v-icon>
-                        Cancel
-                    </v-btn>
-                    <v-btn
-                        color="success"
-                        @click="saveBrand"
-                        :loading="buttonLoading"
-                    >
-                        <v-icon left>save</v-icon>
-                        Save
-                    </v-btn>
-                </v-card-actions>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn @click="closeModel" color="error">
+                            <v-icon left>mdi-cancel</v-icon>
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            type="submit"
+                            color="success"
+                            :loading="buttonLoading"
+                        >
+                            <v-icon left>save</v-icon>
+                            Save
+                        </v-btn>
+                    </v-card-actions>
+                </v-form>
             </v-card>
         </v-dialog>
         <ConfirmationBox :confirm="confirm">
@@ -288,6 +257,8 @@
 </template>
 <script>
 import axios from "axios";
+import Treeselect from "@riophae/vue-treeselect";
+import { mapGetters, mapActions } from "vuex";
 import ConfirmationBox from "../../components/ConfirmationBox.vue";
 import { commonMixin } from "../../mixins/commonMixin";
 import { validation } from "../../mixins/validationMixin";
@@ -295,7 +266,8 @@ export default {
     name: "Index",
     mixins: [commonMixin, validation],
     components: {
-        ConfirmationBox
+        ConfirmationBox,
+        Treeselect
     },
     data: () => ({
         url: "",
@@ -339,10 +311,10 @@ export default {
         ]
     }),
 
-    //computed: mapGetters(["allBrnads"]),
+    computed: mapGetters(["fetAllCategories"]),
 
     created() {
-        this.getCategory();
+        this.getCategories();
     },
 
     methods: {
@@ -354,6 +326,9 @@ export default {
                 this.url = URL.createObjectURL(e);
             }
         },
+
+        ...mapActions(["getCategories"]),
+
         addBrand() {
             this.dialog = true;
         },
@@ -381,16 +356,6 @@ export default {
                     this.loading = false;
                 });
         },
-        // getCategory() {
-        //     axios
-        //         .get("/api/select/category")
-        //         .then(res => {
-        //             this.categories = res.data;
-        //         })
-        //         .catch(error => {
-
-        //         });
-        // },
 
         cancel() {
             this.confirm = false;
@@ -398,6 +363,16 @@ export default {
         },
 
         saveBrand() {
+            if (
+                this.formData.category_id &&
+                this.formData.category_id != "undefined"
+            ) {
+            } else {
+                this.$toast.error("Choose at least one category", {
+                    timeout: 2000
+                });
+                return;
+            }
             if (this.$refs.form.validate()) {
                 this.buttonLoading = true;
                 var formData = new FormData();

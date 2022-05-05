@@ -24,21 +24,19 @@ class BrandRequest extends FormRequest
     public function rules()
     {
         $id = $this->id;
-        $category_id = $this->category_id;
-        //dd($category_id);
+        
+
         $rules = [
-            'category_id'=>'required',
+            'categtory_id'=>'required',
         ];
         if(isset($id)){
             $rules = [
-                // 'category_id'=>'required',
                 'name'=> 'required | unique:brands,id,'.$id,
-                //'logo'=>'sometimes | mimes:jpeg,png,jpg,svg|max:2048',
             ];
         }else{
             $rules =[
-                //'logo'=>'required | mimes:jpeg,png,jpg,svg|max:2048',
                 'name'=> 'required',
+                
             ];
         }
 

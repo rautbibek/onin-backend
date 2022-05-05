@@ -38,6 +38,14 @@ class BrandController extends Controller
     public function store(BrandRequest $request)
     {
         //return response()->json($request->all(),500);
+        if(!isset($request->category_id) ||$request->category_id == 'undefined' || $request->category_id == 'NULL'){
+            return response()->json([
+                'message'=>'invalide value',
+                'errors'=>[
+                    'category_id'=>'undefined category id'
+                ]
+            ],422);
+        }
         
         $logo = null;
         $id = $request->get('id');

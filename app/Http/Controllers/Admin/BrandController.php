@@ -125,7 +125,12 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        $brand = Brand::findOrFail($id);
+        $brand = Brand::withCount('product')->findOrFail($id);
+        if($brand->product_count>0){
+            return response()->json([
+                'message'=>'Forbidden : this brand has '.$brand->product_count.' products',
+            ],422);
+        }
         $brand->delete();
         return response()->json([
             'brand'=>$brand,

@@ -20,7 +20,7 @@ class ReviewController extends Controller
                 ->first();
 
                 $review = Review::where('product_id',$id)
-                ->rightJoin('users','users.id','reviews.id')
+                ->rightJoin('users','users.id','reviews.user_id')
                 ->select(
                     'reviews.id as id',
                     'users.name as reviewed_by',

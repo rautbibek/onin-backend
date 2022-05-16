@@ -70,8 +70,18 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
-    // public function getIsFavoriteAttribute(){
-        
-    //     return $this->favorites->where('user_id',Auth::id())->count() > 0;
-    // }
+    public function scopeisFav($query){
+        $query->with('favorites',function($q){
+            $q->where('user_id',Auth::guard('sanctum')->id());
+        });
+    }
+
+    public function scopeHasVariant($query,$min,$max)
+    {
+        return $query->whereHas('variant', function ($query) use ($min,$max) {
+            $query->where('variants.price','>', $min)->where('variants.price','<', $max);
+        });
+    }
+
+    
 }

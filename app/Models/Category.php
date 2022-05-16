@@ -84,4 +84,13 @@ class Category extends Model
     //     //return Storage::disk('public')->url('/category/'.$this->cover);
     //     //return MediaHelper::getThumbnailUrl($this->cover,'thumb');
     // }
+
+    public function scopeFilterOptions($query)
+    {
+        return $query->with('options',function($q){
+             $q->where('is_filterable',true)->where('type','=','select');
+        });
+    }
+
+    
 }

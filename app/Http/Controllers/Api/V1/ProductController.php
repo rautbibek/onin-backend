@@ -15,26 +15,37 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function categoryProduct($id){
-        
+        $price = request()->has('price')?request()->get('price'):null;
         $product = Product::where('category_id',$id)->where('status',true);
-                 
+        
         if(request()->has('brand_id')){
             $product = $product->where('brand_id',request()->get('brand_id'));
+        }
+
+        if(request()->has('price')){
+
         }
         $product = $product->with(['favorites'=>function($q){
 
             $q->where('user_id',Auth::guard('sanctum')->id());
-        },'variant'=>function($q){
-            
+        },'variant'=>function($q) use($price){
+
+            // if(isset($price)){
+            //     $q->PriceFilter($price[0],$price[1]);
+            // }
             $q->leftJoin('color_families','color_families.name','variants.color')
               ->select('variants.*','color_families.code');
+            
          },'collection']);
-         
+         if(isset($price)){
+             $product = $product->HasVariant($price[0],$price[1]);
+         }
         $product= $product->paginate(20);
-        return ProductResource::collection($product);
         
-        //return ProductResource::collection($product);
+        return ProductResource::collection($product);
     }
+
+    
 
     public function productDetail($id){
         $product = Product::

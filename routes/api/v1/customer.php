@@ -8,12 +8,13 @@ use App\Http\Controllers\Api\V1\Customer\AddressController;
 use App\Http\Controllers\Api\V1\Customer\ReviewController;
 use App\Http\Controllers\Api\V1\Customer\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
-
+use App\Http\Controllers\UserController;
 
 Route::get('/customer/home',[HomeController::class,'index']);
 //Route::get('/cart/data',[CartController::class,'index']);
 
 Route::middleware(['auth:sanctum'])->group(function(){
+    Route::post('/update/profile',[UserController::class,'updateProfile']);
     Route::get('/favorite/product',[ProductController::class,'favoriteProduct']);
     Route::post('/favorite/{id}',[FavoriteController::class,'favorite']);
     

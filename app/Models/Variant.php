@@ -22,4 +22,11 @@ class Variant extends Model
     protected $casts = [
         'sizes'=>'array',
     ];
+
+    
+
+    public function scopePriceFilter($query,$min,$max)
+    {
+        return $query->where('price', '>', $min)->where('price','<',$max);
+    }
 }

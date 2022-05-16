@@ -20,4 +20,13 @@ class CategoryController extends Controller
         ->setStatusCode(200);
     }
 
+    public function filterOptions($id){
+        $category = Category::where('id',$id)
+                  ->select('id','name','parent_id','slug')
+                  ->with('brand:id,name,category_id')
+                  ->FilterOptions()
+                  ->first();
+        return response()->json($category);
+    }
+
 }

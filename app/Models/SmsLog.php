@@ -11,6 +11,7 @@ class SmsLog extends Model
 
     protected $fillable = [
         'sms_type',
+        'code',
         'user_id',
         'mobile',
         'title',

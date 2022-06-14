@@ -21,7 +21,7 @@ class CategorySelectResource extends JsonResource
         ];
         //$name = $this->id;
         if(!$this->children->isEmpty()){
-            $data['children'] = ChildrenResource::collection($this->children);
+            $data['children'] = ChildrenResource::collection($this->whenLoaded('children'));
         }
         return $data;
     }

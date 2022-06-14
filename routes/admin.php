@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\Address\CityController;
 use App\Http\Controllers\Admin\Address\LocalAreaController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\Order\OrderController;
+use App\Http\Controllers\Admin\SmsController;
 use App\Http\Controllers\Api\V1\CommonDataController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,7 @@ Route::middleware(['auth:admin'])->group(function(){
     Route::group(['prefix'=>'api'],function(){
         
         Route::get('/user', [UserController::class,'index'])->name('user');
+        Route::get('/sms/log', [SmsController::class,'index'])->name('sms');
         Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
         Route::get('/category/parent',[CategoryController::class,'getParentData']);
         Route::get('/select/category',[CategoryController::class,'getSelectableCategory']);

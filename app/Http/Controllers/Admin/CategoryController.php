@@ -204,7 +204,7 @@ class CategoryController extends Controller
         // select option in create category table
         $category = Category::where('parent_id',null)
         ->select('id','parent_id','name','last_child')
-        ->with('children:id,parent_id,name')->orderBy('name','asc')->get();
+        ->with('children.children')->orderBy('name','asc')->get();
         //return $category;
         return  CategorySelectResource::collection($category)->response()
         ->setStatusCode(200);

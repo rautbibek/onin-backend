@@ -23,6 +23,7 @@ import Order from "../pages/order/order.vue";
 import CollectionProduct from "../pages/collection/CollectionProduct.vue";
 import OrderDetail from "../pages/order/OrderDetail.vue";
 import Banner from "../pages/banner";
+import SmsLog from "../pages/sms_log";
 const routes = [
     {
         path: "*",
@@ -129,6 +130,11 @@ const routes = [
                 path: "/order/detail/:id",
                 name: "OrderDetail",
                 component: OrderDetail
+            },
+            {
+                path: "/sms/log",
+                name: "SmsLog",
+                component: SmsLog
             },
             {
                 path: "/collection/product/:id",

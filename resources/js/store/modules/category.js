@@ -14,14 +14,7 @@ const actions = {
             })
             .catch(error => {});
     },
-    getCategories({ commit }) {
-        axios
-            .get(`/api/category/parent`)
-            .then(response => {
-                commit("setCategories", response.data.data);
-            })
-            .catch(error => {});
-    },
+
     addCategories({ commit }) {
         axios
             .post(`api/category`, formData)

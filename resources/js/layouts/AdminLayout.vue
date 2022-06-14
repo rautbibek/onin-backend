@@ -223,7 +223,7 @@ export default {
             //     ]
             // },
             { icon: "mdi-cog", text: "Settings", url: "/setting" },
-            { icon: "mdi-message", text: "Send feedback" },
+            { icon: "mdi-message", text: "Sms Log", url: "/sms/log" },
             { icon: "mdi-help-circle", text: "Help" },
             { icon: "mdi-cellphone-link", text: "App downloads" },
             { icon: "mdi-keyboard", text: "Go to the old version" }

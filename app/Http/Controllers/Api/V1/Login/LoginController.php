@@ -108,7 +108,11 @@ class LoginController extends Controller
         return response($response, 200);
     }
 
-    public function mobileVerification(){
+    public function mobileVerification(Request $request){
+        // $this->validate($request,[
+        //     'contact_number'=>'required'
+        // ]);
+
         $otp = rand(10000,99999);
         $sms_log = SmsLog::where('mobile'); 
         $message = config('app.name').' mobile verification code '.$otp;
@@ -123,4 +127,6 @@ class LoginController extends Controller
             'message' => 'Otp token sent to provided contact number'
         ]);
     }
+    
+
 }

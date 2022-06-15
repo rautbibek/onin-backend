@@ -18,10 +18,7 @@ class ProductController extends Controller
         
         $min_price = $request->has('min')?request()->get('min'):0;
         $max_price = $request->has('max')?$request->get('max'):null;
-        $option_filter = collect($request->except(['min','max','brand_id','brand']))->keys();
-        //return $option_filter;
-        
-        
+        $option_filter = collect($request->except(['min','max','brand_id','brand']))->keys();        
         $product = Product::where('category_id',$id)->where('status',true);
         
         if(request()->has('brand_id')){

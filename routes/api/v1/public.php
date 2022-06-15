@@ -32,6 +32,7 @@ Route::get('/district/city/{district_id}',[CommonDataController::class,'getCityB
 Route::get('/city/localarea/{city_id}',[CommonDataController::class,'getLocalareaByCity']);
 // end of common address controller
 Route::get('all/collection',[CollectionController::class,'index']);
+Route::get('/collection/{slug}',[CollectionController::class,'collectionProduct']);
 Route::get('/category',[CategoryController::class,'index']);
 Route::get('/category/filter/option/{id}',[CategoryController::class,'filterOptions']);
 Route::get('/category/product/{id}',[ProductController::class,'categoryProduct']);

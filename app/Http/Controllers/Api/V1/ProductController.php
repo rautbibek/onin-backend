@@ -14,31 +14,45 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function categoryProduct($id){
-        $price = request()->has('price')?request()->get('price'):null;
+    public function categoryProduct(Request $request,$id){
+        
+        $min_price = $request->has('min')?request()->get('min'):0;
+        $max_price = $request->has('max')?$request->get('max'):null;
+        $option_filter = collect($request->except(['min','max','brand_id','brand']))->keys();
+        //return $option_filter;
+        
+        
         $product = Product::where('category_id',$id)->where('status',true);
         
         if(request()->has('brand_id')){
             $product = $product->where('brand_id',request()->get('brand_id'));
         }
-
-        if(request()->has('price')){
-
+        // filter by options
+        if($option_filter->count()>0){
+            $product = $product->with('optionValues')->whereHas('optionValues',function($query) use($option_filter){
+                foreach($option_filter as $option){
+                    $str_arr = explode (",", request()->get($option)); 
+                    $query->where('option',request()->get($option))->OrWhereIn('option_value',$str_arr);
+                }
+            }); 
         }
+        //favorite product and min max price filter and color options
         $product = $product->with(['favorites'=>function($q){
 
             $q->where('user_id',Auth::guard('sanctum')->id());
-        },'variant'=>function($q) use($price){
+        },'variant'=>function($q) use($min_price,$max_price){
 
-            // if(isset($price)){
-            //     $q->PriceFilter($price[0],$price[1]);
-            // }
+            $q = $q->where('price','>=',$min_price);
+            if(isset($max_price)){
+                $q= $q->where('price','<=',$max_price);
+            }
+           
             $q->leftJoin('color_families','color_families.name','variants.color')
               ->select('variants.*','color_families.code');
             
          },'collection']);
-         if(isset($price)){
-             $product = $product->HasVariant($price[0],$price[1]);
+         if(isset($min_price) ||isset($max_price)){
+             $product = $product->HasVariant($min_price,$max_price);
          }
         $product= $product->paginate(20);
         

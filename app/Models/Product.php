@@ -79,7 +79,11 @@ class Product extends Model
     public function scopeHasVariant($query,$min,$max)
     {
         return $query->whereHas('variant', function ($query) use ($min,$max) {
-            $query->where('variants.price','>', $min)->where('variants.price','<', $max);
+            $query = $query->where('price','>=',$min);
+            if(isset($max)){
+                $query = $query->where('price','<=',$max);
+            }
+            return $query;
         });
     }
 

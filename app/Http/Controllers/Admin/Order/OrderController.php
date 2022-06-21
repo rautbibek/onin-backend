@@ -80,4 +80,12 @@ class OrderController extends Controller
             'message'=> 'Status updated succefully',
         ]);
     }
+
+    public function removeOrder($id){
+        $order = Order::findOrFail($id);
+        $order->delete();
+        return response()->json([
+            'message'=>'Order deleted succefully.'
+        ]);
+    }
 }

@@ -3,7 +3,8 @@ import VueRouter from "vue-router";
 Vue.use(VueRouter);
 import Category from "../pages/Category.vue";
 import Test from "../pages/test.vue";
-import Users from "../pages/Users.vue";
+import Users from "../pages/user";
+import UserDetail from "../pages/user/UserDetail";
 import Product from "../pages/product";
 import NewProduct from "../pages/product/NewProduct";
 import NotFound from "../pages/404";
@@ -140,6 +141,11 @@ const routes = [
                 path: "/collection/product/:id",
                 name: "CollectionProduct",
                 component: CollectionProduct
+            },
+            {
+                path: "/user/:id",
+                name: "UserDetail",
+                component: UserDetail
             }
         ]
     }

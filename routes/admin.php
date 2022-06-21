@@ -47,6 +47,7 @@ Route::middleware(['auth:admin'])->group(function(){
     Route::group(['prefix'=>'api'],function(){
         
         Route::get('/user', [UserController::class,'index'])->name('user');
+        Route::get('/user/{id}', [UserController::class,'userDetail'])->name('user.detail');
         Route::get('/sms/log', [SmsController::class,'index'])->name('sms');
         Route::post('/product/status/{id}',[ProductController::class,'updateStatus']);
         Route::get('/category/parent',[CategoryController::class,'getParentData']);
@@ -61,6 +62,7 @@ Route::middleware(['auth:admin'])->group(function(){
         Route::post('/remove/collection/product/{id}',[CollectionController::class,'removeProductFromCollection']);
         Route::get('/all/order',[OrderController::class,'index']);
         Route::patch('/change/order/status/{id}',[OrderController::class,'changeStatus']);
+        Route::delete('/remove/order/{id}',[OrderController::class,'removeOrder']);
         Route::resources([
             'category' => CategoryController::class,
             'product' => ProductController::class,

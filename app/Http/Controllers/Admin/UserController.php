@@ -17,4 +17,9 @@ class UserController extends Controller
         return  UserResource::collection($users)->response()
         ->setStatusCode(200);
     }
+
+    public function userDetail($id){
+        $user = User::with(['address','orders','favorites','reviews'])->where('id',$id)->firstOrFail();
+        return response()->json($user,200);
+    }
 }

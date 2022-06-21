@@ -62,6 +62,7 @@
                                 fab
                                 color="view"
                                 dark
+                                :to="`/user/${item.id}`"
                                 v-bind="attrs"
                                 v-on="on"
                             >
@@ -72,7 +73,7 @@
                         </template>
                         <span>View </span>
                     </v-tooltip>
-                    <v-tooltip bottom>
+                    <!-- <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
                                 x-small
@@ -88,8 +89,8 @@
                             </v-btn>
                         </template>
                         <span>Edit </span>
-                    </v-tooltip>
-                    <v-tooltip bottom>
+                    </v-tooltip> -->
+                    <!-- <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
                                 x-small
@@ -105,7 +106,7 @@
                             </v-btn>
                         </template>
                         <span>Delete </span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                 </template>
             </v-data-table>
         </v-card>

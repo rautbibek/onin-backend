@@ -95,13 +95,27 @@
                         </template>
                         <span>View order detail </span>
                     </v-tooltip>
+                    <v-btn
+                        x-small
+                        fab
+                        color="error"
+                        dark
+                        @click="deleteItem(item.id)"
+                    >
+                        <v-icon dark>
+                            mdi-delete
+                        </v-icon>
+                    </v-btn>
                 </template>
             </v-data-table>
+            <iosAlertView></iosAlertView>
         </v-card>
     </div>
 </template>
 <script>
 export default {
+    name: "OrderComponent",
+
     data: () => ({
         search_keyword: "",
         title: "Orders",
@@ -181,6 +195,32 @@ export default {
                 .catch(error => {
                     this.loading = false;
                 });
+        },
+        deleteItem(id) {
+            // this.$toast.success("working", {
+            //     timeout: 5000
+            // });
+            this.$iosConfirm("are you sure to want to delete this item?")
+                .then(function() {
+                    axios
+                        .delete(`/api/remove/order/${id}`)
+                        .then(res => {
+                            this.paginate(this.$options);
+                            this.$toast.success(res.data.message, {
+                                timeout: 5000
+                            });
+                        })
+                        .catch(error => {
+                            this.$toast.error(error.response.data.message, {
+                                timeout: 5000
+                            });
+                        });
+                })
+                .catch(function() {
+                    alert("error occoured");
+                });
+
+            //this.$iosConfirm("confirm?");
         }
     }
 };

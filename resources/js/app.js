@@ -10,6 +10,9 @@ import Toast from "vue-toastification";
 
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
+import iosAlertView from "vue-ios-alertview";
+
+Vue.use(iosAlertView);
 
 const options = {
     // You can set your default options here
